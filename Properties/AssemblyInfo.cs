@@ -5,12 +5,12 @@ using System.Runtime.InteropServices;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("basicClasses")]
+[assembly: AssemblyTitle("codenotion")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("ттт")]
 [assembly: AssemblyProduct("basicClasses functional script v1.1")]
-[assembly: AssemblyCopyright("Copyright ©kibitz 2016-2017")]
+[assembly: AssemblyCopyright("Copyright ©kibitz 2016-2019")]
 [assembly: AssemblyTrademark("codenotion")]
 [assembly: AssemblyCulture("")]
 
