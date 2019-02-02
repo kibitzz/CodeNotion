@@ -5,21 +5,21 @@ using System.Text;
 
 namespace basicClasses.models.SharedDataContextDrivers
 {
-    [appliable("all")]
-    [info("універсальний filler котрий можна викликати з різних моделей для заповнення одного й то го ж опису")]
+    [appliable("GetAnyPartOfOpis Action all")]
+    [info("All operations with datastructure, modifying passed parameter (implicit) ")]
    public class BodyValueModificator:ModelBase
     {
 
-        [info("inc  dec  set (set b - only body)  add_arr   rename   setmodel(нове значення в body)  add_arr_i(додає елементи масиву value, тольки ті яких нема)  (conc ower) (conc stay)")]
+        [info("inc  dec  set (set b - only body)  add_arr   rename   setmodel(new value place in body)  add_arr_i(add elelments of array from <value> key, only missing keys)  (conc ower) (conc stay)")]
         public static readonly string operation = "operation";
 
-        [info("нюанси для [operation] ")]
+        [info("")]
         public static readonly string operationSpec = "operationSpec";
 
-        [info("значення що потрібно встановити(підтримує заповнення filler'ом). або додати чи відняти операціями inc  dec")]
+        [info("support function execution to evaluate before assignment ")]
         public static readonly string value = "value";
 
-        [info("може містити шаблон(багаторівневий путь до даних) або просто partitionName обєкту що обробляється")]
+        [info("Optionally can contain multilevel path to branch")]
         [model("template")]
         public static readonly string partition = "partition";
       
@@ -45,26 +45,14 @@ namespace basicClasses.models.SharedDataContextDrivers
 
             switch (oper)
             {
-
-                //case "inc":
-                //    message.intVal += integerVal > 0 ? integerVal : 1;
-                //    break;
-                case "rename":
-                   
-                  //  if(opSpec =="num")
+              
+                case "rename":                                   
                     message.PartitionName = opSpec ;
                     break;
 
-                case "setmodel":
-
-                    //  if(opSpec =="num")
+                case "setmodel":                  
                     message.PartitionKind = modelSpec[value].body;
-                    break;
-
-                //case "dec":
-                //long lv = StrUtils.LongFromString(message.body);
-                //    message.body = (lv- integerVal > 0 ? lv - integerVal : 0).ToString();
-                //    break;
+                    break;            
 
                 case "conc ower":
                 case "conc stay":

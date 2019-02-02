@@ -174,8 +174,9 @@ namespace basicClasses.models.WEB_api
                 #endregion
 
                 if (!hc.responseData.StartsWith("<!DOCTYPE html") &&
-                    !hc.responseData.StartsWith("<") && 
-                    hc.contentType.Contains("application/json;"))
+                    !hc.responseData.StartsWith("<") &&
+                    hc.contentType != null &&
+                    hc.contentType.Contains("application/json"))
                 {                   
                     JsonObject jrez = JsonParser.Parse(hc.responseData);
                     opis trtrt = new opis();

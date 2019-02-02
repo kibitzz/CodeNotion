@@ -7,7 +7,7 @@ using System.Text;
 namespace basicClasses.models.Extractors
 {
     [info("DO NOT use  ")]
-    [appliable("MsgTemplate creation FillerList BodyValueModificator")]
+    [appliable("")]
     public class fill_shared_context_val:ModelBase
     {
 
@@ -30,7 +30,7 @@ namespace basicClasses.models.Extractors
     }
 
 
-    [info("береться обєкт з Роллю вказаною в BODY та копіюється його масив і body")]
+    [info("Put global variable name in BODY to put it in this partition (key) . filler type of function (those who replace its call by resulted value) ")]
     [appliable("  creation    ")]
     public class fill_shared_context_Role : ModelBase
     {
@@ -85,7 +85,7 @@ namespace basicClasses.models.Extractors
     }
 
 
-    [info("береться обєкт з Роллю вказаною в BODY та копіюється його масив і body")]
+    [info("Put global variable name in BODY to put it in this partition (key).   filler type of function (those who replace its call by resulted value)")]
     [appliable("MsgTemplate all creation FillerList BodyValueModificator TreeDataExtractor ")]
     public class fill_Role : ModelBase
     {

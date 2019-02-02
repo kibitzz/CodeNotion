@@ -12,6 +12,7 @@ using System.Collections;
 using basicClasses.models;
 using basicClasses.Factory;
 using basicClasses.models.WEB_api;
+using System.Net;
 
 namespace basicClasses
 {
@@ -77,6 +78,9 @@ namespace basicClasses
             DateTime fin = DateTime.Now;
             TimeSpan ts = fin - st;
 
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11;
+            ServicePointManager.DefaultConnectionLimit = 20;
+            
 
             treeView2.ShowNodeToolTips = false;
             treeView3.ShowNodeToolTips = false;

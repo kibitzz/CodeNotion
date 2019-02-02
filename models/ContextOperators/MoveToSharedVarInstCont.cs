@@ -36,7 +36,7 @@ namespace basicClasses.models.ContextOperators
 
 
     [info("obsolete ")]
-    [appliable("exe creation Action")]
+    [appliable("")]
     public class messageTo_Role : ModelBase
     {             
         public override void Process(opis message)

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace basicClasses.models
 {
-    [info("описує повідомлення що використовується для спілкування між обєктами")]
+    [info("base structure of message ")]
     [appliable("creation ModelNotion modelReq ModelListOfMessages ")]
     class MsgTemplate: ModelInfo
     {

@@ -170,7 +170,7 @@ namespace basicClasses
             for (int i = 0; i < o["sys"].listCou; i++)
             {
                 opis curr = o["sys"][i];
-
+                
                 opis p = context.Find(curr.PartitionName.Trim()).Duplicate();
                 if (!p.isInitlze)
                 {
@@ -187,16 +187,7 @@ namespace basicClasses
             }
         }
 
-        public void scanEnvTest(opis o)
-        {
-           
-        }
-
-        public void igniteTree(opis o)
-        {                    
-            o["globalcomm"]["all"] = new opis("message","body start");
-        }
-
+        
         public void igniteTree()
         {
             contextToIgnite["globalcomm"]["контекстречення"] = new opis("message", "body GenerateTags");

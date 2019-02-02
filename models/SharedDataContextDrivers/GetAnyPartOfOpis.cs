@@ -6,7 +6,7 @@ using System.Text;
 
 namespace basicClasses.models.SharedDataContextDrivers
 {
-    [info("Base function to work with local variables and object reflection.  Automatically unwrap name [ rez = rez.W(); ] ")]
+    [info("Base function to work with global variables and object reflection.  Automatically unwrap name [ rez = rez.W(); ] ")]
     [appliable("all")]
    public class GetAnyPartOfOpis:ModelBase
     {

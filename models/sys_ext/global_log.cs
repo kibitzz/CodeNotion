@@ -6,7 +6,7 @@ using System.Text;
 namespace basicClasses.models.sys_ext
 {
     [appliable("all")]
-    [info("спільний управляемий лог. не змінює Process( message).  підтримує філлери   instanse.ExecActionModelsList(modelSpec); тобто логувати можна і значення змінних.  після заповнення філлерами копіює всі значення")]
+    [info("shared log for all objects in context. no modification at Process( message).  sheme instanse.ExecActionModelsList(modelSpec); by default duplicate all values ")]
    public class global_log:ModelBase
     {
         [ignore]
@@ -26,7 +26,7 @@ namespace basicClasses.models.sys_ext
             }
         }
 
-        [info("буде містити посилання на логовані змінні, а не копіювати їх стан для хронології")]
+        [info("do not duplicate original values, put references instead")]
         [model("FlagModelSpec")]
         public static readonly string do_not_duplicate = "do_not_duplicate";
 
@@ -47,11 +47,11 @@ namespace basicClasses.models.sys_ext
 
 
     [appliable("all")]
-    [info("локальний лог для кожного інстанса окремо. не змінює Process( message).  підтримує філлери   instanse.ExecActionModelsList(modelSpec); тобто логувати можна і значення змінних.  після заповнення філлерами копіює всі значення")]
+    [info("separate local log for current instance .  sheme instanse.ExecActionModelsList(modelSpec); by default duplicate all values ")]
     public class local_log : ModelBase
     {
 
-        [info("буде містити посилання на логовані змінні, а не копіювати їх стан для хронології")]
+        [info("do not duplicate original values, put references instead")]
         [model("FlagModelSpec")]
         public static readonly string do_not_duplicate = "do_not_duplicate";
 

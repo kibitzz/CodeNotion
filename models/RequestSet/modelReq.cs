@@ -6,7 +6,7 @@ using System.Text;
 namespace basicClasses.models
 {
     [info("Set of standart messages")]
-    [appliable("creation Messaging  ModelNotion")]
+    [appliable("Messaging")]
     public class modelReq:ModelInfo
     {
       

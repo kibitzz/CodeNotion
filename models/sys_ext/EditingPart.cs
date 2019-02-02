@@ -6,7 +6,7 @@ using System.Text;
 namespace basicClasses.models.sys_ext
 {
     [appliable("all")]
-    [info("мітка для швидкого переходу, аналог TODO в c# ")]
+    [info("label for quick access")]
    public class EditingPart:ModelBase
     {
 

@@ -511,6 +511,8 @@ namespace basicClasses.models.WEB_api
             if (string.IsNullOrEmpty(_URL))
                 return false;
 
+          
+            responceHeaders = new opis();
             RedirectLocation = "";
            responseData = "";
             State = 0;
