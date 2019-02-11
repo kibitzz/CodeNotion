@@ -42,6 +42,9 @@ namespace basicClasses.models.StructureProcessing
         public override void Process(opis message)
         {
             opis bp = modelSpec[blueprint].Duplicate();
+            var locmod = modelSpec;
+            instanse.ExecActionModel(bp, bp);
+            modelSpec = locmod;
 
             if (bp.listCou > 0)
             {
@@ -52,7 +55,10 @@ namespace basicClasses.models.StructureProcessing
                         || !string.IsNullOrEmpty(modelSpec[values_container].PartitionKind))
                     {
                         t = modelSpec[values_container].Duplicate();
+
+                        locmod = modelSpec;
                         instanse.ExecActionModel(t, t);
+                        modelSpec = locmod;
                     }
                     else
                         t = SharedContextRoles.GetRole("valuesContainer", sharedVal);
@@ -86,7 +92,7 @@ namespace basicClasses.models.StructureProcessing
                     else
                     {
                         message.body = bp[0].body;
-                        message.PartitionName = bp[0].PartitionName;
+                        message.PartitionName = string.IsNullOrEmpty(bp[0].PartitionName) ? message.PartitionName : bp[0].PartitionName;
                         message.PartitionKind = bp[0].PartitionKind;
                         if (modelSpec.isHere(only_value_body))
                             message.CopyArr(new opis());

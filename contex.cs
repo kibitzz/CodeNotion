@@ -111,8 +111,8 @@ namespace basicClasses
             string ontology = term.V(ModelNotion.ontology) + " "
                 + intellection.V(ModelNotion.ontology);
 
-            if (!string.IsNullOrWhiteSpace(ontology))
-            {
+            //if (!string.IsNullOrWhiteSpace(ontology))
+            //{
                 ncon = new opis("context");
                            
                 ncon.Vset(models.context.Owner, term.PartitionName+", "+ intellection.PartitionName);
@@ -131,14 +131,12 @@ namespace basicClasses
                 {
                     buildTree(context.Find(n), ncon);
                 }
-            }
+            //}
            
             CTX.Handle(ncon);// switch back to our local context (to add system elem. to proper context),
                              // because previously there was calls to {CTX.AddLvl()} which can change CTX.curr
 
-            // є системні поняття котрі не мають власного контексту, вони просто додаються як 
-            // елемент в поточний контекст і фіксуються в реєстрі системних обєктів
-
+           
             #region system elements to global context
 
             // больше [intellection] : суждение [intellection] : системное

@@ -152,12 +152,15 @@ namespace basicClasses.Factory
             models.Add("Compress", new Compress());
             models.Add("cleaner", new cleaner());
             models.Add("BuildTermBasicValuesContainer", new BuildTermBasicValuesContainer());
+            models.Add("SyntaxTreeMatchIdPatterns", new SyntaxTreeMatchIdPatterns());
+            
 
             models.Add("targetID", new targetID());
             models.Add("seqreader", new seqreader());
             models.Add("universal_line_pareser", new universal_line_pareser());
+            
 
-            if(ExternalModels != null)
+            if (ExternalModels != null)
             foreach (var kvp in ExternalModels)
                 models.Add(kvp.Key, kvp.Value);
         }

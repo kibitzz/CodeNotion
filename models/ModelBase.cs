@@ -13,6 +13,9 @@ namespace basicClasses.models
 
         protected opis thisins;
         protected opis spec;
+        /// <summary>
+        /// current context
+        /// </summary>
         protected opis o;
         protected opis communicator;
         protected opis contexts

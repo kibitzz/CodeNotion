@@ -26,7 +26,7 @@ namespace basicClasses.models.StructureProcessing
             instanse.ExecActionModelsList(ms);
             opis rez = new opis();
 
-            ms[source].FindByTemplateValue(ms[template], rez, ms.isHere(all));
+            ms[source].FindByTemplateValue(ms[template], rez, true);
 
             message.CopyArr(rez);
             if (!ms.isHere(all) && rez.listCou > 0)

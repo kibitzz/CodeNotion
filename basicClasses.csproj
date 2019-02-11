@@ -146,6 +146,7 @@
     <Compile Include="models\sys_ext\load_data_file.cs" />
     <Compile Include="models\sys_ext\numArrNames.cs" />
     <Compile Include="models\sys_ext\save_toFile.cs" />
+    <Compile Include="models\sys_ext\SyntaxTreeMatchIdPattrns.cs" />
     <Compile Include="models\sys_ext\TagArrayItems.cs" />
     <Compile Include="models\sys_ext\targetWholeBranch.cs" />
     <Compile Include="models\sys_ext\UserNotifier.cs" />
