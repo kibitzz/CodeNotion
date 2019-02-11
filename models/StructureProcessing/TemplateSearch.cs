@@ -5,6 +5,7 @@ using System.Text;
 
 namespace basicClasses.models.StructureProcessing
 {
+    [info("")]
     [appliable("Action exe all")]
     public  class TemplateSearch : ModelBase
     {
@@ -13,7 +14,7 @@ namespace basicClasses.models.StructureProcessing
         public static readonly string source = "source";
 
         [model("")]
-        [info("")]
+        [info("put ??? to body of any template node to get matched item in results")]
         public static readonly string template = "template";
 
         [model("spec_tag")]
@@ -30,7 +31,10 @@ namespace basicClasses.models.StructureProcessing
 
             message.CopyArr(rez);
             if (!ms.isHere(all) && rez.listCou > 0)
+            {
                 message.CopyArr(rez[0]);
+                message.body = rez[0].body;
+            }
             
         }
     }
