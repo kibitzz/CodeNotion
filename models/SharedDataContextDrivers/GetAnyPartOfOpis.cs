@@ -60,10 +60,14 @@ namespace basicClasses.models.SharedDataContextDrivers
         [model("FlagModelSpec")]
         public static readonly string do_not_modify = "do_not_modify";
 
+        [info("")]
+        [model("spec_tag")]
+        public static readonly string debug = "debug";
+
         public override void Process(opis message)
         {
             opis source = null;
-
+          
             opis currSpec = modelSpec;
 
             if (modelSpec.isHere(sdc_item))
@@ -105,6 +109,7 @@ namespace basicClasses.models.SharedDataContextDrivers
             if ( source!=null)
             {
                 opis rez = source;
+                opis templ = new opis();
 
                 if (modelSpec.isHere(template))
                 {
@@ -117,9 +122,21 @@ namespace basicClasses.models.SharedDataContextDrivers
                         instanse.ExecActionModelsList(ptt);
                         modelSpec = currSpec;
                         rez = GetLevelCheck(ptt[0], source.W());
+                        templ = ptt[0];
                     }
                 }
-               
+
+#if DEBUG
+                if (currSpec.isHere(debug))
+                {
+                    var l = new opis();
+                    thisins["Models_log"].AddArr(l);
+                    l.AddArr(currSpec);
+                    l.AddArr(source);
+                    l.AddArr(templ);
+                    l.AddArr(rez);
+                }
+#endif
 
                 modelSpec = currSpec;
 
@@ -159,6 +176,9 @@ namespace basicClasses.models.SharedDataContextDrivers
 
                     instanse.ExecActionResponceModelsList(procSpec, rez);
                 }
+                else
+                    message.CopyArr(new opis());
+
             } else
             {
                 if (message.PartitionName == "value")

@@ -46,6 +46,8 @@ namespace basicClasses.Factory
             models.Add("GetAnyPartOfOpis", new GetAnyPartOfOpis());
             models.Add("BodyValueModificator", new BodyValueModificator());
 
+
+            models.Add("Breaker", new Breaker());
             models.Add("RangeAndAssign", new RangeAndAssign());
             models.Add("ForEach", new ForEach());
             models.Add("exec", new exec());

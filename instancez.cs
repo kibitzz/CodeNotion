@@ -567,7 +567,7 @@ namespace basicClasses
 
             // optimize - at start set enough size for this big and very active array
             thisins["sharedVariablesContext"].ArrResize(400);
-            opis tytyt = thisins["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"];
+       
             thisins["packages"].ArrResize(400);
             thisins["packages"].bodyObject = new Dictionary<string, int>(200);
 
@@ -627,10 +627,38 @@ namespace basicClasses
             AnswerToMessage(msg, ans);
         }
 
+        opis InitMsgStackDatCon(opis msg)
+        {
+            var SVC = thisins["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"];
+            var prev = SVC.W();
+
+            var contl = new opis() { PartitionName = "msgCont" };
+          
+            var wr = new opis() { PartitionName = "currMsg" }; 
+            wr.CopyArr(msg);
+            contl.AddArr(wr);
+
+            wr = new opis() { PartitionName = "msg p" }; 
+            wr.Wrap(msg["p"]);
+            contl.AddArr(wr);
+
+            SVC.Wrap(contl);
+
+            return prev;
+        }
+
+        void SetStackDatCon(opis data)
+        {
+            var SVC = thisins["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"];
+
+         //   SVC.ArrResize(0);
+            SVC.Wrap(data);
+        }
+
         protected bool CheckCommonMessage(opis msg)
         {
             bool rez = false;
-            //bool msgHandled = false;
+            //bool msgHandled = false;           
 
             if (  CanHandle(msg["context"]) || CheckMessageTarget(msg)  ) 
             {
@@ -641,7 +669,9 @@ namespace basicClasses
                     {
                         Handle(contexts[i]);
                         if (CanRunOnThisContext(msg))
-                        {
+                        {                          
+                           var prevDat = InitMsgStackDatCon(msg);
+
                             thisins["active_message"] = new opis();
                             thisins.WrapByName(msg, "active_message");
                             curr_msgProc = msg;
@@ -650,17 +680,17 @@ namespace basicClasses
                             AddInstLog("in", msg.V("msg"), msg);
 
                             ExecActionModelsList(msg[MsgTemplate.preProcess]);
-                            ProcessResponcesPartition(msg);
-                            // instead separate handle for inject msg
-                            if (mb == modelReq.inject)
-                                ExecActionModelsList(msg[MsgTemplate.validate]);//compatibility issue, now all injected code put to getAnswerDetails
-
+                            ProcessResponcesPartition(msg);                         
                             ExecActionModelsList(msg[MsgTemplate.getAnswerDetails]);
+
+                            SetStackDatCon(prevDat);
                         }
                     }
                 }
                 else
                 {
+                    var prevDat = InitMsgStackDatCon(msg);
+
                     thisins["active_message"] = new opis();
                     thisins.WrapByName(msg, "active_message");
                     curr_msgProc = msg;
@@ -670,7 +700,9 @@ namespace basicClasses
 
                     ExecActionModelsList(msg[MsgTemplate.preProcess]);
                     ProcessResponcesPartition(msg);
-                    ExecActionModelsList(msg[MsgTemplate.getAnswerDetails]);                   
+                    ExecActionModelsList(msg[MsgTemplate.getAnswerDetails]);
+
+                    SetStackDatCon(prevDat);
                 }
             }
 
@@ -684,7 +716,10 @@ namespace basicClasses
                     for (int i = 0; i < contexts.listCou; i++)
                     {
                         Handle(contexts[i]);
+
+                        var prevDat = InitMsgStackDatCon(msg);
                         ProcessResponcesPartition(msg);
+                        SetStackDatCon(prevDat);
                     }
 
                     break;
@@ -885,6 +920,9 @@ namespace basicClasses
                 {
                     ExecActionModel(req[i], req[i]);
                     Handle(activeCont);
+
+                    if (req[i].PartitionKind == "Breaker" && req[i].isHere(Breaker.flag))
+                        break;
                 }
             }else
             {              
@@ -923,6 +961,9 @@ namespace basicClasses
             {               
                 ExecActionModel(req[i], message);
                 Handle(activeCont);
+
+                if (req[i].PartitionKind == "Breaker" && message.isHere(Breaker.flag))
+                    break;
             }                 
 
             thisins["sharedVariablesContext"][exec.SUBJ] = marg;
@@ -1215,6 +1256,12 @@ namespace basicClasses
         opis getSYSContainetP(opis SVC, string pn)
         {
            return getSYSContainetP(SVC, pn, false);            
+        }
+
+        public opis GetLocalDataContextVal(string pn)
+        {
+            opis SVC = thisins["sharedVariablesContext"];
+            return getSYSContainetP(SVC, pn, false);
         }
 
         opis getSYSContainetP(opis SVC, string pn, bool create)
