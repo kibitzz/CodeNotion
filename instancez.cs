@@ -792,6 +792,39 @@ namespace basicClasses
           
         }
 
+        void RunMethodSubscribersCode(opis msg, opis container)
+        {            
+            opis r = container["hooks"][msg.body];
+            ExecActionModelsList(r);
+        }
+
+        void RunMethodAspectBeforeCode(opis msg, opis container)
+        {            
+            opis b = container["aspects"][msg.body]["before"];
+            ExecActionModelsList(b);
+        }
+
+        void RunMethodAspectAfterCode(opis msg, opis container)
+        {
+            opis b = container["aspects"][msg.body]["after"];
+            ExecActionModelsList(b);
+        }
+
+        opis DecorateMethodByAspectCode(opis code, opis container, opis msg)
+        {
+            //opis b = container["aspects"][msg.body]["before"];
+            //opis a = container["aspects"][msg.body]["after"];
+
+            var rez = new opis();
+            //rez.AddArrRange(b);
+            rez.AddArr(new opis() { PartitionKind = "Breaker" });
+
+            rez.AddArrRange(code);
+            //rez.AddArrRange(a);
+
+            return rez;
+        }
+
         /// <summary>
         /// execute action models from spec & waiter 
         /// <para>spec[ModelNotion.Responces][CTX.organizer];</para>
@@ -800,20 +833,27 @@ namespace basicClasses
         /// <param name="msg"></param>
         protected void ProcessResponcesPartition(opis msg)
         {
+            RunMethodAspectBeforeCode(msg, spec);
+
             string organizer = GetContextOrganizerName();        
             RunNotionReaction(spec, ModelNotion.Responces, organizer, msg);
        
             if (spec.PartitionName != waiter.PartitionName)            
-                RunNotionReaction(waiter, ModelNotion.Responces, organizer, msg);              
-            
+                RunNotionReaction(waiter, ModelNotion.Responces, organizer, msg);
+
+            RunMethodAspectAfterCode(msg, spec);
+
+            RunMethodSubscribersCode(msg, spec);
         }
 
         public void RunNotionReaction(opis notion, string partition, string organizer, opis msg)
         {
-            opis responses = notion[partition][organizer][msg.body];           
+            opis responses = notion[partition][organizer][msg.body];
+            responses = DecorateMethodByAspectCode(responses, spec, msg);
             ExecActionResponceModelsList(responses, msg);
 
-            responses = notion[partition]["all"][msg.body];          
+            responses = notion[partition]["all"][msg.body];
+            responses = DecorateMethodByAspectCode(responses, spec, msg);
             ExecActionResponceModelsList(responses, msg);
         }
 
@@ -1261,10 +1301,10 @@ namespace basicClasses
         public opis GetLocalDataContextVal(string pn)
         {
             opis SVC = thisins["sharedVariablesContext"];
-            return getSYSContainetP(SVC, pn, false);
+            return getSYSContainetP(SVC, pn, false, false);
         }
 
-        opis getSYSContainetP(opis SVC, string pn, bool create)
+        opis getSYSContainetP(opis SVC, string pn, bool create, bool logerror = true)
         {
             opis rez = new opis();
             opis t = SVC["SYS_use_container_do_not_owerlap"].W();
@@ -1285,6 +1325,7 @@ namespace basicClasses
                         rez = pn.Contains("~") ? t[pnl] : t[pn].W();
                     }
                     else
+                    if(logerror)
                     {
                         opis err = new opis();
                         err.PartitionName = "ERR no such patrition: " + pn;

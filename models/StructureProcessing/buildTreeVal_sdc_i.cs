@@ -169,7 +169,8 @@ namespace basicClasses.models.StructureProcessing
                 donotrecurce = true;
 
                 opis branchVal = sharedVal[bp.PartitionName.Replace("#", "")].W();
-                if (!modelSpec.isHere(do_not_duplicate_branch))
+                if (!modelSpec.isHere(do_not_duplicate_branch) 
+                    || bp.PartitionName.StartsWith("##"))
                 {
                     branchVal = branchVal.Duplicate();
 

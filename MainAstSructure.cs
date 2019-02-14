@@ -450,8 +450,12 @@ namespace basicClasses
 
         public void CopyArr(opis elem)
         {
-            arr = elem.arr;
-            paramCou = elem.paramCou;
+            //arr = elem.arr;
+            //paramCou = elem.paramCou;
+
+            arr = new opis[0];
+            paramCou = 0;
+            AddArrRange(elem);           
         }
        
         public void CopyParams(opis elem)

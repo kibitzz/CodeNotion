@@ -26,17 +26,17 @@ namespace basicClasses.models.sys_ext
                 surc = modelSpec[condition].Duplicate();
                 instanse.ExecActionModel(surc, surc);
                 if (surc.isHere("exit") || surc.body == "exit")
-                    setFlag(message);
+                    SetFlag(message);
             }
             else
             {
                 if(!string.IsNullOrEmpty(instanse.GetLocalDataContextVal("exit").PartitionName ))
-                     setFlag(message);
+                     SetFlag(message);
             }
                     
         }
 
-        void setFlag(opis message)
+        void SetFlag(opis message)
         {
             message[flag].body = "true";
         }

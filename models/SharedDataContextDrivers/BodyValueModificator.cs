@@ -161,7 +161,7 @@ namespace basicClasses.models.SharedDataContextDrivers
                             {
                                 if (opSpec == "w")
                                 {
-                                    processThis.Wrap(ttt);
+                                    processThis.Wrap(ttt.W());
                                 }
                                 else
                                 {
@@ -250,14 +250,13 @@ namespace basicClasses.models.SharedDataContextDrivers
                         {
                             if (opSpec == "w")
                             {
-                                message.Wrap(ttt);
+                                message.Wrap(ttt.W());
                             }
                             else
                             {
                                 message.body = ttt.body;
                                 message.CopyArr(ttt);
-                            }
-                          
+                            }                          
                         }
 
                         if (oper == "set b")
