@@ -634,12 +634,15 @@ namespace basicClasses
 
             var contl = new opis() { PartitionName = "msgCont" };
           
-            var wr = new opis() { PartitionName = "currMsg" }; 
+            var wr = new opis() { PartitionName = "cmsg" }; 
             wr.CopyArr(msg);
             contl.AddArr(wr);
 
             wr = new opis() { PartitionName = "msg p" }; 
             wr.Wrap(msg["p"]);
+
+            contl["cancel"].body = "";
+
             contl.AddArr(wr);
 
             SVC.Wrap(contl);
@@ -678,11 +681,9 @@ namespace basicClasses
 
                             if(!msg.isHere("hide"))
                             AddInstLog("in", msg.V("msg"), msg);
-
-                            ExecActionModelsList(msg[MsgTemplate.preProcess]);
+                           
                             ProcessResponcesPartition(msg);                         
-                            ExecActionModelsList(msg[MsgTemplate.getAnswerDetails]);
-
+                          
                             SetStackDatCon(prevDat);
                         }
                     }
@@ -698,9 +699,7 @@ namespace basicClasses
                     if (!msg.isHere("hide"))
                         AddInstLog("in", msg.V("msg"), msg);
 
-                    ExecActionModelsList(msg[MsgTemplate.preProcess]);
                     ProcessResponcesPartition(msg);
-                    ExecActionModelsList(msg[MsgTemplate.getAnswerDetails]);
 
                     SetStackDatCon(prevDat);
                 }
@@ -798,31 +797,83 @@ namespace basicClasses
             ExecActionModelsList(r);
         }
 
+        opis GetBreakerForMessageInjection()
+        {
+            opis rez = new opis();
+
+            opis compl = new opis() { PartitionKind = "Breaker" };
+            compl.AddArr(new opis()
+            {
+                body = "*cancel",
+                PartitionName = "condition",
+                PartitionKind = "fill"
+            });
+
+            compl.AddArr(new opis()
+            {
+                body = "yes",
+                PartitionName = "setLdcExitOnCondition"
+            });
+
+            rez.AddArr(compl);
+
+            rez.AddArr(new opis() { PartitionKind = "Breaker" });
+
+            return rez;
+        }
+
         void RunMethodAspectBeforeCode(opis msg, opis container)
         {            
             opis b = container["aspects"][msg.body]["before"];
             ExecActionModelsList(b);
+
+            b = DecorateCodeBy(msg[MsgTemplate.preProcess],
+                GetBreakerForMessageInjection(), null);
+
+            ExecActionModelsList(b);
+          
         }
 
         void RunMethodAspectAfterCode(opis msg, opis container)
         {
             opis b = container["aspects"][msg.body]["after"];
             ExecActionModelsList(b);
+
+            b = DecorateCodeBy(msg[MsgTemplate.getAnswerDetails],
+              new opis() { PartitionKind = "Breaker" }, null);
+
+            ExecActionModelsList(b);
+
+        }
+
+        opis DecorateCodeBy(opis code, opis start, opis end)
+        {
+            var rez = new opis();
+          
+            if (start != null)
+            {
+                if (start.listCou > 0)
+                    rez.AddArrRange(start);
+                else
+                    rez.AddArr(start);
+            }
+
+            rez.AddArrRange(code);
+
+            if (end != null)
+            {
+                if (end.listCou > 0)
+                    rez.AddArrRange(end);
+                else
+                    rez.AddArr(end);
+            }
+
+            return rez;
         }
 
         opis DecorateMethodByAspectCode(opis code, opis container, opis msg)
-        {
-            //opis b = container["aspects"][msg.body]["before"];
-            //opis a = container["aspects"][msg.body]["after"];
-
-            var rez = new opis();
-            //rez.AddArrRange(b);
-            rez.AddArr(new opis() { PartitionKind = "Breaker" });
-
-            rez.AddArrRange(code);
-            //rez.AddArrRange(a);
-
-            return rez;
+        {                     
+            return DecorateCodeBy(code, new opis() { PartitionKind = "Breaker" }, null);           
         }
 
         /// <summary>
@@ -1298,10 +1349,10 @@ namespace basicClasses
            return getSYSContainetP(SVC, pn, false);            
         }
 
-        public opis GetLocalDataContextVal(string pn)
+        public opis GetLocalDataContextVal(string pn, bool create = false)
         {
             opis SVC = thisins["sharedVariablesContext"];
-            return getSYSContainetP(SVC, pn, false, false);
+            return getSYSContainetP(SVC, pn, create, false);
         }
 
         opis getSYSContainetP(opis SVC, string pn, bool create, bool logerror = true)
@@ -1643,6 +1694,8 @@ namespace basicClasses
 
             // retrieve all additional parameters from this instance          
             ExecActionResponceModelsList(message[MsgTemplate.validate], answer);
+
+            message.raiseEvents = true;
 
             if (answer.V(ModelAnswer.cancel).Length > 0)
             {

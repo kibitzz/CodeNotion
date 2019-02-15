@@ -1656,7 +1656,7 @@ namespace basicClasses
             return rez;
         }
 
-        public int FindByTemplateValue(opis strucTmpl, opis rez, bool isTop, bool getdata = false)
+        public int FindByTemplateValue(opis strucTmpl, opis rez, bool retdata, bool isTop, bool getdata = false)
         {
            
             if (isDuplicated) return 0;
@@ -1686,14 +1686,24 @@ namespace basicClasses
                         )
                     {
 
-                        var r = arr[i].FindByTemplateValue(templ, rez, false, getdata);
+                        var r = arr[i].FindByTemplateValue(templ, rez, retdata, false, getdata);
                         match[k] += r;
 
                         if(getdata && (r > 0 || templ.listCou ==0) && templ.body == "???")
                             rez.AddArr(arr[i]);
 
                         if (isTop && strucTmpl.listCou == 1 && r > 0)
-                            rez.AddArr(arr[i]);
+                        {
+                            if (!retdata)
+                                rez.AddArr(arr[i]);
+                            else
+                            {
+                                UnlockThisForDuplication();
+                                FindByTemplateValue(strucTmpl, rez, retdata, false, true);
+                                lockThisForDuplication();
+                            }
+
+                        }
 
                     }
                 }
@@ -1705,15 +1715,19 @@ namespace basicClasses
             {
                 if (matchedLvl == strucTmpl.listCou
                     && strucTmpl.listCou != 1)
-                {
-                    UnlockThisForDuplication();
-                    FindByTemplateValue(strucTmpl, rez, false, true);
-                    lockThisForDuplication();
-                    rez.AddArr(this);
+                {                  
+                    if (!retdata)
+                        rez.AddArr(this);
+                    else
+                    {
+                        UnlockThisForDuplication();
+                        FindByTemplateValue(strucTmpl, rez, retdata, false, true);
+                        lockThisForDuplication();
+                    }
                 }
 
                 for (int i = 0; i < paramCou; i++)
-                    arr[i].FindByTemplateValue(strucTmpl, rez, true, getdata);
+                    arr[i].FindByTemplateValue(strucTmpl, rez, retdata, true, getdata);
             }
 
             UnlockThisForDuplication();

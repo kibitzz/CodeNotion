@@ -21,13 +21,19 @@ namespace basicClasses.models.StructureProcessing
         [info("search till the end, and form(return) an array of such items")]
         public static readonly string all = "all";
 
+        [model("spec_tag")]
+        [info("if template contains ??? put to results those items, not the branches that match whole template")]
+        public static readonly string returnItemsNotBranches = "returnItemsNotBranches";
+
         public override void Process(opis message)
         {
            opis ms=  modelSpec.Duplicate();
             instanse.ExecActionModelsList(ms);
             opis rez = new opis();
 
-            ms[source].FindByTemplateValue(ms[template], rez, true);
+            bool retdata = ms.isHere(returnItemsNotBranches);
+
+            ms[source].FindByTemplateValue(ms[template], rez, retdata, true);
 
             message.CopyArr(rez);
             if (!ms.isHere(all) && rez.listCou > 0)

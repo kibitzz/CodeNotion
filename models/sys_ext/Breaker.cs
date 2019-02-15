@@ -12,9 +12,13 @@ namespace basicClasses.models.sys_ext
     {
 
         [model("")]
-        [info("delete this to use data context flag <exit>.  or set body of this equal <exit>")]
+        [info("delete this to use local data context(LDC) flag <exit>.  or set body of this equal <exit>")]
         public static readonly string condition = "condition";
-       
+
+        [model("FlagModelSpec")]
+        [info("if condition to exit is matched, make it propagate to other Breaker's that use LDC flag <exit>")]
+        public static readonly string setLdcExitOnCondition = "setLdcExitOnCondition";
+
         [ignore]
         public static readonly string flag = "break further code exec";
 
@@ -23,10 +27,17 @@ namespace basicClasses.models.sys_ext
             opis surc = message;
             if (modelSpec.isHere(condition))
             {
+                bool prop = modelSpec[setLdcExitOnCondition].isInitlze;
+
                 surc = modelSpec[condition].Duplicate();
                 instanse.ExecActionModel(surc, surc);
                 if (surc.isHere("exit") || surc.body == "exit")
+                {
                     SetFlag(message);
+
+                    if (prop)
+                        instanse.GetLocalDataContextVal("exit", true);
+                }
             }
             else
             {

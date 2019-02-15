@@ -42,7 +42,7 @@ namespace basicClasses.models
         [model("Messaging")]
         public static readonly string Responces = "Responces";
 
-              
+        [ignore]
         [info("obsolete, relation <has> is established by using <class> notion ")]
         public static readonly string has = "has";
       

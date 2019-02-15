@@ -38,6 +38,10 @@ namespace basicClasses.models.StructureProcessing
         [info("заповнювати при bp.PartitionKind == buildTreeVal_sdc_i")]
         public static readonly string recurce_all = "recurce_all";
 
+        [model("spec_tag")]
+        [info("bug fix when ")]
+        public static readonly string putWholeResult = "putWholeResult";
+
 
         public override void Process(opis message)
         {
@@ -62,23 +66,23 @@ namespace basicClasses.models.StructureProcessing
                     }
                     else
                         t = SharedContextRoles.GetRole("valuesContainer", sharedVal);
-
-                    //logopis["debug_values_container"].Wrap ( t);
+                    
 
                     sharedVal = t.W();
                 }
 
                 build(bp, null);
-
-                //logopis["debug_blueprint_filled"] = bp;
-
-                // формується лінійний путь до даних, як template GetLevelCheck(ptt[0])
-                // якщо потрібна можливість прописати путь вручну, тоді саму гілку template
-                // використовувати неможна, доступ до статичного шаблону: template[0]
-                // запускається- instanse.ExecActionModelsList(ptt);  message в цьому разі це модель buildTreeVal_sdc_i
+              
+              
                 if (bp.listCou == 1 && message.PartitionKind != "template")
                 {
-                   
+                    if (locmod.isHere(putWholeResult))
+                    {
+                        message.PartitionKind = "";
+                        message.CopyArr(bp);
+                        return;
+                    }
+
                     if (message.PartitionName == "value")
                     {                      
                         if (modelSpec.isHere(only_value_body))
@@ -101,10 +105,7 @@ namespace basicClasses.models.StructureProcessing
                     }
                 }
                 else
-                {
-                    //формується нелінійний обєкт (більше однієї гілки, у любого підлеглого елемента також)
-                    //check_Conformity:  instanse.ExecActionResponceModelsList(ptt, ptt);
-                    // message в цьому разі це еталонний обєкт даних (сам template) що потім порівнюється 
+                {                  
                     message.PartitionKind = "";
                     message.CopyArr(bp);
                 }
