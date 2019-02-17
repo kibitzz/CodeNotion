@@ -1587,6 +1587,13 @@ namespace basicClasses
             FindTreePartitions(templ, path, referers);
         }
 
+        public void FindTreePartitionsByName(string Name, string path, opis referers)
+        {
+            opis templ = new opis();
+            templ.PartitionName = Name;
+            FindTreePartitions(templ, path, referers);
+        }
+
         public void FindTreePartitions(opis templ, string path, opis referers)
         {
             FindTreePartitions(templ, path, referers, true);

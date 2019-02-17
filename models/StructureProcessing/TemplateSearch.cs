@@ -27,7 +27,7 @@ namespace basicClasses.models.StructureProcessing
 
         public override void Process(opis message)
         {
-           opis ms=  modelSpec.Duplicate();
+            opis ms = modelSpec.Duplicate();
             instanse.ExecActionModelsList(ms);
             opis rez = new opis();
 
@@ -41,7 +41,7 @@ namespace basicClasses.models.StructureProcessing
                 message.CopyArr(rez[0]);
                 message.body = rez[0].body;
             }
-            
+
         }
     }
 }

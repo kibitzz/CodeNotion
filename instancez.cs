@@ -653,8 +653,7 @@ namespace basicClasses
         void SetStackDatCon(opis data)
         {
             var SVC = thisins["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"];
-
-         //   SVC.ArrResize(0);
+   
             SVC.Wrap(data);
         }
 
@@ -791,10 +790,14 @@ namespace basicClasses
           
         }
 
-        void RunMethodSubscribersCode(opis msg, opis container)
-        {            
-            opis r = container["hooks"][msg.body];
-            ExecActionModelsList(r);
+        void RunMethodSubscribersCode(opis msg, opis container, string systemName)
+        {
+            var rootpath = RootPathMsg(systemName, msg.body);
+
+            LocalizePathDecorateAspectAndRun(
+               container["hooks"][msg.body],
+               rootpath + "Hooks", false);
+
         }
 
         opis GetBreakerForMessageInjection()
@@ -822,31 +825,57 @@ namespace basicClasses
             return rez;
         }
 
-        void RunMethodAspectBeforeCode(opis msg, opis container)
-        {            
-            opis b = container["aspects"][msg.body]["before"];
-            ExecActionModelsList(b);
-
-            b = DecorateCodeBy(msg[MsgTemplate.preProcess],
-                GetBreakerForMessageInjection(), null);
-
-            ExecActionModelsList(b);
-          
-        }
-
-        void RunMethodAspectAfterCode(opis msg, opis container)
+        string RootPathMsg(string systemName, string msg)
         {
-            opis b = container["aspects"][msg.body]["after"];
-            ExecActionModelsList(b);
+            var rootpath = systemName + "->Responces->" + GetContextOrganizerName() + "->" + msg + "->aspects->";
 
-            b = DecorateCodeBy(msg[MsgTemplate.getAnswerDetails],
-              new opis() { PartitionKind = "Breaker" }, null);
+            return rootpath;
+        }
 
-            ExecActionModelsList(b);
+        void RunMethodAspectBeforeCode(opis msg, opis container, string systemName)
+        {
+            var rootpath = RootPathMsg(systemName, msg.body);
+             
+            // can disable whole object
+            ExecActionModelsList(container["aspects"]["All"]["before"]);
+
+            LocalizePathDecorateAspectAndRun(
+                container["aspects"][msg.body]["before"], 
+                rootpath + "before");
+          
+            LocalizePathDecorateAspectAndRun(msg[MsgTemplate.preProcess], rootpath + "Msg_before");          
+        }
+
+        void LocalizePathDecorateAspectAndRun(opis code, string rootpath, bool decor= true)
+        {
+            code = code.Duplicate();
+            code.PartitionName = rootpath;
+            BuildActionPathByName(code, "_path_");
+            if (decor)
+                code = DecorateCodeBy(code, GetBreakerForMessageInjection());
+
+            ExecActionModelsList(code);
 
         }
 
-        opis DecorateCodeBy(opis code, opis start, opis end)
+        void RunMethodAspectAfterCode(opis msg, opis container, string systemName)
+        {
+            var rootpath = RootPathMsg(systemName, msg.body);
+          
+            LocalizePathDecorateAspectAndRun(
+                container["aspects"][msg.body]["after"],
+                rootpath+ "after");
+
+            if(msg.V(MsgTemplate.msg) == "put function packages") //optimization
+                ExecActionModelsList(msg[MsgTemplate.getAnswerDetails]);
+            else
+            LocalizePathDecorateAspectAndRun(msg[MsgTemplate.getAnswerDetails], 
+               rootpath + "Msg_After");
+         
+
+        }
+
+        opis DecorateCodeBy(opis code, opis start, opis end = null)
         {
             var rez = new opis();
           
@@ -884,7 +913,7 @@ namespace basicClasses
         /// <param name="msg"></param>
         protected void ProcessResponcesPartition(opis msg)
         {
-            RunMethodAspectBeforeCode(msg, spec);
+            RunMethodAspectBeforeCode(msg, spec, waiter.PartitionName);
 
             string organizer = GetContextOrganizerName();        
             RunNotionReaction(spec, ModelNotion.Responces, organizer, msg);
@@ -892,9 +921,9 @@ namespace basicClasses
             if (spec.PartitionName != waiter.PartitionName)            
                 RunNotionReaction(waiter, ModelNotion.Responces, organizer, msg);
 
-            RunMethodAspectAfterCode(msg, spec);
 
-            RunMethodSubscribersCode(msg, spec);
+            RunMethodAspectAfterCode(msg, spec, waiter.PartitionName);
+            RunMethodSubscribersCode(msg, spec, waiter.PartitionName);
         }
 
         public void RunNotionReaction(opis notion, string partition, string organizer, opis msg)
@@ -1477,37 +1506,65 @@ namespace basicClasses
                 }
             }
 
-            reflisttmp = new opis();
-            rez.FindTreePartitions("MsgTemplate", rez.PartitionName, reflisttmp);
+            BuildActionPath(rez, "MsgTemplate");
+            BuildActionPath(rez, "global_log");
+            BuildActionPath(rez, "func", true);
+          
+        }
+
+        void BuildActionPath(opis rez, string modelName, bool eachSubitem = false)
+        {
+            BuildActionPathFunc(rez,
+                (x, p) => {
+                    if (!x.isHere("_path_"))
+                        x.Vset("_path_", p + "->" + x.PartitionName);
+                        },
+                x=> x.PartitionKind = modelName,
+                
+                eachSubitem);           
+        }
+
+        void BuildActionPathByName(opis rez, string Name, bool eachSubitem = false)
+        {
+            BuildActionPathFunc(rez,
+                (x, p) => {
+                    if (!x.isHere("_path_"))
+                        x.Vset("_path_", p + "->" + x.PartitionName);
+                },
+                x => x.PartitionName = Name,
+               
+                eachSubitem);
+        }
+
+        void BuildActionPathFunc(opis rez, 
+            Action<opis, string> setter,
+            Action<opis> templMaker,
+            bool eachSubitem)
+        {
+            opis reflisttmp = new opis();
+
+            opis template = new opis();
+            templMaker(template);
+
+            rez.FindTreePartitions(template, rez.PartitionName, reflisttmp);
+        
             for (int i = 0; i < reflisttmp.listCou; i++)
             {
                 opis tmp = reflisttmp[i];
                 for (int j = 0; j < tmp.listCou; j++)
-                {
-                      tmp[j].Vset("_path_", tmp.PartitionName);
+                {                   
+                    if (eachSubitem)
+                        for (int k = 0; k < tmp[j].listCou; k++)
+                            setter(tmp[j][k], tmp.PartitionName);
+
+                    setter(tmp[j], tmp.PartitionName);
                 }
             }
-
-            reflisttmp = new opis();
-            rez.FindTreePartitions("func", rez.PartitionName, reflisttmp);
-            for (int i = 0; i < reflisttmp.listCou; i++)
-            {
-                opis tmp = reflisttmp[i];
-                for (int j = 0; j < tmp.listCou; j++)
-                {
-                    tmp[j].Vset("_path_", tmp.PartitionName);
-                    for (int k = 0; k < tmp[j].listCou; k++)
-                    {
-                        tmp[j][k].Vset("_path_", tmp.PartitionName);
-                    }
-                }
-            }
-
         }
 
 
         #endregion  internl commands that accepted by base class
-     
+
         // answers base
         public bool ReceiveSubscriptionsBase(opis evento, opis sender)
         {
@@ -1624,7 +1681,7 @@ namespace basicClasses
         {
             opis message = new opis();
             message.body = request;
-            message["context"] = context;
+            message["context"] = contex.GetHierarchyStub( context);
 
             SendMessage(receiver, message);
         }
@@ -1632,7 +1689,7 @@ namespace basicClasses
         public void SendRequest(string receiver, string request, opis context, opis message)
         {         
             message.body = request;
-            message["context"] = context;
+            message["context"] = contex.GetHierarchyStub(context); 
 
             SendMessage(receiver, message);
         }
@@ -1656,7 +1713,7 @@ namespace basicClasses
             opis message = msg;
             message.body = request;
             if (!message["context"].isInitlze)
-            message["context"] = o;
+            message["context"] = contex.GetHierarchyStub(o);
 
             SendMessage(receiver, message);
         }
@@ -1724,15 +1781,33 @@ namespace basicClasses
         /// <param name="message">all parameters and specs of message or request</param>
         public void SendMessage(string receiver,  opis message)
         {
+            //TODO: put aspect check before sending this type of msg
+
+            CanHandle(message["context"]);
+
+           var code = spec["aspects"][message.body]["before_Send"];
+
+            code = code.Duplicate();
+            code.PartitionName = spec.PartitionName+ "->aspects->"+message.body+"->before_Send";
+            BuildActionPathByName(code, "_path_");
+
+            ExecActionResponceModelsList(code, message);
+
+            if(!message.isHere("cancel"))
+            SendMessageNoAspect(receiver, message);
+        }
+
+        public void SendMessageNoAspect(string receiver, opis message)
+        {
             message["rec"].body = thisins.W("spec").PartitionName;
-            
+
             AddInstLog("msg", "", message);
 
             message.PartitionKind = "message";
 
             // if one message sending in cycle, there is no need to add each time one more listener
             message.PartitionName = receiver;
-  
+
             message.WaitAction(waiter, true);
             communicator.AddArr(message);
         }
