@@ -1688,7 +1688,7 @@ namespace basicClasses
                         (string.IsNullOrEmpty(templ.PartitionName) ||
                         arr[i].PartitionName == templ.PartitionName) &&
                         (string.IsNullOrEmpty(templ.body)
-                        || templ.body == "???"
+                        || templ.body.StartsWith("???")
                        || arr[i].body == templ.body)
                         )
                     {
@@ -1696,8 +1696,17 @@ namespace basicClasses
                         var r = arr[i].FindByTemplateValue(templ, rez, retdata, false, getdata);
                         match[k] += r;
 
-                        if(getdata && (r > 0 || templ.listCou ==0) && templ.body == "???")
-                            rez.AddArr(arr[i]);
+                        if (getdata && (r > 0 || templ.listCou == 0) && templ.body.StartsWith("???"))
+                        {
+                            if (templ.body != "???")
+                            {
+                                var name = templ.body.Remove(0, 3).Trim();
+                                rez[name].body = arr[i].body;
+                                rez[name].CopyArr(arr[i]);
+                            }
+                            else
+                                rez.AddArr(arr[i]);
+                        }
 
                         if (isTop && strucTmpl.listCou == 1 && r > 0)
                         {

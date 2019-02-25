@@ -6,7 +6,7 @@ using System.Text;
 
 namespace basicClasses.models.sys_ext
 {
-    [info("специфічна поведінка моделей, їм потрібно передавати штучний опис з необхідними даними")]
+    [info("")]
     public class TargetingChecks : ModelBase
     {
 
@@ -59,12 +59,17 @@ namespace basicClasses.models.sys_ext
     {
         public override void Process(opis message)
         {
+            bool pass = (modelSpec.V("ID") == o.V("ID") );           
 
-            bool pass = (modelSpec.V("ID") == o.V("ID") );
+            var ids = modelSpec["ID"].Duplicate();
+            instanse.ExecActionModel(ids, ids);
+
+            for (int i = 0; i < ids.listCou; i++)
+                pass = pass ? pass : ids[i].body == o.V("ID");
+
             if (pass)
                 message["run_on_this_context"].body = "yepp";
         }
-
     }
 
     [appliable("TargetingChecks")]

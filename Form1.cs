@@ -1889,6 +1889,9 @@ namespace basicClasses
                 now = ((opis)treeView3.SelectedNode.Tag);
 
             importexportCtrl.Text = now.serialize();
+
+           // returnHtmlText = Clipboard.GetText(TextDataFormat.Html);
+            Clipboard.SetText(importexportCtrl.Text, TextDataFormat.UnicodeText);           
         }
 
         private void button27_Click(object sender, EventArgs e)
@@ -1896,6 +1899,7 @@ namespace basicClasses
             opis import = new opis();
             import.load(importexportCtrl.Text);
             copiedBranch = import;
+            // returnHtmlText = Clipboard.GetText(TextDataFormat.Html);
         }
 
         private void gotoPathToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2005,6 +2009,14 @@ namespace basicClasses
         
         }
 
+        private void importToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var txt = Clipboard.GetText(TextDataFormat.UnicodeText);
+            opis import = new opis();
+            import.load(txt);
+            copiedBranch = import;
+            
+        }
     }
 
     public class NodeSorter : IComparer

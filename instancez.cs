@@ -85,8 +85,8 @@ namespace basicClasses
     {
         public static List<MsgLogItem> Log;
         public static opis Words;
-        static ModelFactory _mf;
-        public static ModelFactory MF
+         ModelFactory _mf;
+        public  ModelFactory MF
         {
             get
             {
@@ -1508,6 +1508,7 @@ namespace basicClasses
 
             BuildActionPath(rez, "MsgTemplate");
             BuildActionPath(rez, "global_log");
+            BuildActionPath(rez, "local_log");
             BuildActionPath(rez, "func", true);
           
         }
@@ -1780,12 +1781,19 @@ namespace basicClasses
         /// <param name="receiver">type of sys object</param>
         /// <param name="message">all parameters and specs of message or request</param>
         public void SendMessage(string receiver,  opis message)
-        {
-            //TODO: put aspect check before sending this type of msg
-
+        {           
             CanHandle(message["context"]);
+          
+            opis code;
 
-           var code = spec["aspects"][message.body]["before_Send"];
+            if (spec["aspects"]["All"].isHere("before_Send"))
+            {
+                code = spec["aspects"]["All"]["before_Send"];
+                code = code.Duplicate();
+                ExecActionResponceModelsList(code, message);
+            }
+
+            code = spec["aspects"][message.body]["before_Send"];
 
             code = code.Duplicate();
             code.PartitionName = spec.PartitionName+ "->aspects->"+message.body+"->before_Send";

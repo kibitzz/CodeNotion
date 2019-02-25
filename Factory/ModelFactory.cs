@@ -155,10 +155,13 @@ namespace basicClasses.Factory
             models.Add("cleaner", new cleaner());
             models.Add("BuildTermBasicValuesContainer", new BuildTermBasicValuesContainer());
             models.Add("SyntaxTreeMatchIdPatterns", new SyntaxTreeMatchIdPatterns());
-            
 
+
+            models.Add("HtmlParser_HAP", new HtmlParser_HAP());
             models.Add("targetID", new targetID());
             models.Add("seqreader", new seqreader());
+            models.Add("GetEnclosedText", new GetEnclosedText());
+            
             models.Add("universal_line_pareser", new universal_line_pareser());
             
 

@@ -1,4 +1,5 @@
-﻿using basicClasses.models;
+﻿using basicClasses.Factory;
+using basicClasses.models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,8 +22,9 @@ namespace basicClasses
         public static opis baseOpisNotion()
         {
             opis rez = new opis();
-         
-            rez = SysInstance.MF.GetModel("ModelNotion");
+
+            var mf = new ModelFactory();
+            rez = mf.GetModel("ModelNotion");
 
             rez.body = "";
 
