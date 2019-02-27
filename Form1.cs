@@ -956,7 +956,7 @@ namespace basicClasses
             if (HighlightedOpis != null && !listBox2.Visible)
             {
                 TreeViewOpis = HighlightedOpis;
-                TreePoiterBuilder tpb = new TreePoiterBuilder();
+                OntologyTreeBuilder tpb = new OntologyTreeBuilder();
                 tpb.context = Parser.ContextGlobal["words"];
                 opis o = new opis("context");
 
@@ -1001,7 +1001,7 @@ namespace basicClasses
             if (HighlightedOpis != null || sentenceParts != null)
             {
                 TreeViewOpis = HighlightedOpis;
-                TreePoiterBuilder tpb = new TreePoiterBuilder();
+                OntologyTreeBuilder tpb = new OntologyTreeBuilder();
                 tpb.context = Parser.ContextGlobal["words"];
 
 
@@ -1047,7 +1047,7 @@ namespace basicClasses
             }
 
             currContext["globalcomm"] = new opis();
-            TreePoiterBuilder tpb = new TreePoiterBuilder();
+            OntologyTreeBuilder tpb = new OntologyTreeBuilder();
             tpb.context = Parser.ContextGlobal["words"];           
 
             tpb.initInstances(currContext);

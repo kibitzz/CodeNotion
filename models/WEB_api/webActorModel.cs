@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Text;
 using twite;
 
@@ -54,6 +55,7 @@ namespace basicClasses.models.WEB_api
         [info("")]
         [model("spec_tag")]
         public static readonly string allowAutoRedrect = "allowAutoRedrect";
+      
 
         [info("body contain url ")]
         [model("")]
@@ -94,7 +96,7 @@ namespace basicClasses.models.WEB_api
 
             opis ex = modelSpec.Duplicate();
             instanse.ExecActionModelsList(ex);
-
+         
             opis headerz = ex[Headers];
 
             for (int i = 0; i < headerz.listCou; i++)
@@ -119,10 +121,20 @@ namespace basicClasses.models.WEB_api
 
             //if (ex[ProxySettings].isInitlze)// PROXY
                 hc.proxySettings = ex[ProxySettings].W();
-            
 
+            opis t = new opis();
+            t["request"] = ex;
 
-             if (ex.isHere(POST))
+            if ((ex.isHere(POST) && string.IsNullOrEmpty(ex.V(POST)))
+                || (ex.isHere(GET) && string.IsNullOrEmpty(ex.V(GET))))
+            {
+                t[webResponceModel.Status].body = "fail";
+                t.Vset("Error", "you pass empty url");
+                SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
+                return;
+            }
+
+            if (ex.isHere(POST))
              rez = hc.Post(ex.V(POST), data);        
 
             if (ex.isHere(GET))
@@ -134,7 +146,7 @@ namespace basicClasses.models.WEB_api
                 rez = hc.DownloadData(ex.V(DownloadResource), ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename));
             }
 
-            opis t = new opis();
+           
             t[webResponceModel.Status].body = rez.ToString();
 
             if(!string.IsNullOrEmpty(hc.RedirectLocation))
@@ -184,12 +196,13 @@ namespace basicClasses.models.WEB_api
                     t[webResponceModel.responseDataParsed] = trtrt;
                 }
             }
-
-            t["request"]= ex;
+            
 
             SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
 
         }
 
+
+       
     }
 }

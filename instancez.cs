@@ -1510,7 +1510,8 @@ namespace basicClasses
             BuildActionPath(rez, "global_log");
             BuildActionPath(rez, "local_log");
             BuildActionPath(rez, "func", true);
-          
+            BuildActionPath(rez, "code_point");
+
         }
 
         void BuildActionPath(opis rez, string modelName, bool eachSubitem = false)

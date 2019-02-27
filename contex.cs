@@ -9,13 +9,17 @@ using System.Windows.Forms;
 namespace basicClasses
 {
 
-    public class TreePoiterBuilder
+    public class OntologyTreeBuilder
     {
         [ignore]
         public static readonly string itemContextID = "itemContextID";
 
         public opis contextToIgnite;
         public opis contextParameterizeMessages;
+        /// <summary>
+        /// put here methods you want to exec, and get the result in p element 
+        /// </summary>
+        public opis messagesToSend;
 
         contex CTX;
         /// <summary>
@@ -23,7 +27,7 @@ namespace basicClasses
         /// </summary>
         public opis context;
 
-        public TreePoiterBuilder()
+        public OntologyTreeBuilder()
         {
             CTX = new contex();
         }
@@ -174,12 +178,8 @@ namespace basicClasses
                 {
                     continue;
                 }
-
-                if (!string.IsNullOrEmpty(p.V(ModelNotion.root)))
-                {
-                    p.Vset(ModelNotion.InitFuncObj, ModelNotion.root);
-                }
-                p.InitFuncObj();
+               
+                p.InitFuncObj2();
                 o["sys_instances"].AddArr(p);                
                 p.Process("bind", o);            
             }
@@ -198,6 +198,12 @@ namespace basicClasses
                 }
 
             contextToIgnite["globalcomm"]["all"] = new opis("message", "body start");
+
+            if (messagesToSend != null)
+                for (int i = 0; i < messagesToSend.listCou; i++)
+                {
+                    contextToIgnite["globalcomm"].AddArr(messagesToSend[i]);
+                }
 
             contextToIgnite["globalcomm"]["контекстречення"] = new opis("message", "body NotifyFinished");
         }
@@ -535,9 +541,9 @@ namespace basicClasses
         {
             opis rez = new opis();
 
-            if (item[TreePoiterBuilder.itemContextID].isInitlze)
+            if (item[OntologyTreeBuilder.itemContextID].isInitlze)
             {
-                string id = item.V(TreePoiterBuilder.itemContextID);
+                string id = item.V(OntologyTreeBuilder.itemContextID);
 
                 for (int i = 0; i < o["subcon"].listCou; i++)
                 {

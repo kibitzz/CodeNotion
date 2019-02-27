@@ -158,6 +158,10 @@ namespace basicClasses.Factory
 
 
             models.Add("HtmlParser_HAP", new HtmlParser_HAP());
+            models.Add("UseSecurityProtocol", new UseSecurityProtocol());
+            models.Add("code_point", new code_point());
+            
+
             models.Add("targetID", new targetID());
             models.Add("seqreader", new seqreader());
             models.Add("GetEnclosedText", new GetEnclosedText());

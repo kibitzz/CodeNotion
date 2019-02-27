@@ -141,6 +141,9 @@ namespace basicClasses
 
             set
             {
+                if (value == null)
+                    return;
+
                 int idx = -1;
                 value.PartitionName = index;
 
@@ -794,13 +797,22 @@ namespace basicClasses
             }
         }
 
+        public void InitFuncObj2()
+        {
+            if (!string.IsNullOrEmpty(PartitionName_))
+            {
+                root r = new root();
+                r.nameSpec = PartitionName_;
+                FuncObj = r;               
+            }
+        }
+
         public void PrepareFuncObj()
         {
-            if (FuncObj == null)
-            {
-                InitFuncObj();
-                //FuncObj = OF.GetInstance(PartitionKind);
-            }
+            //if (FuncObj == null)
+            //{
+            //    InitFuncObj();                
+            //}
         }
 
         #region Action registering and set handlers
@@ -968,8 +980,7 @@ namespace basicClasses
             {
                 return new opis("process_accompl_status", "status no functional object assigned");
             }
-
-            PrepareFuncObj();
+           
             IOpisFunctionalInstance i = (IOpisFunctionalInstance)FuncObj;
 
             return i.Process(internl, environment);

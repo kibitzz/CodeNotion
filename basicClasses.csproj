@@ -143,6 +143,7 @@
     <Compile Include="models\sys_ext\AnswerToMessage.cs" />
     <Compile Include="models\sys_ext\Breaker.cs" />
     <Compile Include="models\sys_ext\cleaner.cs" />
+    <Compile Include="models\sys_ext\code_point.cs" />
     <Compile Include="models\sys_ext\EditingPart.cs" />
     <Compile Include="models\sys_ext\GenerateID.cs" />
     <Compile Include="models\sys_ext\getInstContexts.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="models\WEB_api\sqlBuilderClasses.cs" />
     <Compile Include="models\WEB_api\TemplatesMan.cs" />
     <Compile Include="models\WEB_api\upLoadFileSpecs.cs" />
+    <Compile Include="models\WEB_api\UseSecurityProtocol.cs" />
     <Compile Include="models\WEB_api\webActorModel.cs" />
     <Compile Include="Parser\klass.cs" />
     <Compile Include="models\Messaging.cs" />

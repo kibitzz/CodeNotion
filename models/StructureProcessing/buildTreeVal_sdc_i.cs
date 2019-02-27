@@ -149,6 +149,20 @@ namespace basicClasses.models.StructureProcessing
                 bp.body = "";
             }
 
+            if (bp.body.StartsWith("+"))
+            {
+                donotrecurce = true;
+
+                if (bp.body.Length > 1)
+                    bp.AddArrRange(sharedVal[bp.body.Replace("+", "")].W());
+                else
+                    bp.AddArrRange(sharedVal);
+
+                //if(string.IsNullOrEmpty(bp.PartitionKind) && bp.listCou >0)
+                bp.body = "";
+            }
+
+
             if (bp.body.StartsWith("@"))
             {
                 donotrecurce = true;
@@ -164,8 +178,8 @@ namespace basicClasses.models.StructureProcessing
                 bp.body = "random body "+ rnd.Next().ToString() + rnd.Next().ToString(); ;
             }
 
-                // # in PartitionName means that whole tree must be assigned
-                if (bp.PartitionName.StartsWith("#"))
+            // # in PartitionName means that whole tree must be assigned
+            if (bp.PartitionName.StartsWith("#"))
             {
                 donotrecurce = true;
 
