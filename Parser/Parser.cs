@@ -240,18 +240,24 @@ namespace basicClasses
 
             int read;
 
-            using (FileStream fs = File.OpenRead(fname))
+            try
             {
-                using (var ByteStream = new MemoryStream())
+                using (FileStream fs = File.OpenRead(fname))
                 {
-                    while ((read = fs.Read(rez, 0, rez.Length)) > 0)
+                    using (var ByteStream = new MemoryStream())
                     {
-                        ByteStream.Write(rez, 0, read);
-                        ByteStream.Flush(); //seems to have no effect
-                    }
+                        while ((read = fs.Read(rez, 0, rez.Length)) > 0)
+                        {
+                            ByteStream.Write(rez, 0, read);
+                            ByteStream.Flush(); //seems to have no effect
+                        }
 
-                    rez = ByteStream.ToArray();
+                        rez = ByteStream.ToArray();
+                    }
                 }
+            } catch
+            {
+                rez = new byte[0];
             }
 
 

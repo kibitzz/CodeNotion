@@ -145,7 +145,6 @@ namespace basicClasses.models.StructureProcessing
                 else
                     bp.CopyArr(sharedVal);
 
-                //if(string.IsNullOrEmpty(bp.PartitionKind) && bp.listCou >0)
                 bp.body = "";
             }
 
@@ -158,7 +157,6 @@ namespace basicClasses.models.StructureProcessing
                 else
                     bp.AddArrRange(sharedVal);
 
-                //if(string.IsNullOrEmpty(bp.PartitionKind) && bp.listCou >0)
                 bp.body = "";
             }
 

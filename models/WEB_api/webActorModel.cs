@@ -146,7 +146,14 @@ namespace basicClasses.models.WEB_api
                 rez = hc.DownloadData(ex.V(DownloadResource), ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename));
             }
 
-           
+            if (ex.isHere(UP_loadResource))
+            {
+                t[webResponceModel.Status].body = hc.UploadData(ex.V(UP_loadResource), ex[UP_loadResource].V(upLoadFileSpecs.CompiledFilename));
+                SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
+                return;
+            }
+
+
             t[webResponceModel.Status].body = rez.ToString();
 
             if(!string.IsNullOrEmpty(hc.RedirectLocation))

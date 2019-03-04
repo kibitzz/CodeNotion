@@ -361,6 +361,32 @@ namespace basicClasses.models.WEB_api
             return rez;
         }
 
+        public string UploadData(string StringWebResource, string fileName)
+        {
+            string rez = "ok";
+            if (string.IsNullOrEmpty(StringWebResource))
+                return "file empty";
+
+            WebClient myWebClient = new WebClient();
+            //myWebClient.UploadData
+
+            if (File.Exists(fileName))
+            {
+
+                try
+                {
+                    myWebClient.UploadData(StringWebResource.Trim('"'), DataFileUtils.LoadFile(fileName));
+                }
+                catch (WebException e)
+                {
+                    rez = e.Message ;
+                }
+            }
+
+            return rez;
+        }
+
+
         // multipart/form-data
         public bool UploadFilesToRemoteUrl(string url, string refer, string[] files, NameValueCollection nvc, NameValueCollection nvcFinal)
         {

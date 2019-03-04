@@ -22,9 +22,26 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string fin = "fin";
 
+        [info("alternative fin.  if end element <fin> not found - search for alternative")]
+        [model("")]
+        public static readonly string alt_fin = "alt_fin";
+
+        [info("alternative fin.  if end element <alt_fin> not found - search for alternative")]
+        [model("")]
+        public static readonly string alt_fin2 = "alt_fin2";
+
         [info("if missing - use previous value")]
         [model("")]
         public static readonly string pos = "pos";
+
+        [model("spec_tag")]
+        [info(" roll back position by enclosed string length")]
+        public static readonly string fin_as_separator = "fin_as_separator";
+
+        [info("if result is not empty - run some code")]
+        [model("Action")]
+        public static readonly string if_not_empty = "if_not_empty";
+
 
         string csource;
         int cpos;
@@ -42,8 +59,32 @@ namespace basicClasses.models.String_proc
 
             var rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(fin), ref cpos);
 
+            var enclfound = spec.V(fin);
+
+            if (string.IsNullOrEmpty(rez) && spec.isHere(alt_fin))
+            {
+                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin), ref cpos);
+                enclfound = spec.V(alt_fin);
+            }
+
+            if (string.IsNullOrEmpty(rez) && spec.isHere(alt_fin2))
+            {
+                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin2), ref cpos);
+                enclfound = spec.V(alt_fin2);
+            }
+
+            if (!string.IsNullOrWhiteSpace(rez))
+            {
+                if (spec.isHere(fin_as_separator))
+                    cpos -= enclfound.Length;
+
+                if (spec.isHere(if_not_empty))
+                    instanse.ExecActionModelsList(spec[if_not_empty]);
+            }
+
             message.body = rez;
-            message.CopyArr(new opis());          
+            message.PartitionKind = "";
+            message.CopyArr(new opis());
         }
 
         public static string GetEnclosed(string srs, string st, string fin, ref int pos)
@@ -65,4 +106,5 @@ namespace basicClasses.models.String_proc
             }
         }
     }
+
 }

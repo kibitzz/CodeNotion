@@ -218,12 +218,12 @@ namespace basicClasses
 
             if (rez == -1 )
             {
-                part = part.ToLower();
+              //  part = part.ToLower();
                 for (int i = 0; i < arr.Length; i++)
                 {                   
                     if (arr[i] != null &&
-                        arr[i].PartitionName != null &&                        
-                     arr[i].PartitionName_Lower == part)
+                        (arr[i].PartitionName == part ||                        
+                     arr[i].PartitionName_Lower == part))
                     {                        
                         rez = i;
                         break;
