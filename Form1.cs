@@ -61,6 +61,10 @@ namespace basicClasses
             this.Text = "repl";
             doSplitterMove = Screen.PrimaryScreen.Bounds.Width < 1400;
 
+            tabControl2.Appearance = TabAppearance.FlatButtons;
+            tabControl2.ItemSize = new Size(0, 1);
+            tabControl2.SizeMode = TabSizeMode.Fixed;
+
             prevSplitPos = splitContainer1.SplitterDistance - 30;
 
             this.Width = Screen.PrimaryScreen.Bounds.Width + 7;
