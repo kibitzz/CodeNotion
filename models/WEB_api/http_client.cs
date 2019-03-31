@@ -542,7 +542,16 @@ namespace basicClasses.models.WEB_api
             RedirectLocation = "";
            responseData = "";
             State = 0;
-            urlUri = new Uri(_URL);
+
+            try
+            {
+                urlUri = new Uri(_URL);
+            }
+            catch
+            {
+                responseData = "url not valid  " + _URL;
+                return false;
+            }
            
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(urlUri);
             myHttpWebRequest.Method = metod;

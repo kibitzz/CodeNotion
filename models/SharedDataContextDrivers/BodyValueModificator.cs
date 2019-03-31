@@ -31,6 +31,10 @@ namespace basicClasses.models.SharedDataContextDrivers
         [info("do not run any models from [value]  ")]
         public static readonly string do_not_exec_value = "do_not_exec_value";
 
+        [model("spec_tag")]
+        [info("clear value partition kind and all its subitems ")]
+        public static readonly string clear_func = "clear_func";
+
         public override void Process(opis message)
         {
             opis locOpis = modelSpec;
@@ -80,7 +84,14 @@ namespace basicClasses.models.SharedDataContextDrivers
                     if (ttt.PartitionKind == "wrapper" && !modelSpec[do_not_value_Unwrap].isInitlze)
                         ttt = ttt.W();
 
-                 
+                    if (modelSpec.isHere(clear_func))
+                    {
+                        ttt.PartitionKind = "";
+                        for (int i = 0; i < ttt.listCou; i++)
+                            ttt[i].PartitionKind = "";
+                    }
+
+
                     if (modelSpec[partition].isInitlze || modelSpec[partition].PartitionKind != "template")
                     {
                         opis ptt = modelSpec[partition].Duplicate();

@@ -24,6 +24,10 @@ namespace basicClasses.models.WEB_api
         [info("")]
         public static readonly string use_container_names = "use_container_names";
 
+        [model("spec_tag")]
+        [info(" do not  Replace(\" / \", \" % 2F\");")]
+        public static readonly string no_slash_conversion = "no_slash_conversion";
+
         public override void Process(opis message)
         {
             opis rl = modelSpec[ReplaceList].Duplicate();
@@ -47,6 +51,7 @@ namespace basicClasses.models.WEB_api
                     string replacement = t[i].body;
 
                     replacement = replacement.Trim(new char[] { '"' });
+                    if(!modelSpec.isHere(no_slash_conversion))
                     replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
                     replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
 
@@ -61,7 +66,8 @@ namespace basicClasses.models.WEB_api
                 {
                     string replacement = t.V(string.IsNullOrEmpty(rl[i].body) ? rl[i].PartitionName.Trim(new char[] { '#' }) : rl[i].body);
                     replacement = replacement.Trim(new char[] { '"' });
-                    replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
+                    if (!modelSpec.isHere(no_slash_conversion))
+                        replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
                     replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
                     //logopis.Vset(i.ToString(), replacement);
                     //logopis.Vset("utf "+i.ToString(), TemplatesMan.Kirill_to_UTF(replacement));
