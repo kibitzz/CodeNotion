@@ -451,14 +451,14 @@ namespace basicClasses
             getPartition(index).body +=","+ data;
         }
 
-        public void CopyArr(opis elem)
+        public void CopyArr(opis elem, bool turnOffUniqControl = false)
         {
             //arr = elem.arr;
             //paramCou = elem.paramCou;
 
             arr = new opis[0];
             paramCou = 0;
-            AddArrRange(elem);           
+            AddArrRange(elem, turnOffUniqControl);           
         }
        
         public void CopyParams(opis elem)
@@ -542,7 +542,7 @@ namespace basicClasses
             }
         }
 
-        public void AddArrRange(opis elem)
+        public void AddArrRange(opis elem, bool turnOffUniqControl = false)
         {
             //if (raiseEvents) ActionDone(new opis("подія", "вид додано масив", "імя " + elem.PartitionName,
             //    "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + paramCou.ToString()));
@@ -552,7 +552,7 @@ namespace basicClasses
 
             for (int i = 0; i < elem.listCou; i++)
             {
-                if (!FindArr(elem[i]))
+                if (turnOffUniqControl || !FindArr(elem[i]))
                 {
                     arr[paramCou] = elem[i];
                     paramCou++;
@@ -584,6 +584,12 @@ namespace basicClasses
             }
 
             int rez = paramCou;
+
+            //if (FindArr(elem))
+            //{
+            //    rez = paramCou;
+            //}
+
             arr[paramCou] = elem;
             paramCou++;
 
@@ -1674,6 +1680,18 @@ namespace basicClasses
             return rez;
         }
 
+        void AddTemplData(opis templ, opis data,  opis rez)
+        {
+            if (templ.body != "???")
+            {
+                var name = templ.body.Remove(0, 3).Trim();
+                rez[name].body = data.body;
+                rez[name].CopyArr(data);
+            }
+            else
+                rez.AddArr(data);
+        }
+
         public int FindByTemplateValue(opis strucTmpl, opis rez, bool retdata, bool isTop, bool getdata = false)
         {
            
@@ -1708,15 +1726,8 @@ namespace basicClasses
                         match[k] += r;
 
                         if (getdata && (r > 0 || templ.listCou == 0) && templ.body.StartsWith("???"))
-                        {
-                            if (templ.body != "???")
-                            {
-                                var name = templ.body.Remove(0, 3).Trim();
-                                rez[name].body = arr[i].body;
-                                rez[name].CopyArr(arr[i]);
-                            }
-                            else
-                                rez.AddArr(arr[i]);
+                        {                          
+                            AddTemplData(templ, arr[i], rez);
                         }
 
                         if (isTop && strucTmpl.listCou == 1 && r > 0)
@@ -1726,12 +1737,15 @@ namespace basicClasses
                             else
                             {
                                 UnlockThisForDuplication();
-                                FindByTemplateValue(strucTmpl, rez, retdata, false, true);
+
+                                if(templ.body.StartsWith("???"))
+                                    AddTemplData(templ, arr[i], rez);
+
+                                arr[i].FindByTemplateValue(templ, rez, retdata, false, true);
+
                                 lockThisForDuplication();
                             }
-
                         }
-
                     }
                 }
             }
@@ -1754,7 +1768,7 @@ namespace basicClasses
                 }
 
                 for (int i = 0; i < paramCou; i++)
-                    arr[i].FindByTemplateValue(strucTmpl, rez, retdata, true, getdata);
+                    arr[i].FindByTemplateValue(strucTmpl, rez, retdata, true);
             }
 
             UnlockThisForDuplication();

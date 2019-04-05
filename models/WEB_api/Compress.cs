@@ -241,14 +241,23 @@ namespace basicClasses.models.WEB_api
         {
 
             var bytes = Convert.FromBase64String(s);
-            using (var msi = new MemoryStream(bytes))
-            using (var mso = new MemoryStream())
+
+            try
             {
-                using (var gs = new DeflateStream(msi, CompressionMode.Decompress))
+
+                using (var msi = new MemoryStream(bytes))
+                using (var mso = new MemoryStream())
                 {
-                    gs.CopyTo(mso);
+                    using (var gs = new DeflateStream(msi, CompressionMode.Decompress))
+                    {
+                        gs.CopyTo(mso);
+                    }
+                    return Encoding.UTF8.GetString(mso.ToArray());
                 }
-                return Encoding.UTF8.GetString(mso.ToArray());
+            }
+            catch
+            {
+                return "";
             }
            
         }

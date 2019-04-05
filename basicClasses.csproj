@@ -129,9 +129,11 @@
     <Compile Include="models\SharedDataContextDrivers\NotifySharedContextSubscr.cs" />
     <Compile Include="models\SharedDataContextDrivers\SubContextHandler.cs" />
     <Compile Include="models\SharedDataContextDrivers\SysInstance_contextsArray.cs" />
+    <Compile Include="models\String proc\DateTimeComp.cs" />
     <Compile Include="models\String proc\GetEnclosedText.cs" />
     <Compile Include="models\String proc\seqreader.cs" />
     <Compile Include="models\StructureProcessing\buildTreeVal_sdc_i.cs" />
+    <Compile Include="models\StructureProcessing\ClearStruct.cs" />
     <Compile Include="models\StructureProcessing\Destructure.cs" />
     <Compile Include="models\StructureProcessing\ForEach.cs" />
     <Compile Include="models\StructureProcessing\join.cs" />

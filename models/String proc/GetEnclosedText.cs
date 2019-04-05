@@ -82,7 +82,7 @@ namespace basicClasses.models.String_proc
                     instanse.ExecActionModelsList(spec[if_not_empty]);
             }
 
-            message.body = rez;
+            message.body = rez.Trim();
             message.PartitionKind = "";
             message.CopyArr(new opis());
         }
@@ -91,6 +91,9 @@ namespace basicClasses.models.String_proc
         {
             if (string.IsNullOrEmpty(srs))
                 return "";
+
+            st = st == "_" ? " " : st;
+            fin = fin == "_" ? " " : fin;
 
             var stp = srs.IndexOf(st, pos);
             stp = stp >= 0 ? stp + st.Length : srs.Length;

@@ -255,7 +255,7 @@ namespace basicClasses
                         rez = ByteStream.ToArray();
                     }
                 }
-            } catch
+            } catch(Exception e)
             {
                 rez = new byte[0];
             }
@@ -314,6 +314,8 @@ namespace basicClasses
 
             string rez = "";
 
+            StringBuilder sb = new StringBuilder();
+
             try
             {
 
@@ -327,7 +329,8 @@ namespace basicClasses
                         line = line.Trim();
                         if (line == "") { continue; }
 
-                        rez += line + " ";
+                        sb.Append(line);
+                       // rez += line + " ";
                     }
                 }
              
@@ -337,7 +340,7 @@ namespace basicClasses
 
             }
 
-            return rez;
+            return sb.ToString();
         }
 
 

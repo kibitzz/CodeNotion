@@ -35,10 +35,10 @@ namespace basicClasses.models.StructureProcessing
 
             ms[source].FindByTemplateValue(ms[template], rez, retdata, true);
 
-            message.CopyArr(rez);
+            message.CopyArr(rez, true);
             if (!ms.isHere(all) && rez.listCou > 0)
             {
-                message.CopyArr(rez[0]);
+                message.CopyArr(rez[0], true);
                 message.body = rez[0].body;
             }
 

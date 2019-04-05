@@ -41,8 +41,14 @@ namespace basicClasses.models.WEB_api
             foreach (var a in node.Attributes)
                 rn["Attributes"].Vset(a.Name, a.Value);
 
-            rn["Attributes"].Vset("InnerHtml", node.InnerHtml);
-            rn["Attributes"].Vset("InnerText", node.InnerText);            
+            var htmobj = rn["Attributes"]["InnerHtml"];
+            var html = node.InnerHtml;
+            if (html.Length < 500)
+                htmobj.body = html.Trim()
+                                                .Replace('\n', ' ')
+                                                .Replace('\t', ' ');
+                                                
+            rn["Attributes"].Vset("InnerText", node.InnerText.Trim()    );            
 
             foreach (var n in node.ChildNodes)
             {
