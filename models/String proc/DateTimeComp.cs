@@ -47,10 +47,23 @@ namespace basicClasses.models.String_proc
             opis mspec = modelSpec.Duplicate();
             instanse.ExecActionModelsList(mspec);
 
+            try
+            {
+                var r = new DateTime(DateTime.Now.Year, mspec[month].intVal, mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
 
+                if (mspec.isHere(set_curr))
+                    curr = r;
 
-            message.body = mspec[format].isInitlze ? curr.Ticks.ToString(mspec.V(format)) : curr.Ticks.ToString();
+                message.body = mspec[format].isInitlze ? r.ToString(mspec.V(format)) : r.Ticks.ToString();
+
+                message.CopyArr(new opis());
+            }
+            catch
+            {
+            }
+
         }
 
     }
+
 }

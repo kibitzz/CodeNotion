@@ -563,9 +563,10 @@ namespace basicClasses
 
             thisins.WrapByName(rez, "spec");
             rez["spec_name"].body = rez.PartitionName;
-            thisins.WrapByName(waiter, "waiter");           
+            thisins.WrapByName(waiter, "waiter");
 
             // optimize - at start set enough size for this big and very active array
+            thisins["sharedVariablesContext"].InitNameIndexHash(); //TODO: check for bugs caused by this optimization
             thisins["sharedVariablesContext"].ArrResize(400);
        
             thisins["packages"].ArrResize(400);
@@ -1131,7 +1132,9 @@ namespace basicClasses
                 opis ms = SVC["modelSpec"];
                 rezb = true;
                 opis mod = inSvc ? SVC[req.PartitionKind] : thisins["packages"][poz];
+
                 mod = poz >=0 ? thisins["packages"][poz] : mod;
+
                 opis modelSpec = new opis();
                 bool modelIsProducer = (mod.body != null && mod.body.Contains("@"));
                 

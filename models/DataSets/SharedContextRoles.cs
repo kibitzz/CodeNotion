@@ -24,35 +24,14 @@ namespace basicClasses.models.DataSets
 
         public static opis GetRole(string role, opis context)
         {
-            opis rez = new opis("null");
-
-            string s= context[roles].V(role);
-            if (!string.IsNullOrEmpty(s))
-                rez= context[s];
-
-            if (rez.PartitionKind == "wrapper")
-                rez = context.W(s);
-
-            return rez;
+         
+            return context[role].W();
         }
 
         public static bool addRole(opis item, opis context)
         {
             bool rez = false;
-
-            for (int i = 0; i < item.listCou; i++)
-            {
-                if (item[i].PartitionKind == "contextRole")
-                {
-                    opis l = item[i][contextRole.list];
-                    for (int k = 0; k < l.listCou; k++)
-                    {
-                        rez = true;
-                        context[roles].Vset(l[k].PartitionName, item.PartitionName);
-                    }                    
-                }
-
-            }
+        
 
             return rez;
         }
@@ -62,8 +41,7 @@ namespace basicClasses.models.DataSets
             if (!string.IsNullOrEmpty(roleName))
             {
                 context[roleName] = new opis(); // clean previous item wrapper            
-                context.WrapByName(item, roleName);
-                context[roles].Vset(roleName, roleName);
+                context.WrapByName(item, roleName);                
             }
         }
 

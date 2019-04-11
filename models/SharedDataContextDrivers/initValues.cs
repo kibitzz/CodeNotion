@@ -6,7 +6,7 @@ using System.Text;
 namespace basicClasses.models.SharedDataContextDrivers
 {
     [info("один раз виконується для даного інстанса (instanse.ExecActionModelsList(message)), заповняє та додає набір даних(усі поля даного опису), переважно це будуть fill моделі або константи. спочатку виконуються моделі ініціалізації контекстного обєкта до заповнення(реєстрація ролі, очистка якихось параметрів)    message НЕ змінює взвагалі")]
-    [appliable("Action creation Builders")]
+    [appliable("Action creation Builders func")]
    public class initValues:ModelBase
     {
 
@@ -20,7 +20,7 @@ namespace basicClasses.models.SharedDataContextDrivers
         public static readonly string put_as_package = "put_as_package";
 
         [model("Action")]
-        [info("заготовка для опису функції")]
+        [info("new function stub")]
         public static readonly string fun = "fun";
 
         public override void Process(opis message)

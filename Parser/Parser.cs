@@ -151,7 +151,7 @@ namespace basicClasses
                 price = "";
             }
 
-            price = price.Replace(" ", "").Replace("\"","");
+            price = price.Replace(" ", "").Replace("\"","").TrimStart('0');
 
             if (EnumCharOccurrence(price, digits) >= (price.Length - 1))
             {

@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
+using basicClasses.models.sys_ext;
 
 namespace basicClasses
 {
@@ -14,6 +15,9 @@ namespace basicClasses
     {
         public static bool do_not_build_debug;
         public static opis listOfVisualisedCircularRefs;
+        public const int InitialArrSize =7;
+        public const int AccommSize =3;
+
         public bool raiseEvents;
         public TreeNode treeElem;
 
@@ -124,7 +128,8 @@ namespace basicClasses
         public object bodyObject; 
         public object FuncObj;
 
-     //   Dictionary<string, int> itemsNamesHash;
+        public bool UseNameIndexHash;
+        Dictionary<string, int> NamesIndexHash;
 
         #endregion
 
@@ -161,9 +166,13 @@ namespace basicClasses
                 {                               
                     if (arr.Length <= paramCou)
                     {
-                        Array.Resize(ref arr, paramCou + 3);
+                        Array.Resize(ref arr, paramCou + AccommSize);
                     }
                     arr[paramCou] = value;
+
+                    if (UseNameIndexHash)
+                        NamesIndexHash.Add(index, paramCou);                
+
                     paramCou++;
 
                     if (raiseEvents)
@@ -199,9 +208,13 @@ namespace basicClasses
 
                 if (arr.Length <= paramCou)
                 {
-                    Array.Resize(ref arr, paramCou + 3);
+                    Array.Resize(ref arr, paramCou + AccommSize);
                 }
                 arr[paramCou] = rez;
+
+                if (UseNameIndexHash)
+                    NamesIndexHash.Add(part, paramCou);
+
                 paramCou++;
                 //throw new ArgumentOutOfRangeException(PartitionName +" не знайдено сегмент опису " + part);
             }
@@ -214,22 +227,23 @@ namespace basicClasses
             if (part == null)
                 return -1;
 
-            int rez = -1;          
+            int rez = -1;
 
-            if (rez == -1 )
-            {
-              //  part = part.ToLower();
+            if (UseNameIndexHash)
+
+                rez = NamesIndexHash.TryGetValue(part, out rez)? rez : -1;
+            
+            else
                 for (int i = 0; i < arr.Length; i++)
-                {                   
+                {
                     if (arr[i] != null &&
-                        (arr[i].PartitionName == part ||                        
+                        (arr[i].PartitionName == part ||
                      arr[i].PartitionName_Lower == part))
-                    {                        
+                    {
                         rez = i;
                         break;
                     }
-                }
-            }
+                }           
 
             return rez;
         }
@@ -285,38 +299,9 @@ namespace basicClasses
         void init()
         {
             body = "";
-            paramCou = 0;
-            int len = 7;
-
-            if (!string.IsNullOrEmpty(PartitionKind))
-            {
-                switch (PartitionKind)
-                {
-                    case "list":
-                        len = 20;
-                        break;
-                    case "object":
-                        len = 0;
-                        break;
-                    case "value":
-                        len = 0;
-                        break;
-
-
-                    case "medium":
-                        break;
-                   
-                    case "large":
-                       
-                        //goto case "1";
-                    default:
-                        len =3;
-                        break;
-                }
-
-            }
-
-            arr = new opis[len];
+            paramCou = 0;           
+           
+            arr = new opis[InitialArrSize];
         }
 
         public opis()
@@ -361,16 +346,7 @@ namespace basicClasses
             raiseEvents = prev;
         }
 
-       
-        /// <summary>
-        /// <para>list  object  value  knovledge</para>
-        /// якими прийомами обробляти даний опис 
-        /// <para>list -список, в циклі по значенню listCou </para>
-        /// <para>object - використовувати bodyObject </para>
-        /// <para>value - використовувати body як значення детального опису (вага, довж...) </para>
-        /// <para>knovledge - використовувати body в понятійному механізмі, розбір лексем</para> 
-        /// </summary>
-        /// <param name="PartKind">list  object  value  knovledge</param>
+             
         public opis(string PartKind)
         {
             bool prev = raiseEvents;
@@ -451,7 +427,13 @@ namespace basicClasses
             getPartition(index).body +=","+ data;
         }
 
-        public void CopyArr(opis elem, bool turnOffUniqControl = false)
+        public void InitNameIndexHash()
+        {
+            UseNameIndexHash = true;
+            NamesIndexHash = new Dictionary<string, int>(700);
+        }
+
+        public void CopyArr(opis elem, bool turnOffUniqControl = true)
         {
             //arr = elem.arr;
             //paramCou = elem.paramCou;
@@ -542,13 +524,13 @@ namespace basicClasses
             }
         }
 
-        public void AddArrRange(opis elem, bool turnOffUniqControl = false)
+        public void AddArrRange(opis elem, bool turnOffUniqControl = true)
         {
             //if (raiseEvents) ActionDone(new opis("подія", "вид додано масив", "імя " + elem.PartitionName,
             //    "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + paramCou.ToString()));
             //PartitionKind_ = (string.IsNullOrEmpty(PartitionKind_) ? "" : PartitionKind_);
             
-            Array.Resize(ref arr, paramCou + elem.listCou+ 3);
+            Array.Resize(ref arr, paramCou + elem.listCou+ AccommSize);
 
             for (int i = 0; i < elem.listCou; i++)
             {
@@ -563,7 +545,7 @@ namespace basicClasses
 
         public void AddArrMissing(opis elem)
         {           
-            Array.Resize(ref arr, paramCou + elem.listCou + 3);
+            Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
 
             for (int i = 0; i < elem.listCou; i++)
             {
@@ -580,7 +562,7 @@ namespace basicClasses
             PartitionKind_ = (string.IsNullOrEmpty(PartitionKind_) ? "" : PartitionKind_);
             if (arr.Length <= paramCou)
             {
-                Array.Resize(ref arr, paramCou + 3);
+                Array.Resize(ref arr, paramCou + AccommSize);
             }
 
             int rez = paramCou;
@@ -589,6 +571,14 @@ namespace basicClasses
             //{
             //    rez = paramCou;
             //}
+
+            if (UseNameIndexHash)
+            {
+                 if (!NamesIndexHash.ContainsKey(elem.PartitionName))
+                    NamesIndexHash.Add(elem.PartitionName, paramCou);
+                else
+                    global_log.log?.AddArr(new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name " });
+            }
 
             arr[paramCou] = elem;
             paramCou++;
@@ -1686,7 +1676,7 @@ namespace basicClasses
             {
                 var name = templ.body.Remove(0, 3).Trim();
                 rez[name].body = data.body;
-                rez[name].CopyArr(data);
+                rez[name].CopyArr(data, true);
             }
             else
                 rez.AddArr(data);

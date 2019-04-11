@@ -156,6 +156,7 @@ namespace basicClasses.Factory
             models.Add("BuildTermBasicValuesContainer", new BuildTermBasicValuesContainer());
             models.Add("SyntaxTreeMatchIdPatterns", new SyntaxTreeMatchIdPatterns());
             models.Add("ClearStruct", new ClearStruct());
+            models.Add("DateTimeComp", new DateTimeComp());
             
 
 
