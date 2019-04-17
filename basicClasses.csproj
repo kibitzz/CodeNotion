@@ -134,6 +134,7 @@
     <Compile Include="models\String proc\seqreader.cs" />
     <Compile Include="models\StructureProcessing\buildTreeVal_sdc_i.cs" />
     <Compile Include="models\StructureProcessing\ClearStruct.cs" />
+    <Compile Include="models\StructureProcessing\CompareFill.cs" />
     <Compile Include="models\StructureProcessing\Destructure.cs" />
     <Compile Include="models\StructureProcessing\ForEach.cs" />
     <Compile Include="models\StructureProcessing\join.cs" />

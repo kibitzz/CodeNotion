@@ -1767,6 +1767,133 @@ namespace basicClasses
 
         }
 
+        public int CountNodeWeight()
+        {
+            if (isDuplicated) return 0;
+            lockThisForDuplication();
+
+            int rez = paramCou;
+
+            for (int i = 0; i < paramCou; i++)
+            {
+                rez += arr[i].CountNodeWeight();
+            }
+
+            UnlockThisForDuplication();
+
+            return rez;
+        }
+
+        public int Difference(opis strucTmpl, bool isTop, bool mark_nodes, bool deepIsPrior, bool range_body, int koef = 1, int koefStep = 1)
+        {           
+
+            if (isDuplicated) return 0;
+
+            lockThisForDuplication();
+
+            int matchedLvl = 0;
+            var match = new int[strucTmpl.listCou];
+            var matchIndexes = new int[strucTmpl.listCou];
+            matchIndexes = matchIndexes.Select(x => -1).ToArray();
+
+            for (int k = 0; k < strucTmpl.listCou; k++)
+            {
+                var templ = strucTmpl[k];
+                var mostAlikeNode = new int[paramCou];
+
+
+                // range_nodes loop
+                for (int i = 0; i < paramCou; i++)
+                {
+                    if (arr[i].PartitionName == templ.PartitionName)
+                    {                      
+                        var r = arr[i].Difference(templ, false, false, deepIsPrior, range_body, deepIsPrior ? koef * koefStep : koef / koefStep,
+                            koefStep);
+                        mostAlikeNode[i] = r +1;
+
+                        if (range_body
+                          && (arr[i].body == templ.body))
+                        {
+                            mostAlikeNode[i] += koef + 10;
+                        }
+                    }
+                }
+
+               
+                int maxMatch = mostAlikeNode.Length >0?  mostAlikeNode.Max() : 0;
+                match[k] += maxMatch;
+
+                if ((isTop || mark_nodes) && mostAlikeNode.Length > 0 )                
+                {                  
+                    int pos = -1;
+                    int idx = 0;
+                    int minWeight = 1000000000;
+                    int templweight = templ.CountNodeWeight();
+                    int CountOfMaxRanged = mostAlikeNode.Where(x => x == maxMatch).Count();
+
+                    if (maxMatch > 0)
+                        while (idx != -1) {
+                            idx = Array.IndexOf(mostAlikeNode, maxMatch, idx);
+
+                            if (idx >= 0) {
+                                int w = arr[idx].CountNodeWeight();
+
+                                int used = matchIndexes.Where(x => x == idx).Count();
+                                if (used > 0) {
+                                    idx++;
+                                    continue;
+                                }
+
+                                if ( minWeight > w
+
+                                     || ( CountOfMaxRanged > 1 
+                                     && templweight > minWeight && w > minWeight && w <= templweight)
+                                  ) {
+                                    minWeight = w;
+                                    pos = idx;
+                                }
+
+                                idx++;
+                            }
+                        }
+
+                    if (pos >= 0 )
+                    {
+                       
+                        arr[pos].Difference(templ, false, true, deepIsPrior, range_body, deepIsPrior ? koef * koefStep : koef / koefStep,
+                            koefStep);
+
+                        if (templweight == minWeight)
+                            matchIndexes[k] = pos;
+
+                        string inf = "";
+                       
+                        if (arr[pos].body != templ.body)                      
+                            inf = "different body";                       
+                       
+                        if (arr[pos].listCou != templ.listCou)                        
+                            inf += " different listCou";                           
+                                           
+                        templ.PartitionKind = inf;
+
+                    } else
+                        templ.PartitionKind = "node not found";
+
+                }
+            }
+
+         
+            matchedLvl = koef * match.Where(x => x > 0).Count()+  match.Sum() 
+                - Math.Abs(strucTmpl.listCou - paramCou);        
+
+          
+            UnlockThisForDuplication();
+
+            return matchedLvl ;
+
+        }
+
+
         public void TransformLoadedRaw()
         {
             if (isDuplicated)

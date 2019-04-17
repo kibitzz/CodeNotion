@@ -28,6 +28,10 @@ namespace basicClasses.models.WEB_api
         [info(" do not  Replace(\" / \", \" % 2F\");")]
         public static readonly string no_slash_conversion = "no_slash_conversion";
 
+        [model("spec_tag")]
+        [info(" do not  UTF_to_UTF25pref(replacement)  => Kirill_to_UTF")]
+        public static readonly string no_encoding_conversion = "no_encoding_conversion";
+
         public override void Process(opis message)
         {
             opis rl = modelSpec[ReplaceList].Duplicate();
@@ -53,9 +57,16 @@ namespace basicClasses.models.WEB_api
                     replacement = replacement.Trim(new char[] { '"' });
                     if(!modelSpec.isHere(no_slash_conversion))
                     replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
-                    replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
 
-                    data = data.Replace(torepl, TemplatesMan.Kirill_to_UTF(replacement));
+                    if (!modelSpec.isHere(no_encoding_conversion))
+                    {
+                        replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
+                        data = data.Replace(torepl, TemplatesMan.Kirill_to_UTF(replacement));
+                    }
+                    else
+                    {
+                        data = data.Replace(torepl, replacement);
+                    }
                 }
 
             }
@@ -68,10 +79,17 @@ namespace basicClasses.models.WEB_api
                     replacement = replacement.Trim(new char[] { '"' });
                     if (!modelSpec.isHere(no_slash_conversion))
                         replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
-                    replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
-                    //logopis.Vset(i.ToString(), replacement);
-                    //logopis.Vset("utf "+i.ToString(), TemplatesMan.Kirill_to_UTF(replacement));
-                    data = data.Replace(rl[i].PartitionName, TemplatesMan.Kirill_to_UTF(replacement));
+
+
+                    if (!modelSpec.isHere(no_encoding_conversion))
+                    {
+                        replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
+                        data = data.Replace(rl[i].PartitionName, TemplatesMan.Kirill_to_UTF(replacement));
+                    }
+                    else
+                    {
+                        data = data.Replace(rl[i].PartitionName, replacement);
+                    }
                 }
             }
     
