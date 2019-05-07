@@ -158,8 +158,11 @@ namespace basicClasses.Factory
             models.Add("ClearStruct", new ClearStruct());
             models.Add("DateTimeComp", new DateTimeComp());
             models.Add("CompareFill", new CompareFill());
+            models.Add("Parce_Body_as_Json", new Parce_Body_as_Json());
+            models.Add("CheckOverrides", new CheckOverrides());
 
             
+
 
             models.Add("HtmlParser_HAP", new HtmlParser_HAP());
             models.Add("UseSecurityProtocol", new UseSecurityProtocol());

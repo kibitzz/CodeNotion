@@ -145,6 +145,7 @@
     <Compile Include="models\StructureProcessing\TreeDataExtractor.cs" />
     <Compile Include="models\sys_ext\AnswerToMessage.cs" />
     <Compile Include="models\sys_ext\Breaker.cs" />
+    <Compile Include="models\sys_ext\CheckOverrides.cs" />
     <Compile Include="models\sys_ext\cleaner.cs" />
     <Compile Include="models\sys_ext\code_point.cs" />
     <Compile Include="models\sys_ext\EditingPart.cs" />
@@ -168,6 +169,7 @@
     <Compile Include="models\WEB_api\http_client.cs" />
     <Compile Include="models\WEB_api\JsonParser.cs" />
     <Compile Include="models\WEB_api\jsonParserModel.cs" />
+    <Compile Include="models\WEB_api\Parce_Body_as_Json.cs" />
     <Compile Include="models\WEB_api\Randomizer.cs" />
     <Compile Include="models\WEB_api\sqlBuilderClasses.cs" />
     <Compile Include="models\WEB_api\TemplatesMan.cs" />

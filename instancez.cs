@@ -115,6 +115,7 @@ namespace basicClasses
         protected bool cacheAnwers;
 
         public static bool debugNext;
+        public static bool showOverrideWarnings;
 
         public static object oddLocker = new object();
         public static object evenLocker = new object();
@@ -1121,10 +1122,24 @@ namespace basicClasses
             int poz = -1;
           
             inSvc = (SVC.isHere(req.PartitionKind)
-                && SVC[req.PartitionKind].PartitionKind == "Action");            
+                && SVC[req.PartitionKind].PartitionKind == "Action");
 
-                if (inSvc ||
-                (cash.TryGetValue(req.PartitionKind, out poz) ))
+
+            // ---------  only for dev time in repl
+            int tmppos = -1;
+            if (showOverrideWarnings && inSvc &&
+              cash.TryGetValue(req.PartitionKind, out tmppos))
+                {
+                    opis err = new opis();
+                    err.PartitionName = "WARN: local model override package func: " + req.PartitionKind;
+                    err.AddArr(req.Duplicate());
+                    global_log.log.AddArr(err);
+                }
+            // --------- 
+
+
+            if (inSvc ||
+                cash.TryGetValue(req.PartitionKind, out poz) )
             {
 
                 List<string> tempNames = new List<string>();

@@ -1106,7 +1106,7 @@ namespace twite
                 for (int i = 0; i < propCou; i++)
                 {
                     props[i].propName = props[i].propName.Replace("\"", string.Empty).Trim();
-                    props[i].propVal = props[i].propVal.Trim();
+                    props[i].propVal = props[i].propVal.Replace("\"", string.Empty).Trim();
 
                     thi.Vset(props[i].propName, TemplatesMan.UTF8BigEndian_to_Kirill( props[i].propVal));
 
@@ -1139,7 +1139,8 @@ namespace twite
                 for (int i = 0; i < propCou; i++)
                 {
 
-                    thi.Vset("item_" + i.ToString(), TemplatesMan.UTF8BigEndian_to_Kirill(props[i].propVal));
+                    thi.Vset("item_" + i.ToString(),
+                        TemplatesMan.UTF8BigEndian_to_Kirill(props[i].propVal.Replace("\"", string.Empty).Trim()));
                 }
             }
 

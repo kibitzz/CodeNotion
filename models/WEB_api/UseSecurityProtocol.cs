@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -25,6 +26,17 @@ namespace basicClasses.models.WEB_api
         [model("spec_tag")]
         public static readonly string use_Ssl3 = "use_Ssl3";
 
+        [info("")]
+        [model("spec_tag")]
+        public static readonly string use_mix = "use_mix";
+
+        [info("")]
+        [model("spec_tag")]
+        public static readonly string ServerCertificateValidationCallback = "ServerCertificateValidationCallback";
+
+        [ignore]
+        static bool callbIsSet;
+
         public override void Process(opis message)
         {
             if(modelSpec.isHere(use_Tls12))
@@ -38,6 +50,22 @@ namespace basicClasses.models.WEB_api
 
             if (modelSpec.isHere(use_Ssl3))
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
+
+            if (modelSpec.isHere(ServerCertificateValidationCallback) && !callbIsSet)
+            {
+                ServicePointManager.ServerCertificateValidationCallback += AcceptAllCertificatePolicy;
+                callbIsSet = true;
+            }
+
+            if (modelSpec.isHere(use_mix))
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;
+        }
+     
+
+       //просто делегат возращающий всегда true
+        public static bool AcceptAllCertificatePolicy(object sender, X509Certificate certificate, X509Chain chain, System.Net.Security.SslPolicyErrors sslPolicyErrors)
+        {
+            return true;
         }
     }
 
