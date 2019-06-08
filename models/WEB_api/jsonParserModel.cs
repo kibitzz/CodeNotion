@@ -148,6 +148,36 @@ namespace basicClasses.models.WEB_api
 
     }
 
+    [appliable("file_formats")]
+    public class SimpleLines_ParserModel : ModelBase
+    {
+
+        public override void Process(opis message)
+        {
+            if (message.PartitionKind != "stringArray")
+                logopis["err:"].body = "message is not a stringArray ";
+
+            opis rez = new opis();
+            string[] proc = (string[])message.bodyObject;
+
+            for (int i = 0; i < proc.Length; i++)
+            {
+                if (proc[i].Length > 0)
+                {                   
+                    opis d = new opis();
+                    d.body = proc[i];
+                    d.PartitionName = i.ToString();
+
+                    rez.AddArr(d);                                    
+                }
+            }
+
+            message["data"] = rez;
+
+        }
+
+    }
+
 
     [appliable("file_formats")]
     public class boardsset_ParserModel : ModelBase

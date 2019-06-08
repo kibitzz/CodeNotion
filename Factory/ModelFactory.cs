@@ -137,6 +137,7 @@ namespace basicClasses.Factory
             models.Add("save_toFile", new save_toFile());
             models.Add("AccountsParserModel", new AccountsParserModel());
             models.Add("Opis_ParserModel", new Opis_ParserModel());
+            models.Add("SimpleLines_ParserModel", new SimpleLines_ParserModel());            
             models.Add("Fill_templare_from_dataSouce", new Fill_templare_from_dataSouce());
             models.Add("extractDataFromHtml", new extractDataFromHtml());        
             models.Add("upLoadFileSpecs", new upLoadFileSpecs());
