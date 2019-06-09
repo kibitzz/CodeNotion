@@ -826,7 +826,8 @@ namespace twite
         {
             init();
             isArray = isArray_;
-            props = new Prop[1200];
+
+            props = isArray ? new Prop[5000] : new Prop[500];
         }
 
         void init()

@@ -38,6 +38,10 @@ namespace basicClasses.models.String_proc
         [info(" roll back position by enclosed string length")]
         public static readonly string fin_as_separator = "fin_as_separator";
 
+        [model("spec_tag")]
+        [info("seach last contained item of <start> substring")]
+        public static readonly string start_closer_to_end = "start_closer_to_end";
+
         [info("if result is not empty - run some code")]
         [model("Action")]
         public static readonly string if_not_empty = "if_not_empty";
@@ -57,19 +61,22 @@ namespace basicClasses.models.String_proc
             if (spec.isHere(pos))
                 cpos = spec[pos].intVal;
 
-            var rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(fin), ref cpos);
+            bool startCloser_to_end = spec.isHere(start_closer_to_end);           
+                
+
+            var rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(fin), ref cpos, startCloser_to_end);
 
             var enclfound = spec.V(fin);
 
             if (string.IsNullOrEmpty(rez) && spec.isHere(alt_fin))
             {
-                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin), ref cpos);
+                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin), ref cpos, startCloser_to_end);
                 enclfound = spec.V(alt_fin);
             }
 
             if (string.IsNullOrEmpty(rez) && spec.isHere(alt_fin2))
             {
-                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin2), ref cpos);
+                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin2), ref cpos, startCloser_to_end);
                 enclfound = spec.V(alt_fin2);
             }
 
@@ -87,7 +94,7 @@ namespace basicClasses.models.String_proc
             message.CopyArr(new opis());
         }
 
-        public static string GetEnclosed(string srs, string st, string fin, ref int pos)
+        public static string GetEnclosed(string srs, string st, string fin, ref int pos, bool lastSt)
         {
             if (string.IsNullOrEmpty(srs))
                 return "";
@@ -95,7 +102,7 @@ namespace basicClasses.models.String_proc
             st = st == "_" ? " " : st;
             fin = fin == "_" ? " " : fin;
 
-            var stp = srs.IndexOf(st, pos);
+            var stp = lastSt? srs.LastIndexOf(st) : srs.IndexOf(st, pos);
             stp = stp >= 0 ? stp + st.Length : srs.Length;
 
             var finp = fin.Length > 0 ? srs.IndexOf(fin, stp) : srs.Length - 1;

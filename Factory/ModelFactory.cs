@@ -173,7 +173,9 @@ namespace basicClasses.Factory
             models.Add("targetID", new targetID());
             models.Add("seqreader", new seqreader());
             models.Add("GetEnclosedText", new GetEnclosedText());
+            models.Add("WordsArrOp", new WordsArrOp());
             
+
             models.Add("universal_line_pareser", new universal_line_pareser());
             
 

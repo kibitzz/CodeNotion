@@ -132,6 +132,7 @@
     <Compile Include="models\String proc\DateTimeComp.cs" />
     <Compile Include="models\String proc\GetEnclosedText.cs" />
     <Compile Include="models\String proc\seqreader.cs" />
+    <Compile Include="models\String proc\WordsArrOp.cs" />
     <Compile Include="models\StructureProcessing\buildTreeVal_sdc_i.cs" />
     <Compile Include="models\StructureProcessing\ClearStruct.cs" />
     <Compile Include="models\StructureProcessing\CompareFill.cs" />

@@ -84,11 +84,14 @@ namespace basicClasses
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11;
             ServicePointManager.DefaultConnectionLimit = 20;
-            
+
+           
 
             treeView2.ShowNodeToolTips = false;
             treeView3.ShowNodeToolTips = false;
-          //  treeView3.ShowLines = false;
+            //  treeView3.ShowLines = false;
+
+            treeView3.ItemHeight = 29;
             treeView3.Indent = 32;
             treeView3.LineColor = Color.FromArgb(59,59,59);
 
