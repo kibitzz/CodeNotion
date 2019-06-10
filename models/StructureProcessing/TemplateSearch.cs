@@ -25,6 +25,10 @@ namespace basicClasses.models.StructureProcessing
         [info("if template contains ??? put to results those items, not the branches that match whole template")]
         public static readonly string returnItemsNotBranches = "returnItemsNotBranches";
 
+        [model("spec_tag")]
+        [info("should be no additional fields in found structure. if additional fields present value became tot valid and be ignored")]
+        public static readonly string exact_structure = "exact_structure";
+
         public override void Process(opis message)
         {
             opis ms = modelSpec.Duplicate();
@@ -32,8 +36,9 @@ namespace basicClasses.models.StructureProcessing
             opis rez = new opis();
 
             bool retdata = ms.isHere(returnItemsNotBranches);
+            bool exactOnly = ms.isHere(exact_structure);            
 
-            ms[source].FindByTemplateValue(ms[template], rez, retdata, true);
+            ms[source].FindByTemplateValue(ms[template], rez, exactOnly, retdata, true);
 
             message.CopyArr(rez, true);
             if (!ms.isHere(all) && rez.listCou > 0)
