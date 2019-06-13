@@ -32,6 +32,7 @@ namespace basicClasses
         string currParseText;
 
         string PointedWord;
+        string HighlightedWordTreeEdited;
         string deletedWord;
         string copiedText;
         Point mouPos;
@@ -113,7 +114,7 @@ namespace basicClasses
 
             opis.listOfVisualisedCircularRefs = new opis();
             mouPos = new Point(0, 0);
-            button6_Click(null, null);
+         //   button6_Click(null, null);
             colorInput();
 
             mf = new ModelFactory();
@@ -441,7 +442,7 @@ namespace basicClasses
 
                 if (HighlightedOpis.treeElem != null)
                 {
-                    treeView2.SelectedNode = HighlightedOpis.treeElem;
+                  //  treeView2.SelectedNode = HighlightedOpis.treeElem; // readonly tree - show selected element
                     PrepareWordInput();
                 }
                 else
@@ -704,9 +705,32 @@ namespace basicClasses
             if (HighlightedOpis == null)
             {
                 return;
+            }          
+
+            if (HighlightedOpis.PartitionKind != ModelNotion.patritionKinda
+                || treeView3.TopNode ==null 
+                || HighlightedWordTreeEdited == HighlightedOpis.PartitionName
+                || HighlightedOpis.treeElem==null)
+            {
+                HighlightedWordTreeEdited = HighlightedOpis.PartitionKind == ModelNotion.patritionKinda ?
+                                            HighlightedOpis.PartitionName : HighlightedWordTreeEdited;
+                treeView3.Nodes.Clear();
+                treeView3.Nodes.Add(HighlightedOpis.GetDebugTree().FirstNode);
             }
-            treeView3.Nodes.Clear();
-            treeView3.Nodes.Add(HighlightedOpis.GetDebugTree().FirstNode);
+            else
+            {
+                HighlightedWordTreeEdited = HighlightedOpis.PartitionName;
+                treeView3.Nodes.Clear();
+                treeView3.TopNode = null;
+                try
+                {
+                    treeView3.Nodes.Add(HighlightedOpis.treeElem);
+                }
+                catch (ArgumentException e)
+                {
+                    treeView3.Nodes.Add(HighlightedOpis.GetDebugTree().FirstNode);
+                }
+            }
 
             treeView3.TopNode.Expand();
             richTextBox4.Text = "";
