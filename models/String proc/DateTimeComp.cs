@@ -40,6 +40,10 @@ namespace basicClasses.models.String_proc
         [info(" ")]
         public static readonly string set_curr = "set_curr";
 
+        [model("spec_tag")]
+        [info(" ")]
+        public static readonly string return_actual_date = "return_actual_date";
+
         DateTime curr;
 
         public override void Process(opis message)
@@ -52,6 +56,16 @@ namespace basicClasses.models.String_proc
             if (mspec.isHere(Get_next_Week_monday))
             {
                 r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays(8));
+                if (mspec.isHere(hour))
+                {
+                    TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);
+                    r.Add(sp);
+                }
+            }
+
+            if (mspec.isHere(return_actual_date))
+            {
+                r = DateTime.Now;
                 if (mspec.isHere(hour))
                 {
                     TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);

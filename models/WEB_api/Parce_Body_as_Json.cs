@@ -14,16 +14,26 @@ namespace basicClasses.models.WEB_api
     class Parce_Body_as_Json : ModelBase
     {
 
+        //[info("")]
+        //[model("spec_tag")]
+        //public static readonly string use_new_parcer = "use_new_parcer";
+
         public override void Process(opis message)
         {
             opis trtrt = new opis();
 
             try
             {
+                //if (!modelSpec.isHere(use_new_parcer))
+                //{
+                //    JsonObject jrez = JsonParser.Parse(message.body);
 
-                JsonObject jrez = JsonParser.Parse(message.body);
-
-                jrez.BuildTreeopis(trtrt);
+                //    jrez.BuildTreeopis(trtrt);
+                //}
+                //else
+                //{
+                    trtrt.JsonParce(message.body);
+                //}
             }
             catch(Exception e)
             {
@@ -31,7 +41,10 @@ namespace basicClasses.models.WEB_api
             }
 
             message.body = "";
-            message.CopyArr(trtrt);
+            //  message.CopyArr(trtrt);
+            message.CopyArr(new opis());
+            message.AddArr(trtrt);
+
         }
     }
 }

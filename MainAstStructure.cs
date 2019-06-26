@@ -6,6 +6,7 @@ using System.Text;
 using System.Windows.Forms;
 using System.Drawing;
 using basicClasses.models.sys_ext;
+using basicClasses.models.WEB_api;
 
 namespace basicClasses
 {
@@ -1173,6 +1174,147 @@ namespace basicClasses
 
 
             return rez;
+
+        }
+
+        public void JsonParce(string data)
+        {
+            JsonParce(data, 0);
+        }
+
+        public int JsonParce(string data, int startpos)
+        {
+            int idx = startpos;
+            int idxShift = 1;
+
+            string currtext = "";
+            string currprop = "";
+            string rawtext = "";
+
+            //opis root = new opis();
+
+            bool objectIsOpen = false;
+            bool thisIsArray = false;
+
+            while (idx < data.Length)
+            {
+                idxShift = 1;
+
+
+                if (data[idx] == '{' )
+                {
+                    currprop = "";
+                    rawtext = "";
+                    currtext = "";
+
+                    if (objectIsOpen)
+                    {
+
+                        if (thisIsArray)
+                        {
+                            opis elem = new opis();
+                            elem.PartitionName = "jsonObj";
+                            idx = elem.JsonParce(data, idx);
+                            this.AddArr(elem);
+                            continue;
+                        }
+                        else
+                        {
+                            this["parce error"].body = "open bracket for object as for array but this item is not classified as array";
+                        }
+
+                    }
+                    else
+                    {
+                        objectIsOpen = true;
+                        this.PartitionKind = "jsonObj";
+                        this.PartitionName = string.IsNullOrEmpty(PartitionName) ? "jsonObj" : PartitionName;
+                    }
+                }
+
+                if (data[idx] == '[' )
+                {
+                    thisIsArray = true;
+                    objectIsOpen = true;
+                    this.PartitionKind = "jsonArray";
+                    this.PartitionName = string.IsNullOrEmpty(PartitionName) ? "jsonObj" : PartitionName;
+
+                    rawtext = "";
+                    currprop = "";
+                    currtext = "";
+                    idx += idxShift;
+                    continue;
+                }
+              
+
+                if (data[idx] == ',')
+                {                   
+                    if (thisIsArray && rawtext.Length >0)
+                    {
+                        this[paramCou.ToString()].body = TemplatesMan.UTF8BigEndian_to_Kirill(rawtext);                       
+                        rawtext = "";
+                        currprop = "";
+                        currtext = "";
+                        idx += idxShift;
+                        continue;
+                    }
+                    
+                    if (!objectIsOpen)
+                    {
+                        this.body = currtext.Length > 0 ? currtext : rawtext.Trim('"');
+                        this.body = TemplatesMan.UTF8BigEndian_to_Kirill(this.body);
+                        return idx +1;
+                    }
+                }
+
+                if (data[idx] == '}' || data[idx] == ']')
+                {
+                    if (!objectIsOpen)
+                    {
+                        this.body = currtext.Length > 0 ? currtext : rawtext.Trim('"');
+                        this.body = TemplatesMan.UTF8BigEndian_to_Kirill(this.body);
+                        return idx;
+                    }
+                    else
+                    {
+                        if (thisIsArray && rawtext.Length > 0)
+                        {
+                            this[paramCou.ToString()].body = TemplatesMan.UTF8BigEndian_to_Kirill(rawtext); 
+                        }                        
+                    }
+                    return idx +1 ;
+                }
+
+                if (data[idx] == '"')
+                {
+                    currtext = enclosed(data, idx, '"', '"');
+                    idxShift = currtext.Length + 2;
+                }
+
+                if (data[idx] == ':')
+                {
+                    if (objectIsOpen && currtext.Length > 0)
+                    {
+                        currprop = currtext;
+                        rawtext = "";
+                        currtext = "";
+                        idx = this[currprop].JsonParce(data, idx + 1);
+                        continue;
+                    }
+                    else
+                        this["parce error"].body = "object is not opened but encounter colon for property value";
+
+                }
+
+                if (data[idx] != ' ')
+                {
+                    rawtext += data[idx];
+                }
+
+                idx += idxShift;
+            }
+
+            return idx;
 
         }
 

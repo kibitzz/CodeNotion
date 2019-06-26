@@ -783,7 +783,6 @@ namespace twite
         }
     }
 
-
     public class JsonObject
     {
         // set to true when it was started by [
@@ -827,7 +826,7 @@ namespace twite
             init();
             isArray = isArray_;
 
-            props = isArray ? new Prop[5000] : new Prop[500];
+            props = isArray ? new Prop[5000] : new Prop[1500];
         }
 
         void init()

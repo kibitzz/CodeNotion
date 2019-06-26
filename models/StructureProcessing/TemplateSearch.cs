@@ -5,7 +5,7 @@ using System.Text;
 
 namespace basicClasses.models.StructureProcessing
 {
-    [info("")]
+    [info("search in source (on all levels) data structures that match given template and return found array. FUNC 2: Extract data fields on  given template ")]
     [appliable("Action exe all")]
     public  class TemplateSearch : ModelBase
     {
@@ -26,7 +26,7 @@ namespace basicClasses.models.StructureProcessing
         public static readonly string returnItemsNotBranches = "returnItemsNotBranches";
 
         [model("spec_tag")]
-        [info("should be no additional fields in found structure. if additional fields present value became tot valid and be ignored")]
+        [info("should be no additional fields in found structure. if additional fields present value become not valid and be ignored")]
         public static readonly string exact_structure = "exact_structure";
 
         public override void Process(opis message)

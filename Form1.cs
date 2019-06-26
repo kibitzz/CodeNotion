@@ -722,6 +722,7 @@ namespace basicClasses
                 HighlightedWordTreeEdited = HighlightedOpis.PartitionName;
                 treeView3.Nodes.Clear();
                 treeView3.TopNode = null;
+                
                 try
                 {
                     treeView3.Nodes.Add(HighlightedOpis.treeElem);

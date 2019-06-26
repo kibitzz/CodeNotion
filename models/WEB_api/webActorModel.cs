@@ -134,23 +134,31 @@ namespace basicClasses.models.WEB_api
                 return;
             }
 
-            if (ex.isHere(POST))
-             rez = hc.Post(ex.V(POST), data);        
-
-            if (ex.isHere(GET))
-                rez = hc.Get(ex.V(GET));
-            
-
-            if (ex.isHere(DownloadResource))
-            {            
-                rez = hc.DownloadData(ex.V(DownloadResource), ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename));
-            }
-
-            if (ex.isHere(UP_loadResource))
+            try
             {
-                t[webResponceModel.Status].body = hc.UploadData(ex.V(UP_loadResource), ex[UP_loadResource].V(upLoadFileSpecs.CompiledFilename));
-                SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
-                return;
+
+                if (ex.isHere(POST))
+                    rez = hc.Post(ex.V(POST), data);
+
+                if (ex.isHere(GET))
+                    rez = hc.Get(ex.V(GET));
+
+
+                if (ex.isHere(DownloadResource))
+                {
+                    rez = hc.DownloadData(ex.V(DownloadResource), ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename));
+                }
+
+                if (ex.isHere(UP_loadResource))
+                {
+                    t[webResponceModel.Status].body = hc.UploadData(ex.V(UP_loadResource), ex[UP_loadResource].V(upLoadFileSpecs.CompiledFilename));
+                    SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
+                    return;
+                }
+            }
+            catch (NullReferenceException e)
+            {
+                t.Vset("internal error", e.Message);
             }
 
 
@@ -192,15 +200,23 @@ namespace basicClasses.models.WEB_api
 
                 #endregion
 
-                if (!hc.responseData.StartsWith("<!DOCTYPE html") &&
+                if (hc.responseData !=null &&
+                    !hc.responseData.StartsWith("<!DOCTYPE html") &&
                     !hc.responseData.StartsWith("<") &&
                     hc.contentType != null &&
                     hc.contentType.Contains("application/json"))
-                {                   
-                    JsonObject jrez = JsonParser.Parse(hc.responseData);
+                {
+                    if (hc.responseData.Contains("\n"))
+                    {
+                        hc.responseData = hc.responseData.Replace('\n', ' ');
+                    }
+
+                  //  JsonObject jrez = JsonParser.Parse(hc.responseData);
                     opis trtrt = new opis();
-                    jrez.BuildTreeopis(trtrt);
-                    t[webResponceModel.responseDataParsed] = trtrt;
+                  //  jrez.BuildTreeopis(trtrt);
+                    trtrt.JsonParce(hc.responseData);
+                    //  t[webResponceModel.responseDataParsed] = trtrt;
+                    t[webResponceModel.responseDataParsed]["jsonObj"] = trtrt;
                 }
             }
             
