@@ -5,7 +5,7 @@ using System.Text;
 
 namespace basicClasses.models.SharedDataContextDrivers
 {
-    [info("один раз виконується для даного інстанса (instanse.ExecActionModelsList(message)), заповняє та додає набір даних(усі поля даного опису), переважно це будуть fill моделі або константи. спочатку виконуються моделі ініціалізації контекстного обєкта до заповнення(реєстрація ролі, очистка якихось параметрів)    message НЕ змінює взвагалі")]
+    [info("add all items from spec to shared values context (SVC) or to the function packages partition. can contain fill models or constants.  message is not modified")]
     [appliable("Action creation Builders func")]
    public class initValues:ModelBase
     {

@@ -596,6 +596,7 @@
             this.gotoPathToolStripMenuItem.Name = "gotoPathToolStripMenuItem";
             this.gotoPathToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
             this.gotoPathToolStripMenuItem.Text = "goto path";
+            this.gotoPathToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
             this.gotoPathToolStripMenuItem.Click += new System.EventHandler(this.gotoPathToolStripMenuItem_Click);
             // 
             // showModelToolStripMenuItem

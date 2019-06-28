@@ -1914,10 +1914,10 @@ namespace basicClasses
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {
-            opis now = null;
-            if (treeView2.Focused)
+            opis now = new opis();
+            if (treeView2.Focused && treeView2.SelectedNode != null)
                 now = ((opis)treeView2.SelectedNode.Tag);
-            if (treeView3.Focused)
+            if (treeView3.Focused && treeView3.SelectedNode != null)
                 now = ((opis)treeView3.SelectedNode.Tag);
 
             importexportCtrl.Text = now.serialize();
@@ -1937,9 +1937,9 @@ namespace basicClasses
         private void gotoPathToolStripMenuItem_Click(object sender, EventArgs e)
         {
             opis now = null;
-            if (treeView2.Focused)
+            if (treeView2.Focused && treeView2.SelectedNode != null)
                 now = ((opis)treeView2.SelectedNode.Tag);
-            if (treeView3.Focused)
+            if (treeView3.Focused && treeView3.SelectedNode != null)
                 now = ((opis)treeView3.SelectedNode.Tag);
 
             EditingOpisValue = "";
@@ -1982,9 +1982,9 @@ namespace basicClasses
         {
 
             opis now = null;
-            if (treeView2.Focused)
+            if (treeView2.Focused && treeView2.SelectedNode != null)
                 now = ((opis)treeView2.SelectedNode.Tag);
-            if (treeView3.Focused)
+            if (treeView3.Focused && treeView3.SelectedNode != null)
                 now = ((opis)treeView3.SelectedNode.Tag);
 
             EditingOpisValue = "";
