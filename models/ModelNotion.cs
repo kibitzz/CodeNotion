@@ -53,7 +53,7 @@ namespace basicClasses.models
         public static readonly string as_arg = "as_arg";
         
        
-        public static readonly string comments = "comments";
+        public static readonly string comments = "comments";          
 
         [ignore]
         public static readonly string canHandleParentRange = "canHandleParentRange";
@@ -74,6 +74,8 @@ namespace basicClasses.models
         [info("executed before any message received, initialization purposes mainly")]
         [model("Builders")]
         public static readonly string Build = "Build";
+
+        public static readonly string formz = "formz";
 
         [ignore]       
         public static readonly string ParamTypesConversion = "ParamTypesConversion";

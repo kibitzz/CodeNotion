@@ -316,7 +316,21 @@ namespace basicClasses
             raiseEvents = prev;
         }
 
-     
+        public opis(int capacity)
+        {
+            bool prev = raiseEvents;
+            raiseEvents = false;
+
+            PartitionKind = "";
+            body = "";
+            paramCou = 0;
+
+            arr = new opis[capacity];
+
+            raiseEvents = prev;
+        }
+
+
         public opis(string PartKind, params string[] values)
         {
             bool prev = raiseEvents;

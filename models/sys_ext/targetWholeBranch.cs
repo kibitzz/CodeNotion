@@ -54,9 +54,13 @@ namespace basicClasses.models.sys_ext
 
     }
 
+    [info("targer concrete context ID, one or more.   pass = (modelSpec.V(ID) == o.V(ID) )       ")]
     [appliable("TargetingChecks")]
     public class targetID : ModelBase
     {
+        [info(" array if filler used. body value if structure is composed ")]       
+        public static readonly string ID = "ID";
+
         public override void Process(opis message)
         {
             bool pass = (modelSpec.V("ID") == o.V("ID") );           

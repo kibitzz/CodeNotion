@@ -17,7 +17,7 @@ namespace basicClasses.models
         public static readonly string msg_receiver = "msg_receiver";
 
         [model("TargetingChecks")]
-        [info("list of models that make jujment which context is targeted")]
+        [info("list of models that make judgment which context is targeted")]
         public static readonly string contTargetModel = "contTargetModel";
 
         [info("base parameter name, it analyses in all types of messaging")]

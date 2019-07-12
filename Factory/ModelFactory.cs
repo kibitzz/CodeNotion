@@ -18,6 +18,7 @@ using basicClasses.models.Checkers;
 using basicClasses.models.Rangers;
 using basicClasses.models.WEB_api;
 using basicClasses.models.String_proc;
+using basicClasses.models.SQL;
 
 namespace basicClasses.Factory
 {
@@ -177,7 +178,9 @@ namespace basicClasses.Factory
             
 
             models.Add("universal_line_pareser", new universal_line_pareser());
-            
+            models.Add("MySqlQuery", new MySqlQuery());            
+
+
 
             if (ExternalModels != null)
             foreach (var kvp in ExternalModels)

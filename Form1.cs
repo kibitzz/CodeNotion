@@ -522,9 +522,13 @@ namespace basicClasses
 
                             if (HighlightedOpis != null && HighlightedOpis.PartitionName != null)
                             {
-                                if (highlightDerivants && description.Contains(HighlightedOpis.PartitionName))
+                                if (highlightDerivants && description.Contains(HighlightedOpis.PartitionName)
+                                    && (description.Contains(HighlightedOpis.PartitionName + " ") || description.EndsWith(HighlightedOpis.PartitionName)))
                                     color = GetStrColorByExpr(6);
-                                if (highlightDerivants && curr.V(ModelNotion.ontology).Contains(HighlightedOpis.PartitionName))
+
+                                var onto = curr.V(ModelNotion.ontology);
+                                if (highlightDerivants && onto.Contains(HighlightedOpis.PartitionName)
+                                    && (onto.Contains(HighlightedOpis.PartitionName + " ") || onto.EndsWith(HighlightedOpis.PartitionName)))
                                     color = GetStrColorByExpr(6);
                             }
 
