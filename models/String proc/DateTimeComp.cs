@@ -59,7 +59,7 @@ namespace basicClasses.models.String_proc
                 if (mspec.isHere(hour))
                 {
                     TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);
-                    r.Add(sp);
+                    r = r.Add(sp);
                 }
             }
 
@@ -69,7 +69,8 @@ namespace basicClasses.models.String_proc
                 if (mspec.isHere(hour))
                 {
                     TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);
-                    r.Add(sp);
+
+                    r = r.Add(sp);
                 }
             }
 

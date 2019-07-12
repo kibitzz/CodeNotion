@@ -150,8 +150,12 @@ namespace basicClasses
             {
                 price = "";
             }
+            float mult = 1;
 
             price = price.Replace(" ", "").Replace("\"","").TrimStart('0');
+
+            if (price.StartsWith("-"))
+                mult = -1;
 
             if (EnumCharOccurrence(price, digits) >= (price.Length - 1))
             {
@@ -187,7 +191,7 @@ namespace basicClasses
                 }
             }
 
-            return rez;
+            return rez * mult;
         }
 
         public static string NormalizeSpaces(string s)
