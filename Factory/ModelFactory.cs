@@ -178,8 +178,9 @@ namespace basicClasses.Factory
             
 
             models.Add("universal_line_pareser", new universal_line_pareser());
-            models.Add("MySqlQuery", new MySqlQuery());            
-
+            models.Add("MySqlQuery", new MySqlQuery());
+            models.Add("CompDataExport", new CompDataExport());
+            
 
 
             if (ExternalModels != null)

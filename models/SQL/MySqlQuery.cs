@@ -88,10 +88,13 @@ namespace basicClasses.models.SQL
                 {
                     var command = new MySqlCommand(queryString, connection);
                     command.Connection.Open();
+
                     using (var reader = command.ExecuteReader())
                     {
-                       
-                        var cn = GetColumnNames(reader);
+                        if (!reader.HasRows)
+                            return rez;
+
+                         var cn = GetColumnNames(reader);
 
                         while (reader.Read())
                         {
@@ -109,7 +112,7 @@ namespace basicClasses.models.SQL
             {
                 rez["Exception"]["Message"].body = e.Message;
                 rez["Exception"]["StackTrace"].body = e.StackTrace;
-                rez["Exception"]["InnerException"].body = e.InnerException.ToString();
+              //  rez["Exception"]["InnerException"].body = e.InnerException.ToString();
             }
 
             return rez;

@@ -2109,6 +2109,82 @@ namespace basicClasses
 
         #endregion hierarchy algorithms
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="asc"></param>
+        /// <param name="type">1 - as text; 2 - by text length; 3 - by int value  </param>
+        public void SortThisArrayBy_items_pname(int type, bool asc = true)
+        {
+            if(type == 1)
+                arr = SortArray(x => x.PartitionName, asc).ToArray();
+
+            if (type == 2)
+                arr = SortArray(x => x.PartitionName.Length, asc).ToArray();
+                      
+            paramCou = paramCou >= arr.Length ? arr.Length : paramCou; 
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="partname"></param>
+        /// <param name="type">1 - as text; 2 - by text length; 3 - by int value </param>
+        /// <param name="asc"></param>
+        public void SortArrayBy_pname_body(string partname, int type, bool asc = true)
+        {
+            if (type == 1)
+                arr = SortArray(x => x[partname].body, asc).ToArray();
+
+            if (type == 2)
+                arr = SortArray(x => x[partname].body.Length, asc).ToArray();
+
+            if (type == 3)
+                arr = SortArray(x => x[partname].intVal, asc).ToArray();
+
+            paramCou = paramCou >= arr.Length ? arr.Length : paramCou;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="partname"></param>
+        /// <param name="type">1 - as text; 2 - by text length; 3 - by int value </param>
+        /// <param name="asc"></param>
+        public void SortArrayBy_items_body( int type, bool asc = true)
+        {
+            if (type == 1)
+                arr = SortArray(x => x.body, asc).ToArray();
+
+            if (type == 2)
+                arr = SortArray(x => x.body.Length, asc).ToArray();
+
+            if (type == 3)
+                arr = SortArray(x => x.intVal, asc).ToArray();
+           
+            paramCou = arr.Length;
+        }
+
+        public List<opis> SortArray( Func<opis, int> key, bool asc = true)
+        {
+            var l = arr.ToList();
+
+            if (asc)
+                return l.Where(x => x != null).OrderBy(key).ToList();
+            else
+                return l.Where(x => x != null).OrderByDescending(key).ToList();
+        }
+
+        public List<opis> SortArray( Func<opis, string> key, bool asc = true)
+        {
+            var l = arr.ToList();
+
+            if (asc)
+                return l.Where(x => x != null).OrderBy(key).ToList();
+            else
+                return l.Where(x => x != null).OrderByDescending(key).ToList();
+        }             
+
     }
 
 
