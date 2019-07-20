@@ -16,6 +16,10 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string month = "month";
 
+        [info("number ")]
+        [model("")]
+        public static readonly string year = "year";
+
         [info("number 0..23")]
         [model("")]
         public static readonly string hour = "hour";
@@ -76,7 +80,7 @@ namespace basicClasses.models.String_proc
 
             if (mspec.isHere(month)){
                 try{
-                    r = new DateTime(DateTime.Now.Year, mspec[month].intVal, mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);                                      
+                    r = new DateTime(mspec.isHere(year)? mspec[year].intVal: DateTime.Now.Year, mspec[month].intVal, mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);                                      
                 }
                 catch{
                 }

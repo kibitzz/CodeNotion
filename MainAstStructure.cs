@@ -457,7 +457,13 @@ namespace basicClasses
             paramCou = 0;
             AddArrRange(elem, turnOffUniqControl);           
         }
-       
+
+        public void SetArr(opis[] narr)
+        {
+            arr = narr;
+            paramCou = narr.Length;           
+        }
+
         public void CopyParams(opis elem)
         {
             //arr = elem.arr;
@@ -1824,6 +1830,24 @@ namespace basicClasses
             }
 
             return rez;
+        }
+
+        public void RunRecursively(Action<opis> act)
+        {
+            if (isDuplicated)
+            {
+                return;
+            }
+            isDuplicated = true;
+
+            act(this);
+
+            for (int i = 0; i < paramCou; i++)
+            {
+                arr[i].RunRecursively(act);
+            }
+
+            isDuplicated = false;
         }
 
         void AddTemplData(opis templ, opis data,  opis rez)

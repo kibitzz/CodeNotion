@@ -19,7 +19,13 @@ namespace basicClasses.models.WEB_api
         //[model("spec_tag")]
         //[info("")]
         //public static readonly string ReturnNamed = "ReturnNamed";
+
+        [model("spec_tag")]
+        [info(" use this to set rules of replacing incorrect html substrings in further parsing. add elements to this partition where PN <bad> is text to replace and <good> is what replace it (only for this instance)")]
+        public static readonly string fix_html = "fix_html";
+
         int maxHtmlShow = 500;
+        opis fixes;
 
         public override void Process(opis message)
         {
@@ -31,8 +37,24 @@ namespace basicClasses.models.WEB_api
                 int.TryParse(spec.V(InnerHtmlLengthLimit), out maxHtmlShow);
             }
 
+            var htmltext = spec.V(HtmlText);
+            if (spec.isHere(fix_html))
+            {
+                fixes = spec[fix_html];
+                return;
+            }
+
+            if (fixes != null)
+            {               
+                for (int i = 0; i < fixes.listCou; i++)
+                {
+                    htmltext = htmltext.Replace(fixes[i]["bad"].body, fixes[i]["good"].body);
+                }
+            }
+
+
             HtmlDocument doc = new HtmlDocument();
-            doc.LoadHtml(spec.V(HtmlText));
+            doc.LoadHtml(htmltext);
 
             var rez = new opis();
 

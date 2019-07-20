@@ -1755,6 +1755,20 @@ namespace basicClasses
                         reflist[typeOfSearch].AddArr(reflisttmp[i][0]);
                     }
 
+
+                    so = new opis();
+                    reflisttmp = new opis();
+                    typeOfSearch = "name as body";
+
+                    so.body = o.PartitionName;
+
+                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+
+                    for (int i = 0; i < reflisttmp.listCou; i++)
+                    {
+                        reflist[typeOfSearch].AddArr(reflisttmp[i][0]);
+                    }
+
                 }
 
 
@@ -1815,6 +1829,21 @@ namespace basicClasses
                     {
                         reflist[typeOfSearch].AddArr(reflisttmp[i][0]);
                     }
+
+
+                    so = new opis();
+                    reflisttmp = new opis();
+                    typeOfSearch = "body as model";
+
+                    so.PartitionKind = o.body;
+
+                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+
+                    for (int i = 0; i < reflisttmp.listCou; i++)
+                    {
+                        reflist[typeOfSearch].AddArr(reflisttmp[i][0]);
+                    }
+
                 }
 
                 so = new opis();

@@ -155,6 +155,7 @@
     <Compile Include="models\StructureProcessing\CompareFill.cs" />
     <Compile Include="models\StructureProcessing\CompDataExport.cs" />
     <Compile Include="models\StructureProcessing\Destructure.cs" />
+    <Compile Include="models\StructureProcessing\FindCommonDatastructure.cs" />
     <Compile Include="models\StructureProcessing\ForEach.cs" />
     <Compile Include="models\StructureProcessing\join.cs" />
     <Compile Include="models\StructureProcessing\NextArrItm.cs" />

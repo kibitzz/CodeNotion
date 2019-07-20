@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.String_proc
 {
+    [info("filler")]
     [appliable("func")]
     class GetEnclosedText : ModelBase
     {

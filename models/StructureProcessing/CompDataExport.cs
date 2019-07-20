@@ -6,19 +6,17 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.StructureProcessing
 {
+    [info(" filler")]
     class CompDataExport : ModelBase
     {
         [info(" any filler")]
         [model("")]
         public static readonly string source = "source";
 
-        //[info("")]
-        //[model("")]
-        //public static readonly string source = "source";
 
         [model("spec_tag")]
-        [info(" make multiline text - each array elem is at row")]
-        public static readonly string as_list = "as_list";
+        [info(" just sort an argument array (message) do not make text out of it.  source partition is ignored - message is processed instead")]
+        public static readonly string sort_source = "sort_source";
 
         [model("")]
         [info(" list of names to put in line, if empty - put element partition and body in line ")]
@@ -44,6 +42,9 @@ namespace basicClasses.models.StructureProcessing
 
             var srs = spec[source];
 
+            if (spec.isHere(sort_source))
+                srs = message;
+
             int sortt = (spec.isHere(sort_type)) ? spec[sort_type].intVal : 1;
            
             if (!string.IsNullOrEmpty( spec.V(order)))
@@ -55,10 +56,13 @@ namespace basicClasses.models.StructureProcessing
                     srs.SortThisArrayBy_items_pname(sortt, spec.V(order) != "desc");
             }
 
+            if (spec.isHere(sort_source))
+                return;
+
+            // ========================
+            //   document composing
 
             var rez = "";
-
-
             var pn = spec[part_names];
 
             for (int i = 0; i < srs.listCou; i++)
