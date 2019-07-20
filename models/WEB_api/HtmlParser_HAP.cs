@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.WEB_api
 {
+    [appliable("BodyValueModificator")]
     class HtmlParser_HAP : ModelBase
     {
        

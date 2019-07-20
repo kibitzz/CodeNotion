@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.String_proc
 {
+    [appliable("BodyValueModificator")]
     class DateTimeComp : ModelBase
     {
         [info("number 1..31")]
@@ -16,7 +17,7 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string month = "month";
 
-        [info("number ")]
+        [info("number. can be in short format 19  20 ...  so 2000 added automatically ")]
         [model("")]
         public static readonly string year = "year";
 
@@ -78,11 +79,16 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            if (mspec.isHere(month)){
-                try{
-                    r = new DateTime(mspec.isHere(year)? mspec[year].intVal: DateTime.Now.Year, mspec[month].intVal, mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);                                      
+            if (mspec.isHere(month))
+            {
+                try
+                {
+                    var yr = !string.IsNullOrEmpty(mspec.V(year)) ? mspec[year].intVal : DateTime.Now.Year;
+                    yr = yr < 100 ? 2000 + yr : yr;
+                    r = new DateTime(yr, mspec[month].intVal, mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
                 }
-                catch{
+                catch
+                {
                 }
             }
 

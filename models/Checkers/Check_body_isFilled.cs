@@ -50,8 +50,9 @@ namespace basicClasses.models.Checkers
                             break;
                     }
                 }else
-                    pass = !string.IsNullOrEmpty(processThis.V(modelSpec.PartitionName));
+                    pass = !string.IsNullOrEmpty(processThis.listCou >0 ?  processThis.V(modelSpec.PartitionName) : processThis.body);
             }
+          
 
             if (processThis != null
                 && (pass

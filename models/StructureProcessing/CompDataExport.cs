@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.StructureProcessing
 {
+    [appliable("BodyValueModificator")]
     [info(" filler")]
     class CompDataExport : ModelBase
     {

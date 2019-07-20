@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.StructureProcessing
 {
+    [appliable("BodyValueModificator")]
     [info("filler.  ")]
     class FindCommonDatastructure : ModelBase
     {
@@ -17,6 +18,9 @@ namespace basicClasses.models.StructureProcessing
         [model("spec_tag")]
         [info(" ")]
         public static readonly string add_subnames_to_path = "add_subnames_to_path";
+
+        [info("percentage number as double 0.1   0.3  etc")]
+        public static readonly string rarely_found_pecent = "rarely_found_pecent";
 
         bool addsubnames;
 
@@ -86,31 +90,57 @@ namespace basicClasses.models.StructureProcessing
             message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.6));
             message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.5));
             message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.4));
-           
+
+            double rarely = 0.1;
+            double.TryParse(spec.V(rarely_found_pecent), out rarely);
+
+            message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.6, false));
+            message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.5, false));
+            message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.4, false));
+            message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.3, false));
+            message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.2, false));
+            message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, 0.1, false));
+
+            message.AddArr(GetPercentageBase(srs.Duplicate(), uniquePathesStat, typesCou, rarely, false));
+
         }
 
-        opis GetPercentageBase(opis srs, List<opisStatStruct> uniquePathesStat, int typesCou, double prcentage)
+        opis GetPercentageBase(opis srs, List<opisStatStruct> uniquePathesStat, int typesCou, double prcentage, bool moreThanPercentage = true)
         {
             opis rez = new opis();
             
             int minimum = (int)(typesCou * prcentage);
-            var cut = uniquePathesStat.Where(x => x.countPath >= minimum).Select(x => x.path);
+            var cut = uniquePathesStat.Where(x => moreThanPercentage? x.countPath >= minimum : x.countPath <= minimum).Select(x => x.path);
 
             int maxpresent = 0;
 
-            for (int i = 0; i < srs.listCou; i++)
-            {               
-                GetAllPatches(srs[i], "root", new List<string>());
-                var pr = cutByPathesList(srs[i], cut);
+            if(moreThanPercentage)
+            {
+                for (int i = 0; i < srs.listCou; i++)
+                {                   
+                    var pr = cutByPathesList(srs[i], cut);
 
-                if (pr > maxpresent)
-                {
-                    maxpresent = pr;
-                    rez = srs[i];
+                    if (pr > maxpresent)
+                    {
+                        maxpresent = pr;
+                        rez = srs[i];
+                    }
+                }
+            } else
+            {
+                for (int i = 0; i < srs.listCou; i++)
+                {                  
+                    var pr = MarkByPathesList(srs[i], cut, "rarely found");
+
+                    if (pr > maxpresent)
+                    {
+                        maxpresent = pr;
+                        rez = srs[i];
+                    }
                 }
             }
 
-            rez.PartitionName = (prcentage*100)+ "%";
+            rez.PartitionName = (moreThanPercentage ? "more " : " less ") + (prcentage*100)+ "%";
 
             return rez;
         }
@@ -144,12 +174,57 @@ namespace basicClasses.models.StructureProcessing
             return allpathes.Distinct().Count();
         }
 
+        int MarkByPathesList(opis baza, IEnumerable<string> pl, string marker)
+        {
+            GetAllPatches(baza, "root", new List<string>());
+
+            int rez = 0;
+            List<string> allpathes = new List<string>();
+
+            var searchtmpl = baza.Duplicate();
+            searchtmpl.PartitionName = "_search_template";
+
+            baza.RunRecursively(x => {
+             
+                for (int i = 0; i < x.listCou; i++)
+                {
+                    var currp = ((opisStatStruct)x[i].bodyObject).path;
+
+                    if (pl.Contains(currp))
+                    {
+                        allpathes.Add(currp);
+                        x[i].PartitionKind = marker;
+                        x[i].body = "??? " + currp;
+                    }
+                }              
+            });
+
+            GetAllPatches(searchtmpl, "root", new List<string>());
+            searchtmpl.RunRecursively(x => {
+               
+                for (int i = 0; i < x.listCou; i++)
+                {
+                    var currp = ((opisStatStruct)x[i].bodyObject).path;
+
+                    if (pl.Contains(currp))
+                    {                                       
+                        x[i].body = "??? " + currp;
+                    }
+                }
+            });
+
+            baza.AddArr(new opis() { PartitionName = "_marker_", PartitionKind = marker });
+            baza.AddArr(searchtmpl);
+
+            return allpathes.Distinct().Count();
+        }
+
         string allItemsNames(opis o)
         {
             var rez = "";
             for (int i = 0; i < o.listCou; i++)
             {
-                rez += o[i].PartitionName;
+                rez +=  o[i].PartitionName+ ",";
             }
 
            return rez;
@@ -159,7 +234,7 @@ namespace basicClasses.models.StructureProcessing
         {
             for (int i = 0; i < o.listCou; i++)
             {
-                var pp = cpath + " -> " + o[i].PartitionName + (addsubnames ? allItemsNames(o[i]) : "");
+                var pp = cpath + " -> " + o[i].PartitionName + (addsubnames ? " ("+allItemsNames(o[i])+")" : "");
                 rez.Add(pp);
                 o[i].bodyObject = new opisStatStruct() {path = pp };
 
