@@ -73,7 +73,19 @@ namespace basicClasses.models.WEB_api
                 rn["Attributes"].Vset(a.Name, a.Value);
 
             var htmobj = rn["Attributes"]["InnerHtml"];
-            var html = node.InnerHtml;
+         //   var html = node.InnerHtml;
+
+            var html = "";
+
+            try
+            {
+                html = node.InnerHtml;
+            }
+            catch (ArgumentOutOfRangeException e)
+            {
+                html = "";
+            }
+
             if (html.Length < maxHtmlShow)
                 htmobj.body = html.Trim()
                                                 .Replace('\n', ' ')
