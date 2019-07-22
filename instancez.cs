@@ -1529,6 +1529,8 @@ namespace basicClasses
             BuildActionPath(rez, "local_log");
             BuildActionPath(rez, "func", true);
             BuildActionPath(rez, "code_point");
+            BuildActionPath(rez, "fill");
+            BuildActionPath(rez, "fc");
 
         }
 
