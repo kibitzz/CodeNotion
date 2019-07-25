@@ -1271,7 +1271,9 @@ namespace basicClasses
                 {                   
                     if (thisIsArray && rawtext.Length >0)
                     {
-                        this[paramCou.ToString()].body = TemplatesMan.UTF8BigEndian_to_Kirill(rawtext);                       
+                        this[paramCou.ToString()].body = (currtext.Length>= rawtext.Length)
+                            ? TemplatesMan.UTF8BigEndian_to_Kirill(currtext)
+                            : TemplatesMan.UTF8BigEndian_to_Kirill(rawtext);                       
                         rawtext = "";
                         currprop = "";
                         currtext = "";
@@ -1299,7 +1301,9 @@ namespace basicClasses
                     {
                         if (thisIsArray && rawtext.Length > 0)
                         {
-                            this[paramCou.ToString()].body = TemplatesMan.UTF8BigEndian_to_Kirill(rawtext); 
+                            this[paramCou.ToString()].body = (currtext.Length >= rawtext.Length)
+                            ? TemplatesMan.UTF8BigEndian_to_Kirill(currtext)
+                            : TemplatesMan.UTF8BigEndian_to_Kirill(rawtext);
                         }                        
                     }
                     return idx +1 ;

@@ -5,21 +5,20 @@ using System.Text;
 
 namespace basicClasses.models.sys_ext
 {
-    [info("додає елементам масиву закінчення _№    де № це порядковий номер елемента в масиві.  модель корисна для попередньої обробки до порівняння коли елементи мають однакові імена(partitionName)")]
+    [info("for message add array index to the name of partition")]
     [appliable("Action")]
    public class numArrNames:ModelBase
     {
         public override void Process(opis message)
         {
+            string[] a = new string[message.listCou];
 
             for (int i = 0; i < message.listCou; i++)
             {
-                if(!message[i].PartitionName.EndsWith("_"+i.ToString()))
-                {
-                    message[i].PartitionName += "_" + i.ToString();
-                }
+                a[i] = message[i].PartitionName;
+                message[i].PartitionName += "_"+ a.Where(x => x == message[i].PartitionName).Count();
             }
-
+             
         }
     }
 }

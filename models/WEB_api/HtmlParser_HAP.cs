@@ -24,9 +24,10 @@ namespace basicClasses.models.WEB_api
         [model("spec_tag")]
         [info(" use this to set rules of replacing incorrect html substrings in further parsing. add elements to this partition where PN <bad> is text to replace and <good> is what replace it (only for this instance)")]
         public static readonly string fix_html = "fix_html";
-
+       
         int maxHtmlShow = 500;
         opis fixes;
+        bool numeratePartitions = false;
 
         public override void Process(opis message)
         {
@@ -37,7 +38,7 @@ namespace basicClasses.models.WEB_api
             {
                 int.TryParse(spec.V(InnerHtmlLengthLimit), out maxHtmlShow);
             }
-
+         
             var htmltext = spec.V(HtmlText);
             if (spec.isHere(fix_html))
             {
@@ -99,6 +100,7 @@ namespace basicClasses.models.WEB_api
                 {
                     opis cn = new opis();
                     cn.PartitionName = n.Name;
+                   
                     rn.AddArr(cn);
                     Trace(n, cn);
                 }

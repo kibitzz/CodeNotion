@@ -240,7 +240,16 @@ namespace basicClasses.models.WEB_api
         public string DeComprez(string s)
         {
 
-            var bytes = Convert.FromBase64String(s);
+            var bytes = new byte[0];
+            try
+            {
+
+                 bytes = Convert.FromBase64String(s);
+            }
+            catch
+            {
+                return s;
+            }
 
             try
             {

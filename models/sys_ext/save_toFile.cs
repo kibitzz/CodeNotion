@@ -17,6 +17,10 @@ namespace basicClasses.models.sys_ext
         [info("вкажіть імя файлу")]
         public static readonly string file = "file";
 
+        [model("spec_tag")]
+        [info("")]
+        public static readonly string only_body = "only_body";
+
         public override void Process(opis message)
         {
             opis surc = message;
@@ -30,7 +34,7 @@ namespace basicClasses.models.sys_ext
             instanse.ExecActionModel(f, f);
 
 
-            DataFileUtils.savefile(surc.serialize(), f.body);
+            DataFileUtils.savefile(modelSpec.isHere(only_body)? surc.body : surc.serialize(), f.body);
         }
     }
 }

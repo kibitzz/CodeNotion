@@ -14,9 +14,9 @@ namespace basicClasses.models.WEB_api
     class Parce_Body_as_Json : ModelBase
     {
 
-        //[info("")]
-        //[model("spec_tag")]
-        //public static readonly string use_new_parcer = "use_new_parcer";
+        [info("parce json as opis structure")]
+        [model("spec_tag")]
+        public static readonly string opis_json = "opis_json";
 
         public override void Process(opis message)
         {
@@ -24,16 +24,13 @@ namespace basicClasses.models.WEB_api
 
             try
             {
-                //if (!modelSpec.isHere(use_new_parcer))
-                //{
-                //    JsonObject jrez = JsonParser.Parse(message.body);
 
-                //    jrez.BuildTreeopis(trtrt);
-                //}
-                //else
-                //{
+                if (modelSpec.isHere(opis_json))
+                {
+                    trtrt.load(message.body);
+                }else
                     trtrt.JsonParce(message.body);
-                //}
+               
             }
             catch(Exception e)
             {
@@ -41,6 +38,9 @@ namespace basicClasses.models.WEB_api
             }
 
             message.body = "";
+            if (modelSpec.isHere(opis_json))           
+                message.body = trtrt.body;
+            
             //  message.CopyArr(trtrt);
             message.CopyArr(new opis());
             message.AddArr(trtrt);
