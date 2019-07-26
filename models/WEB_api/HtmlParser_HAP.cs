@@ -92,7 +92,8 @@ namespace basicClasses.models.WEB_api
                                                 .Replace('\n', ' ')
                                                 .Replace('\t', ' ');
                                                 
-            rn["Attributes"].Vset("InnerText", node.InnerText.Trim()    );            
+            rn["Attributes"].Vset("InnerText", node.InnerText.Trim().Replace('\n', ' ')
+                                                .Replace('\t', ' '));            
 
             foreach (var n in node.ChildNodes)
             {

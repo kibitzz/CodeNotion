@@ -51,10 +51,12 @@ namespace basicClasses.models.StructureProcessing
             if (!string.IsNullOrEmpty( spec.V(order)))
             {
                 var pnm = spec.V(order_by_partition);
-                if (pnm.Length > 0)
+                if (pnm.Length > 0 )
                     srs.SortArrayBy_pname_body(pnm, sortt, spec.V(order) != "desc");
+                else if (sortt == 3)
+                    srs.SortArrayBy_items_body(sortt, spec.V(order) != "desc");
                 else
-                    srs.SortThisArrayBy_items_pname(sortt, spec.V(order) != "desc");
+                srs.SortThisArrayBy_items_pname(sortt, spec.V(order) != "desc");
             }
 
             if (spec.isHere(sort_source))

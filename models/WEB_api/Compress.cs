@@ -157,7 +157,14 @@ namespace basicClasses.models.WEB_api
             if (modelSpec.isHere(DeArhivateBranch))
             {
                 opis parsed = new opis();
-                parsed.load(DeComprez(message.body));
+                try
+                {
+                    parsed.load(DeComprez(message.body));
+                }
+                catch (IndexOutOfRangeException e)
+                {
+                    parsed.body = DeComprez(message.body);
+                }
                 message.CopyArr(parsed);
                 message.body = parsed.body;
                 return;

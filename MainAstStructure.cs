@@ -1035,7 +1035,7 @@ namespace basicClasses
             StringBuilder sb = new StringBuilder(paramCou);
 
             sb.Append("{");
-            sb.Append("\"N\": \"" + PartitionName + "\",");
+            sb.Append("\"N\": \"" + PartitionName.Replace("\"", "[&amp]") + "\",");
             sb.Append("\"K\": \"" + PartitionKind + "\",");
             if(body !=null)
             sb.Append("\"B\": \"" + body.Replace("\"", "[&amp]") + "\"");           
@@ -1107,6 +1107,7 @@ namespace basicClasses
                     currtext = "";
                 }
 
+             
                 if (data[idx] == '[')
                 {
                
@@ -1132,6 +1133,7 @@ namespace basicClasses
                     currprop = "";
                     currtext = "";
                 }
+            
 
                 if (data[idx] == '"')
                 {

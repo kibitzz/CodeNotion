@@ -12,19 +12,17 @@ namespace basicClasses.models.WEB_api
 
         public override void Process(opis message)
         {
-            //if (message.PartitionKind != "stringArray")
-            //    logopis["err:"].body = "message is not a stringArray ";
-
-
+        
             string[] proc=(string[]) message.bodyObject;
 
             for (int i = 0; i < proc.Length; i++)
             {
                 if (proc[i].Length > 4)
                 {
-                    JsonObject jrez = JsonParser.Parse(proc[i]);
+                  //  JsonObject jrez = JsonParser.Parse(proc[i]);
                     opis d = new opis();
-                    jrez.BuildTreeopis(d);
+                    d.JsonParce(proc[i]);
+                 //   jrez.BuildTreeopis(d);
                     message["data"] = d;
 
                     break;
