@@ -1221,7 +1221,7 @@ namespace basicClasses
                 string nameOfSubj = "";
                 string nameOfSubjForFiller = "";
 
-                if (b.Contains("<"))
+                if (b == "<")
                 {
                     req.body = "";
                     processObj = req;//filler
@@ -1238,14 +1238,14 @@ namespace basicClasses
                                        
                 #region hook input object
 
-                if (req.PartitionName.Contains(">"))
+                if (req.PartitionName.EndsWith(">"))
                 {
                     processObj = SVC[exec.SUBJ].W();//composition
 
                     string pn = req.PartitionName;
 
                     #region  input in form of <filler model>
-                    if (pn.Contains("<")) // when input in form of <filler model> its exec filler and put result in tmp arg
+                    if (pn.StartsWith("<")) // when input in form of <filler model> this exec filler and put result in tmp arg
                     {
                         opis paramRez = new opis();
                         paramRez.PartitionName = "stub inp";
@@ -1272,7 +1272,7 @@ namespace basicClasses
                                        
                 }
 
-                if (req.PartitionName.Contains("*"))
+                if (req.PartitionName.StartsWith("*"))
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
 
@@ -1285,10 +1285,10 @@ namespace basicClasses
 
                 #region subject change
 
-                if (b.Contains(">") && !b.Contains("<"))
+                if (b == ">")
                 {
-                    nameOfSubj = GetTempValName(SVC, tempNames);// last added here
-                    if (mod.body == null || !mod.body.Contains("@"))
+                    nameOfSubj = GetTempValName(SVC, tempNames);
+                    if (!modelIsProducer)
                         SVC[nameOfSubj].Wrap(SVC[exec.SUBJ].W());
                     modelSpec.Vset("v", nameOfSubj);
                 }
@@ -1312,7 +1312,7 @@ namespace basicClasses
                 #region context switching []*
 
                 bool contextByName = false;
-                if (b.Contains("*") && req.PartitionKind !="func")
+                if (b.StartsWith("*") && req.PartitionKind !="func")
                 {
                   string pn = b.Trim('>', '<',' ', '*');
                     if (pn.Length > 0)
@@ -1339,29 +1339,23 @@ namespace basicClasses
                 ExecActionModel(rez, processObj); // M A I N
 
               
-                if (b.Contains(">"))  // pipeline operator
+                if (b == ">")  // pipeline operator
                 {                    
-                    if (modelIsProducer)    // modelSpec["v"]
-                        SVC[exec.SUBJ].Wrap(SVC[nameOfSubj].W());
-                    else
-                        SVC[exec.SUBJ].Wrap(processObj);
+                  //  if (modelIsProducer)   //     nameOfSubj
+                        SVC[exec.SUBJ].Wrap(SVC[modelSpec.V("v")].W());  
+                    //else
+                    //    SVC[exec.SUBJ].Wrap(processObj);
                 }
 
-                //if (b.Contains("<"))// filler modifier  this break existing codebase, do not uncomment
-                //{
-                //    if (modelIsProducer)
-                //        processObj.Wrap(SVC[nameOfSubjForFiller].W());
-                //}
-
-
-                if (b.Contains("*") && req.PartitionKind != "func")
+                // TODO: replace if crash b.Contains("*")
+                if (b == "*" && req.PartitionKind != "func")
                 {
                     SVC["SYS_use_container_do_not_owerlap"].ArrResize(0);
 
-                    if (contextByName)
+                    //if (contextByName)
                         SVC["SYS_use_container_do_not_owerlap"].Wrap(SVC[nameOfSubj].W());
-                    else
-                        SVC["SYS_use_container_do_not_owerlap"].Wrap(processObj);
+                    //else
+                    //    SVC["SYS_use_container_do_not_owerlap"].Wrap(processObj);
                 }
 
            

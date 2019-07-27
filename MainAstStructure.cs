@@ -1035,7 +1035,7 @@ namespace basicClasses
             StringBuilder sb = new StringBuilder(paramCou);
 
             sb.Append("{");
-            sb.Append("\"N\": \"" + PartitionName.Replace("\"", "[&amp]") + "\",");
+            sb.Append("\"N\": \"" + (PartitionName != null ? PartitionName.Replace("\"", "[&amp]") : "")  + "\",");
             sb.Append("\"K\": \"" + PartitionKind + "\",");
             if(body !=null)
             sb.Append("\"B\": \"" + body.Replace("\"", "[&amp]") + "\"");           

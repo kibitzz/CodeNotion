@@ -75,7 +75,7 @@ namespace basicClasses.models.StructureProcessing
                 {
                     for (int k = 0; k < pn.listCou; k++)
                     {
-                        line += srs[i][pn[k].PartitionName] + "\t";
+                        line += srs[i][pn[k].PartitionName].body + "\t";
                     }
                 }
                 else
