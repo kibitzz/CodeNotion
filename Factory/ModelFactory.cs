@@ -182,7 +182,10 @@ namespace basicClasses.Factory
             models.Add("MySqlQuery", new MySqlQuery());
             models.Add("CompDataExport", new CompDataExport());
             models.Add("FindCommonDatastructure", new FindCommonDatastructure());
-            
+            models.Add("send_mail", new send_mail());
+            models.Add("smtp_settings", new smtp_settings());
+          
+
 
 
 

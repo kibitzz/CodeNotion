@@ -34,7 +34,7 @@ namespace basicClasses.models.String_proc
         public static readonly string format = "format";
 
         [model("spec_tag")]
-        [info(" ")]
+        [info(" you can spesify amount of days to add inbody of this partition. default value = 7 ")]
         public static readonly string Get_next_Week_monday = "Get_next_Week_monday";
 
         [model("spec_tag")]
@@ -60,7 +60,8 @@ namespace basicClasses.models.String_proc
 
             if (mspec.isHere(Get_next_Week_monday))
             {
-                r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays(8));
+                r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays(mspec[Get_next_Week_monday].intVal > 0
+                                                                         ? mspec[Get_next_Week_monday].intVal : 7));
                 if (mspec.isHere(hour))
                 {
                     TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);

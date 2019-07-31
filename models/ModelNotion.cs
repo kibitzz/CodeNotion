@@ -38,7 +38,7 @@ namespace basicClasses.models
         [model("Messaging")]
         public static readonly string Start = "Start";
 
-        [info("contain branches for each context and seperate branch for message type within context. to access current message and its parameter system generate local data context (val. acccess by * prefix) contain <currMsg> and <msg p>")]
+        [info("contain branches for each context and seperate branch for message type within context. to access current message and its parameter system generate local data context (val. acccess by * prefix) contain <currMsg> and <msg p>.    Base methods runs first when handling message, and then spec methods")]
         [model("Messaging")]
         public static readonly string Responces = "Responces";
 
@@ -71,7 +71,7 @@ namespace basicClasses.models
         [ignore]        
         public static readonly string sys = "sys";
 
-        [info("executed before any message received, initialization purposes mainly")]
+        [info("executed before any message received, initialization purposes mainly. base model is exec first, then spec code run - that allows you to owerride constants and functions of base modelNotion")]
         [model("Builders")]
         public static readonly string Build = "Build";
 

@@ -192,6 +192,7 @@
     <Compile Include="models\WEB_api\jsonParserModel.cs" />
     <Compile Include="models\WEB_api\Parce_Body_as_Json.cs" />
     <Compile Include="models\WEB_api\Randomizer.cs" />
+    <Compile Include="models\WEB_api\send_mail.cs" />
     <Compile Include="models\WEB_api\sqlBuilderClasses.cs" />
     <Compile Include="models\WEB_api\TemplatesMan.cs" />
     <Compile Include="models\WEB_api\upLoadFileSpecs.cs" />

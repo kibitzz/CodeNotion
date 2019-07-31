@@ -918,11 +918,12 @@ namespace basicClasses
             RunMethodAspectBeforeCode(msg, spec, waiter.PartitionName);
 
             string organizer = GetContextOrganizerName();        
-            RunNotionReaction(spec, ModelNotion.Responces, organizer, msg);
+          //  RunNotionReaction(spec, ModelNotion.Responces, organizer, msg);
        
             if (spec.PartitionName != waiter.PartitionName)            
                 RunNotionReaction(waiter, ModelNotion.Responces, organizer, msg);
 
+            RunNotionReaction(spec, ModelNotion.Responces, organizer, msg);
 
             RunMethodAspectAfterCode(msg, spec, waiter.PartitionName);
             RunMethodSubscribersCode(msg, spec, waiter.PartitionName);
