@@ -24,10 +24,7 @@ namespace basicClasses.models.WEB_api
         [model("")]
         [info("")]
         public static readonly string text = "text";
-
-        [model("")]
-        [info("будь який філлер кортий заповнить масив елементів для формування даних")]
-        public static readonly string source = "source";
+      
 
         public override void Process(opis message)
         {
