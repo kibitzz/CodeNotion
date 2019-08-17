@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using twite;
 
 namespace basicClasses.models.WEB_api
 {
@@ -18,11 +17,9 @@ namespace basicClasses.models.WEB_api
             for (int i = 0; i < proc.Length; i++)
             {
                 if (proc[i].Length > 4)
-                {
-                  //  JsonObject jrez = JsonParser.Parse(proc[i]);
+                {                
                     opis d = new opis();
-                    d.JsonParce(proc[i]);
-                 //   jrez.BuildTreeopis(d);
+                    d.JsonParce(proc[i]);                
                     message["data"] = d;
 
                     break;

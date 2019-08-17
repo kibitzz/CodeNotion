@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Text;
-using twite;
 
 namespace basicClasses.models.WEB_api
 {
@@ -210,12 +209,9 @@ namespace basicClasses.models.WEB_api
                     {
                         hc.responseData = hc.responseData.Replace('\n', ' ');
                     }
-
-                    //  JsonObject jrez = JsonParser.Parse(hc.responseData);
-                    opis trtrt = new opis();
-                    //  jrez.BuildTreeopis(trtrt);
-                    trtrt.JsonParce(hc.responseData);
-                    //  t[webResponceModel.responseDataParsed] = trtrt;
+                   
+                    opis trtrt = new opis();                  
+                    trtrt.JsonParce(hc.responseData);                  
                     t[webResponceModel.responseDataParsed]["jsonObj"] = trtrt;
                 }
             }

@@ -86,33 +86,28 @@ namespace basicClasses.models.WEB_api
                 if (string.IsNullOrEmpty(respCookies)) { return cookies; }
                 string[] spl = respCookies.Split(new char[] { ';', ',' });
 
-                string[] splKK;
-                string kkExpr = QueryParser.GetExpresionStructUntyped(cookies, out splKK);
+                //string[] splKK;
+                //string kkExpr = QueryParser.GetExpresionStructUntyped(cookies, out splKK);
 
-                foreach (string s in spl)
-                {
-                    string[] lex;
-                    string expr = QueryParser.GetExpresionStructUntyped(s, out lex);
-                    if (expr.StartsWith("O=O") && !s.StartsWith(" expires") && !s.StartsWith(" path") && !s.StartsWith(" domain"))
-                    {
-                        int idx = Array.IndexOf(splKK, lex[0]);
-                        if (idx != -1)
-                        {
-                            splKK[idx + 1] = lex[1].Trim();
-                        }
-                        else
-                        {
-                            rez += s + "; ";
-                        }
-                    }
-                }
-                //	respCookies
-                //				foreach(Cookie ck in cc)
-                //				{
-                //					rez += ck.ToString();
-                //				}
+                //foreach (string s in spl)
+                //{
+                //    string[] lex;
+                //    string expr = QueryParser.GetExpresionStructUntyped(s, out lex);
+                //    if (expr.StartsWith("O=O") && !s.StartsWith(" expires") && !s.StartsWith(" path") && !s.StartsWith(" domain"))
+                //    {
+                //        int idx = Array.IndexOf(splKK, lex[0]);
+                //        if (idx != -1)
+                //        {
+                //            splKK[idx + 1] = lex[1].Trim();
+                //        }
+                //        else
+                //        {
+                //            rez += s + "; ";
+                //        }
+                //    }
+                //}              
 
-                rez = rez + QueryParser.Merge(kkExpr, splKK);
+                //rez = rez + QueryParser.Merge(kkExpr, splKK);
 
                 return rez;
 

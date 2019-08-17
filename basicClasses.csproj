@@ -184,11 +184,9 @@
     <Compile Include="models\WEB_api\BrowserWindowDatasetModel.cs" />
     <Compile Include="models\WEB_api\Compress.cs" />
     <Compile Include="models\WEB_api\ConcPostDataFormat.cs" />
-    <Compile Include="models\WEB_api\extractDataFromHtml.cs" />
     <Compile Include="models\WEB_api\Fill_templare_from_dataSouce.cs" />
     <Compile Include="models\WEB_api\HtmlParser_HAP.cs" />
     <Compile Include="models\WEB_api\http_client.cs" />
-    <Compile Include="models\WEB_api\JsonParser.cs" />
     <Compile Include="models\WEB_api\jsonParserModel.cs" />
     <Compile Include="models\WEB_api\Parce_Body_as_Json.cs" />
     <Compile Include="models\WEB_api\Randomizer.cs" />
