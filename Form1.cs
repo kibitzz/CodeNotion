@@ -89,7 +89,7 @@ namespace basicClasses
            
 
             treeView2.ShowNodeToolTips = false;
-            treeView3.ShowNodeToolTips = false;
+            treeView3.ShowNodeToolTips = false;           
             //  treeView3.ShowLines = false;
 
             treeView3.ItemHeight = 29;

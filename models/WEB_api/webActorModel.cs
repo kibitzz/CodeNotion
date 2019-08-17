@@ -39,7 +39,7 @@ namespace basicClasses.models.WEB_api
 
     [info("do not change message. implement http request functionality")]
     [appliable("Action exec")]
-     public  class webActorModel: ModelBase
+    public class webActorModel : ModelBase
     {
         [ignore]
         httpClient hc;
@@ -55,7 +55,7 @@ namespace basicClasses.models.WEB_api
         [info("")]
         [model("spec_tag")]
         public static readonly string allowAutoRedrect = "allowAutoRedrect";
-      
+
 
         [info("body contain url ")]
         [model("")]
@@ -85,7 +85,7 @@ namespace basicClasses.models.WEB_api
         [model("")]
         public static readonly string ProxySettings = "ProxySettings";
 
-        
+
 
         public override void Process(opis message)
         {
@@ -96,13 +96,13 @@ namespace basicClasses.models.WEB_api
 
             opis ex = modelSpec.Duplicate();
             instanse.ExecActionModelsList(ex);
-         
+
             opis headerz = ex[Headers];
 
             for (int i = 0; i < headerz.listCou; i++)
             {
-                if (!headerz[i].PartitionName.StartsWith("not header format"))             
-                    hc.AddHeader(headerz[i].PartitionName + ":" + headerz[i].body);                
+                if (!headerz[i].PartitionName.StartsWith("not header format"))
+                    hc.AddHeader(headerz[i].PartitionName + ":" + headerz[i].body);
             }
 
             hc.allowAutoRedrect = ex.isHere(allowAutoRedrect);
@@ -113,14 +113,14 @@ namespace basicClasses.models.WEB_api
 
             string data = ex.V(dataToPost);
 
-          if  (ex.V(post_data_encoding )== "Kirill_to_UTF")
-            data = TemplatesMan.Kirill_to_UTF(data);
+            if (ex.V(post_data_encoding) == "Kirill_to_UTF")
+                data = TemplatesMan.Kirill_to_UTF(data);
 
             if (ex.V(post_data_encoding) == "url_encode")
                 data = TemplatesMan.Url_encode(data);
 
             //if (ex[ProxySettings].isInitlze)// PROXY
-                hc.proxySettings = ex[ProxySettings].W();
+            hc.proxySettings = ex[ProxySettings].W();
 
             opis t = new opis();
             t["request"] = ex;
@@ -164,8 +164,8 @@ namespace basicClasses.models.WEB_api
 
             t[webResponceModel.Status].body = rez.ToString();
 
-            if(!string.IsNullOrEmpty(hc.RedirectLocation))
-            t.Vset("RedirectLocation", hc.RedirectLocation);
+            if (!string.IsNullOrEmpty(hc.RedirectLocation))
+                t.Vset("RedirectLocation", hc.RedirectLocation);
 
             if (ex.isHere(DownloadResource))
                 t["filename"].body = ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename);
@@ -175,7 +175,7 @@ namespace basicClasses.models.WEB_api
             {
                 t[webResponceModel.responseHeaders] = hc.responceHeaders;
 
-                t.Vset(webResponceModel.responseData, hc.responseData.Replace("\n"," "));              
+                t.Vset(webResponceModel.responseData, hc.responseData.Replace("\n", " "));
                 t.Vset(webResponceModel.NewCookies, hc.NewCookies);
 
                 #region NewCookies
@@ -200,7 +200,7 @@ namespace basicClasses.models.WEB_api
 
                 #endregion
 
-                if (hc.responseData !=null &&
+                if (hc.responseData != null &&
                     !hc.responseData.StartsWith("<!DOCTYPE html") &&
                     !hc.responseData.StartsWith("<") &&
                     hc.contentType != null &&
@@ -211,21 +211,21 @@ namespace basicClasses.models.WEB_api
                         hc.responseData = hc.responseData.Replace('\n', ' ');
                     }
 
-                  //  JsonObject jrez = JsonParser.Parse(hc.responseData);
+                    //  JsonObject jrez = JsonParser.Parse(hc.responseData);
                     opis trtrt = new opis();
-                  //  jrez.BuildTreeopis(trtrt);
+                    //  jrez.BuildTreeopis(trtrt);
                     trtrt.JsonParce(hc.responseData);
                     //  t[webResponceModel.responseDataParsed] = trtrt;
                     t[webResponceModel.responseDataParsed]["jsonObj"] = trtrt;
                 }
             }
-            
+
 
             SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
 
         }
 
 
-       
+
     }
 }

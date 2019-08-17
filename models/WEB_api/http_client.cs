@@ -561,8 +561,7 @@ namespace basicClasses.models.WEB_api
             #region  Proxy
             if (useProxy)
             {
-                myHttpWebRequest.Proxy = myProxy;
-                //pm.StartPing(_proxyServer, dataToPost);
+                myHttpWebRequest.Proxy = myProxy;                
             }
             #endregion
 
