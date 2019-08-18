@@ -32,6 +32,19 @@ namespace basicClasses.models.WEB_api
         [info(" do not  UTF_to_UTF25pref(replacement)  => Kirill_to_UTF")]
         public static readonly string no_encoding_conversion = "no_encoding_conversion";
 
+        [model("spec_tag")]
+        [info(" space to %20     /  to  %2F   and other non aplha symbols.   kirill convert too")]
+        public static readonly string params_full_url_encoding = "params_full_url_encoding";
+
+        [model("spec_tag")]
+        [info("   %D0%90  to  %25D0%2590")]
+        public static readonly string params_UTF_to_UTF25pref_encoding = "params_UTF_to_UTF25pref_encoding";
+
+        [model("spec_tag")]
+        [info("  before encoding replace   %  to  %25")]
+        public static readonly string percent_symbol_encode = "percent_symbol_encode";
+
+
         public override void Process(opis message)
         {
             opis rl = modelSpec[ReplaceList].Duplicate();
@@ -55,12 +68,22 @@ namespace basicClasses.models.WEB_api
                     string replacement = t[i].body;
 
                     replacement = replacement.Trim(new char[] { '"' });
-                    if(!modelSpec.isHere(no_slash_conversion))
-                    replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
+
+                    if (modelSpec.isHere(percent_symbol_encode))
+                        replacement = replacement.Replace("%", "%25");
+
+                    if (!modelSpec.isHere(no_slash_conversion))
+                        replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
+
+                    if (modelSpec.isHere(params_full_url_encoding))                    
+                        replacement = TemplatesMan.UrlEncodeFull(replacement);
+
+                    if (modelSpec.isHere(params_UTF_to_UTF25pref_encoding))
+                        replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
+
 
                     if (!modelSpec.isHere(no_encoding_conversion))
-                    {
-                        replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
+                    {                       
                         data = data.Replace(torepl, TemplatesMan.Kirill_to_UTF(replacement));
                     }
                     else
@@ -77,13 +100,18 @@ namespace basicClasses.models.WEB_api
                 {
                     string replacement = t.V(string.IsNullOrEmpty(rl[i].body) ? rl[i].PartitionName.Trim(new char[] { '#' }) : rl[i].body);
                     replacement = replacement.Trim(new char[] { '"' });
+
                     if (!modelSpec.isHere(no_slash_conversion))
                         replacement = replacement.Replace("/", "%2F").Replace(" ", "+");
 
+                    if (modelSpec.isHere(params_full_url_encoding))
+                        replacement = TemplatesMan.UrlEncodeFull(replacement);
+
+                    if (modelSpec.isHere(params_UTF_to_UTF25pref_encoding))
+                        replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
 
                     if (!modelSpec.isHere(no_encoding_conversion))
-                    {
-                        replacement = TemplatesMan.UTF_to_UTF25pref(replacement);
+                    {                        
                         data = data.Replace(rl[i].PartitionName, TemplatesMan.Kirill_to_UTF(replacement));
                     }
                     else

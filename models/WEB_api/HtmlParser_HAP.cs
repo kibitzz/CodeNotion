@@ -27,7 +27,7 @@ namespace basicClasses.models.WEB_api
        
         int maxHtmlShow = 500;
         opis fixes;
-        bool numeratePartitions = false;
+
 
         public override void Process(opis message)
         {

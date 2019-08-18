@@ -94,8 +94,7 @@ namespace basicClasses.Factory
             models.Add("ContextHierarchyTypes", new ContextHierarchyTypes());
 
             models.Add("FillArgumentsArray", new FillArgumentsArray());
-
-            //models.Add("ModelBinder", new ModelBinder());
+            
             models.Add("ModelBase", new ModelBase());
             models.Add("ModelNotion", new ModelNotion());
             models.Add("modelReq", new modelReq());
@@ -139,8 +138,7 @@ namespace basicClasses.Factory
             models.Add("AccountsParserModel", new AccountsParserModel());
             models.Add("Opis_ParserModel", new Opis_ParserModel());
             models.Add("SimpleLines_ParserModel", new SimpleLines_ParserModel());            
-            models.Add("Fill_templare_from_dataSouce", new Fill_templare_from_dataSouce());
-         //   models.Add("extractDataFromHtml", new extractDataFromHtml());        
+            models.Add("Fill_templare_from_dataSouce", new Fill_templare_from_dataSouce());              
             models.Add("upLoadFileSpecs", new upLoadFileSpecs());
             models.Add("Check_body_isFilled", new Check_body_isFilled());
             models.Add("numArrNames", new numArrNames());
