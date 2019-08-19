@@ -71,7 +71,7 @@ namespace basicClasses.models
         [ignore]        
         public static readonly string sys = "sys";
 
-        [info("executed before any message received, initialization purposes mainly. base model is exec first, then spec code run - that allows you to owerride constants and functions of base modelNotion")]
+        [info("executed before any message received, initialization purposes mainly. base model is exec first, then spec code run - that allows you to override constants and functions of base modelNotion")]
         [model("Builders")]
         public static readonly string Build = "Build";
 
