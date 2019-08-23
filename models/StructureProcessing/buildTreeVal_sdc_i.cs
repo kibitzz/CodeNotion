@@ -135,7 +135,14 @@ namespace basicClasses.models.StructureProcessing
             if (bp.PartitionName.StartsWith("&p"))
                 bp.PartitionName = sharedVal.PartitionName;
 
-           
+            if (bp.PartitionKind =="&b")
+                bp.PartitionKind = sharedVal.body;
+            if (bp.PartitionKind == "&p")
+                bp.PartitionKind = sharedVal.PartitionName;
+
+            if (bp.PartitionKind.StartsWith("$"))
+                bp.PartitionKind = sharedVal[bp.PartitionKind.Replace("$", "")].body;
+
             if (bp.body.StartsWith("*"))
             {
                 donotrecurce = true;

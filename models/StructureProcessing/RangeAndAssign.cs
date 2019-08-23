@@ -11,6 +11,9 @@ namespace basicClasses.models.StructureProcessing
     [info("")]
     public class RangingList : ModelBase
     {
+        [model("spec_tag")]
+        [info("do not require all checks in list return OK to set range points to argument")]
+        public static readonly string only_range = "only_range";
     }
 
 
@@ -163,7 +166,7 @@ namespace basicClasses.models.StructureProcessing
 
             instanse.ExecActionResponceModelsList(crit, mmm);
          
-            if(mmm["passCou"].intVal == crit.listCou || crit.isHere("only range"))          
+            if(mmm["passCou"].intVal == crit.listCou || crit.isHere(RangingList.only_range))          
              rez = mmm["range"].intVal;
 
             return rez;

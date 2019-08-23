@@ -587,12 +587,7 @@ namespace basicClasses
             }
 
             int rez = paramCou;
-
-            //if (FindArr(elem))
-            //{
-            //    rez = paramCou;
-            //}
-
+         
             if (UseNameIndexHash)
             {
                  if (!NamesIndexHash.ContainsKey(elem.PartitionName))

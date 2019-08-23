@@ -230,7 +230,7 @@ namespace basicClasses.models.WEB_api
 
 
 
-        public string Comprez(string s)
+        public static string Comprez(string s)
         {
             var bytes = Encoding.UTF8.GetBytes(s);
             using (var msi = new MemoryStream(bytes))
@@ -244,7 +244,7 @@ namespace basicClasses.models.WEB_api
             }
         }
 
-        public string DeComprez(string s)
+        public static string DeComprez(string s)
         {
 
             var bytes = new byte[0];

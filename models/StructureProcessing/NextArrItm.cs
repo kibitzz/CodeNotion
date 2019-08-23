@@ -15,7 +15,7 @@ namespace basicClasses.models.StructureProcessing
         public static readonly string Iterator = "Iterator";
 
         [model("")]
-        [info("")]
+        [info("source filler function     or    constant array")]
         public static readonly string source = "source";
 
         [model("spec_tag")]
@@ -30,13 +30,19 @@ namespace basicClasses.models.StructureProcessing
         [model("ConditionResponceModel")]
         public static readonly string responce = "responce";
 
+        [model("spec_tag")]
+        [info("when last item from source is used - reevaluate source filler function to get new source array and restart iterator")]
+        public static readonly string reinit_iterator = "reinit_iterator";
+
         public override void Process(opis message)
         {
             opis surc = message;
-           
+            opis iter = SharedContextRoles.GetRole(modelSpec[Iterator].body, sharedVal);
 
-           opis iter = SharedContextRoles.GetRole(modelSpec[Iterator].body, sharedVal);
-            if (iter.PartitionKind == "null" || !iter.isInitlze)
+            if (iter.PartitionKind == "null" || !iter.isInitlze 
+                || (modelSpec.isHere(reinit_iterator) 
+                && iter[source].listCou == iter["pos"].intVal
+                && iter["pos"].intVal >0))
             {
                 opis ex = modelSpec.Duplicate();
                 instanse.ExecActionModelsList(ex);
@@ -55,6 +61,7 @@ namespace basicClasses.models.StructureProcessing
 
             if(modelSpec.isHere(loop) && iter[source].listCou == iter["pos"].intVal)
                 iter["pos"].body = "0";
+            
 
             opis itm = null;
             if (iter[source].listCou > iter["pos"].intVal)

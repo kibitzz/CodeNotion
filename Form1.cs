@@ -13,6 +13,7 @@ using basicClasses.models;
 using basicClasses.Factory;
 using basicClasses.models.WEB_api;
 using System.Net;
+using basicClasses.models.sys_ext;
 
 namespace basicClasses
 {
@@ -1403,8 +1404,24 @@ namespace basicClasses
             if (copiedBranch != null)
             {
                 opis tt = copiedBranch.Duplicate();
-                EditingOpis.AddArr(tt);
-                EditingOpis.treeElem.Nodes.Add(tt.GetDebugTree().FirstNode);
+
+                if (Control.ModifierKeys == Keys.Alt)
+                {
+                    EditingOpis.AddArrRange(tt);
+                    tt.GetDebugTree();
+                    TreeNode[] arr = new TreeNode[tt.listCou];
+
+                    for (int i = 0; i < tt.listCou; i++)
+                        arr[i] = tt[i].treeElem;
+
+                   // tt.GetDebugTree().Nodes.CopyTo(arr, 0); some stupid shit                 
+                    EditingOpis.treeElem.Nodes.AddRange(arr);
+                }
+                else
+                {
+                    EditingOpis.AddArr(tt);
+                    EditingOpis.treeElem.Nodes.Add(tt.GetDebugTree().FirstNode);
+                }
             }
         }
 
@@ -1977,8 +1994,7 @@ namespace basicClasses
 
             EditingOpisValue = "";
             richTextBox4.Text = "";
-
-            //_path_[] обєкт->Start->елемент->query_substance->validate->query_substance подчиненным контекстам->Send
+            
 
             if (now != null && now.PartitionName != null
                 && now.PartitionName == "_path_")
@@ -2077,10 +2093,15 @@ namespace basicClasses
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var txt = Clipboard.GetText(TextDataFormat.UnicodeText);
+
+            Data_In_Buffer.rawData = txt;
+
             opis import = new opis();
             import.load(txt);
             copiedBranch = import;
+
             
+
         }
     }
 

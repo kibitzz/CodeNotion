@@ -220,7 +220,7 @@ namespace basicClasses.models.WEB_api
     [appliable("file_formats")]
     public class universal_line_pareser : ModelBase
     {
-        [info("list of splitters, in actual sequence(as fillows in line)")]
+        [info("list of splitters, in proper sequence(as fillows in line)  to the end of line use symbol '-'")]
         public static readonly string splitters = "splitters";
 
 
@@ -243,6 +243,7 @@ namespace basicClasses.models.WEB_api
                     continue;
 
                 opis el = new opis();
+                el.PartitionName = i.ToString();
                 string s = proc[i]+"-";
                 int pos = 0;
 
@@ -250,7 +251,7 @@ namespace basicClasses.models.WEB_api
                 {
                     int fpos = s.IndexOf(spl[sp].body[0], pos);
 
-                    el[sp.ToString()].body = s.Substring(pos, fpos - pos);
+                    el[spl[sp].PartitionName].body = s.Substring(pos, fpos - pos);
 
                     pos = fpos + 1;
                 }
