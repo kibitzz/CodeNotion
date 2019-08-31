@@ -2061,7 +2061,7 @@ namespace basicClasses
                         if (arr[pos].listCou != templ.listCou)                        
                             inf += " different listCou";                           
                                            
-                        templ.PartitionKind = inf;
+                        templ.PartitionKind = templ.PartitionName != "_path_" ? inf.Trim() : "";
 
                     } else
                         templ.PartitionKind = "node not found";

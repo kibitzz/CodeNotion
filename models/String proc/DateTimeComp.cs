@@ -38,6 +38,10 @@ namespace basicClasses.models.String_proc
         public static readonly string Get_next_Week_monday = "Get_next_Week_monday";
 
         [model("spec_tag")]
+        [info("  ")]
+        public static readonly string Get_This_Week_Sunday = "Get_This_Week_Sunday";        
+
+        [model("spec_tag")]
         [info(" ")]
         public static readonly string add_time_to_date = "add_time_to_date";
 
@@ -58,16 +62,7 @@ namespace basicClasses.models.String_proc
 
             DateTime r = new DateTime();
 
-            if (mspec.isHere(Get_next_Week_monday))
-            {
-                r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays(mspec[Get_next_Week_monday].intVal > 0
-                                                                         ? mspec[Get_next_Week_monday].intVal : 7));
-                if (mspec.isHere(hour))
-                {
-                    TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);
-                    r = r.Add(sp);
-                }
-            }
+          
 
             if (mspec.isHere(return_actual_date))
             {
@@ -95,6 +90,25 @@ namespace basicClasses.models.String_proc
 
             if (mspec.isHere(set_curr))
                 curr = r;
+
+
+            if (mspec.isHere(Get_next_Week_monday))
+            {
+                r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays(mspec[Get_next_Week_monday].intVal > 0
+                                                                         ? mspec[Get_next_Week_monday].intVal : 7));
+                if (mspec.isHere(hour))
+                {
+                    TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);
+                    r = r.Add(sp);
+                }
+            }
+
+            if (mspec.isHere(Get_This_Week_Sunday))
+            {
+                r = Dates.SundayForDate(curr);              
+            }
+
+
 
             message.body = mspec[format].isInitlze ? r.ToString(mspec.V(format)) : r.Ticks.ToString();
             message.CopyArr(new opis());
@@ -165,6 +179,15 @@ namespace basicClasses.models.String_proc
             }
 
             return target.AddDays(m - d).Date;
+        }
+
+        public static DateTime SundayForDate(DateTime target)
+        {
+
+            int daysUntilSunday = 7 - (int)target.DayOfWeek;
+            DateTime thisWeekSunday = target.AddDays(daysUntilSunday == 7 ? 0 : daysUntilSunday).Date.AddHours(23);
+
+            return thisWeekSunday;
         }
 
         public static bool IsOdd(int value)
