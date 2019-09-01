@@ -1660,29 +1660,56 @@ namespace basicClasses
             return rez;
         }
 
+        public void CheckForVersionControl(opis partition, opis template, string markForVisualization)
+        {
+
+            for (int i = 0; i < template.listCou; i++)
+            {
+                var elemN = template[i].PartitionName;
+
+                if (partition.isHere(elemN))
+                {
+                    var elem_opis = partition[elemN];
+                    var info = "";
+
+                    if (elem_opis.body != template[i].body)
+                        info += "   ~prev  " + elem_opis.body + "";
+
+                    if (elem_opis.PartitionKind != template[i].PartitionKind)
+                        info += " / " + elem_opis.PartitionKind + " | "+ template[i].PartitionKind + " /";
+
+                    if (!string.IsNullOrEmpty(info) && elem_opis.PartitionKind != "modified")
+                    {
+                        template[i].PartitionKind = "modified";
+                        template[i].body += info;
+                    }
+
+                    CheckForVersionControl(elem_opis, template[i], markForVisualization);
+
+                }
+                else
+                {
+                    template[i].body += template[i].PartitionKind.Length > 0 ? " /" + template[i].PartitionKind + "/" : "";
+                    template[i].PartitionKind = markForVisualization;
+                }
+
+            }
+
+        }
+
+
         public void NormalizeNamesForComparison(opis p)
         {
             if (p == null) return;
-            char[] numb = new char[] { '0', '1', '2', '3', '4', '5', '6', '7', '8', '9' };
 
-            opis presenceCou = new opis();
 
-            for (int i = 0; i < p.listCou; i++)
-            {
-                int puy = p[i].PartitionName.IndexOfAny(numb);
-                if (puy > 0)
-                    p[i].PartitionName = p[i].PartitionName.Substring(0, puy);
-
-                if (presenceCou[p[i].PartitionName].isInitlze)
-                    p[i].PartitionName += presenceCou[p[i].PartitionName].intVal;
-
-                presenceCou[p[i].PartitionName].intVal++;
-            }
-
+            numArrNames.do_num(p);
+            
             for (int i = 0; i < p.listCou; i++)
             {
                 NormalizeNamesForComparison(p[i]);
             }
+
         }
 
         /// <summary>

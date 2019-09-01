@@ -1635,7 +1635,7 @@ namespace basicClasses
             opis reflist = new opis();
 
             string[] arr = new string[] { "EditingPart", "Action", "Pause_To_debug", "MsgTemplate", "exec",
-                "initValues", "ConditionChecker", "SharedContextRoles","buildTreeVal_sdc_i","TreeDataExtractor","deleted","added", "modified" , "global_log"};
+                "initValues", "ConditionChecker", "SharedContextRoles","buildTreeVal_sdc_i","TreeDataExtractor", "global_log", "deleted","added", "modified"};
 
             if (sender is bool)
             {
@@ -1660,9 +1660,11 @@ namespace basicClasses
             treeView2.Nodes.Add(reflist.GetDebugTree().FirstNode);
             treeView2.TopNode.Expand();
 
-
-            PrepareWordInput();
-            //treeView3.TopNode = 
+            if (!(sender is bool))
+            {
+                PrepareWordInput();
+            }
+        
 
         }
 
@@ -1696,19 +1698,28 @@ namespace basicClasses
 
         private void button25_Click(object sender, EventArgs e)
         {
-            // treeView2.SelectedNode - в дереві зліва (те, що зараз)
-            //  HighlightedOpis в редакторі дерева (те, що було)
+           
+            TreeNode now_node = treeView2.SelectedNode == null ?  treeView2.Nodes[0] : treeView2.SelectedNode;
 
-            if (treeView2.SelectedNode != null && treeView2.SelectedNode.Tag != null && EditingOpis != null)
+            if (now_node.Tag != null && EditingOpis != null)
             {
-                opis now = ((opis)treeView2.SelectedNode.Tag).Duplicate();
-                opis then = EditingOpis.Duplicate();
-                //HighlightedOpis.Duplicate();
+                opis now = ((opis)now_node.Tag).Duplicate();
+
+                opis then = null;
+                if (EditingOpis == now_node.Tag)
+                {
+                    then = Parser.ContextGlobal["words"]["version_control"][now.PartitionName].Duplicate();
+                }
+                else
+                 then = EditingOpis.Duplicate();
+
+                
                 then.NormalizeNamesForComparison(now);
                 then.NormalizeNamesForComparison(then);
 
-                then.CheckConformity(now, then, "deleted");
-                then.CheckConformity(then, now, "added");
+                then.CheckForVersionControl(then, now, "added");
+                then.CheckForVersionControl(now, then, "deleted");
+              
                 then.PartitionKind = "previos";
                 now.PartitionKind = "current";
                 opis comp = new opis("comparison result");
@@ -1717,12 +1728,15 @@ namespace basicClasses
 
                 HighlightedOpis = comp;
                 EditingOpis = null;
-                PrepareWordInput();
+            //    PrepareWordInput();
+
                 //treeView3.Nodes.Clear();
                 //treeView3.Nodes.Add(comp.GetDebugTree());
 
                 EditingOpis = comp;
                 button22_Click(true, null);
+                treeView3.Nodes.Clear();
+                treeView3.Nodes.Add(comp.GetDebugTree().FirstNode);
 
             }
 
