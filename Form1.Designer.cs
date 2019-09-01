@@ -40,7 +40,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
-            this.listBox2 = new System.Windows.Forms.ListBox();
+            this.button5 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.label2 = new System.Windows.Forms.Label();
@@ -68,10 +68,12 @@
             this.exportToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.gotoPathToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.showModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button11 = new System.Windows.Forms.Button();
             this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.richTextBox4 = new System.Windows.Forms.RichTextBox();
+            this.listBox2 = new System.Windows.Forms.ListBox();
             this.button25 = new System.Windows.Forms.Button();
             this.button23 = new System.Windows.Forms.Button();
             this.button9 = new System.Windows.Forms.Button();
@@ -97,7 +99,6 @@
             this.importexportCtrl = new System.Windows.Forms.TextBox();
             this.button26 = new System.Windows.Forms.Button();
             this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
-            this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.tabControl2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.splitContainer1)).BeginInit();
@@ -133,7 +134,7 @@
             this.textBox1.Location = new System.Drawing.Point(44, 20);
             this.textBox1.Margin = new System.Windows.Forms.Padding(4);
             this.textBox1.Name = "textBox1";
-            this.textBox1.Size = new System.Drawing.Size(947, 23);
+            this.textBox1.Size = new System.Drawing.Size(947, 22);
             this.textBox1.TabIndex = 1;
             // 
             // textBox2
@@ -151,7 +152,7 @@
             this.checkBox1.Location = new System.Drawing.Point(44, 55);
             this.checkBox1.Margin = new System.Windows.Forms.Padding(4);
             this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(127, 20);
+            this.checkBox1.Size = new System.Drawing.Size(131, 21);
             this.checkBox1.TabIndex = 3;
             this.checkBox1.Text = "regexp matched";
             this.checkBox1.UseVisualStyleBackColor = true;
@@ -179,7 +180,7 @@
             this.tabPage1.Margin = new System.Windows.Forms.Padding(4);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(4);
-            this.tabPage1.Size = new System.Drawing.Size(1204, 615);
+            this.tabPage1.Size = new System.Drawing.Size(1205, 615);
             this.tabPage1.TabIndex = 2;
             this.tabPage1.Text = "input words";
             // 
@@ -209,7 +210,7 @@
             this.splitContainer1.Panel2.Controls.Add(this.label1);
             this.splitContainer1.Panel2.Controls.Add(this.button6);
             this.splitContainer1.Panel2.Controls.Add(this.treeView2);
-            this.splitContainer1.Size = new System.Drawing.Size(1196, 607);
+            this.splitContainer1.Size = new System.Drawing.Size(1197, 607);
             this.splitContainer1.SplitterDistance = 729;
             this.splitContainer1.SplitterWidth = 8;
             this.splitContainer1.TabIndex = 0;
@@ -230,7 +231,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(55)))));
-            this.splitContainer2.Panel2.Controls.Add(this.listBox2);
+            this.splitContainer2.Panel2.Controls.Add(this.button5);
             this.splitContainer2.Panel2.Controls.Add(this.panel1);
             this.splitContainer2.Panel2.Controls.Add(this.button24);
             this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
@@ -247,6 +248,7 @@
             this.splitContainer2.Panel2.Controls.Add(this.button10);
             this.splitContainer2.Panel2.Controls.Add(this.button7);
             this.splitContainer2.Panel2.Controls.Add(this.richTextBox4);
+            this.splitContainer2.Panel2.Controls.Add(this.listBox2);
             this.splitContainer2.Size = new System.Drawing.Size(729, 607);
             this.splitContainer2.SplitterDistance = 155;
             this.splitContainer2.SplitterWidth = 8;
@@ -289,22 +291,15 @@
             this.richTextBox3.MouseHover += new System.EventHandler(this.richTextBox3_MouseHover);
             this.richTextBox3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.richTextBox3_MouseMove);
             // 
-            // listBox2
+            // button5
             // 
-            this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.listBox2.Font = new System.Drawing.Font("Courier New", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.listBox2.ForeColor = System.Drawing.Color.Aquamarine;
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.ItemHeight = 24;
-            this.listBox2.Location = new System.Drawing.Point(0, 6);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(726, 436);
-            this.listBox2.TabIndex = 8;
-            this.listBox2.Visible = false;
-            this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
+            this.button5.Location = new System.Drawing.Point(-1, 411);
+            this.button5.Name = "button5";
+            this.button5.Size = new System.Drawing.Size(57, 27);
+            this.button5.TabIndex = 23;
+            this.button5.Text = "ver";
+            this.button5.UseVisualStyleBackColor = true;
+            this.button5.Click += new System.EventHandler(this.button5_Click_1);
             // 
             // panel1
             // 
@@ -314,7 +309,7 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(61, 7);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(333, 210);
+            this.panel1.Size = new System.Drawing.Size(333, 202);
             this.panel1.TabIndex = 16;
             this.panel1.Visible = false;
             // 
@@ -329,7 +324,7 @@
             this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip2.Location = new System.Drawing.Point(0, 34);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(333, 163);
+            this.toolStrip2.Size = new System.Drawing.Size(333, 155);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip2_ItemClicked);
@@ -343,7 +338,7 @@
             this.label2.ForeColor = System.Drawing.Color.Brown;
             this.label2.Location = new System.Drawing.Point(3, 7);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(88, 23);
+            this.label2.Size = new System.Drawing.Size(82, 23);
             this.label2.TabIndex = 0;
             this.label2.Text = "label2";
             // 
@@ -375,10 +370,10 @@
             this.toolStripButton5,
             this.toolStripButton6});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.toolStrip1.Location = new System.Drawing.Point(66, 164);
+            this.toolStrip1.Location = new System.Drawing.Point(66, 156);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.ShowItemToolTips = false;
-            this.toolStrip1.Size = new System.Drawing.Size(663, 274);
+            this.toolStrip1.Size = new System.Drawing.Size(663, 285);
             this.toolStrip1.TabIndex = 11;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
@@ -452,7 +447,7 @@
             // 
             this.button21.Location = new System.Drawing.Point(-1, 375);
             this.button21.Name = "button21";
-            this.button21.Size = new System.Drawing.Size(56, 27);
+            this.button21.Size = new System.Drawing.Size(57, 27);
             this.button21.TabIndex = 20;
             this.button21.Text = "T[]";
             this.button21.UseVisualStyleBackColor = true;
@@ -481,7 +476,7 @@
             // button18
             // 
             this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button18.Location = new System.Drawing.Point(-1, 309);
+            this.button18.Location = new System.Drawing.Point(-1, 301);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(56, 27);
             this.button18.TabIndex = 17;
@@ -533,9 +528,9 @@
             this.treeView3.Indent = 25;
             this.treeView3.LabelEdit = true;
             this.treeView3.LineColor = System.Drawing.Color.LightGray;
-            this.treeView3.Location = new System.Drawing.Point(64, 7);
+            this.treeView3.Location = new System.Drawing.Point(64, 3);
             this.treeView3.Name = "treeView3";
-            this.treeView3.Size = new System.Drawing.Size(659, 151);
+            this.treeView3.Size = new System.Drawing.Size(659, 147);
             this.treeView3.TabIndex = 10;
             this.treeView3.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_BeforeLabelEdit);
             this.treeView3.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_AfterLabelEdit);
@@ -557,13 +552,13 @@
             this.showModelToolStripMenuItem,
             this.importToolStripMenuItem});
             this.contextMenuStrip1.Name = "contextMenuStrip1";
-            this.contextMenuStrip1.Size = new System.Drawing.Size(248, 214);
+            this.contextMenuStrip1.Size = new System.Drawing.Size(237, 172);
             this.contextMenuStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.contextMenuStrip1_ItemClicked);
             // 
             // searchNameToolStripMenuItem
             // 
             this.searchNameToolStripMenuItem.Name = "searchNameToolStripMenuItem";
-            this.searchNameToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
+            this.searchNameToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
             this.searchNameToolStripMenuItem.Text = "search global";
             this.searchNameToolStripMenuItem.Click += new System.EventHandler(this.searchNameToolStripMenuItem_Click);
             // 
@@ -571,7 +566,7 @@
             // 
             this.searchExactlySameToolStripMenuItem.Name = "searchExactlySameToolStripMenuItem";
             this.searchExactlySameToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.Q)));
-            this.searchExactlySameToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
+            this.searchExactlySameToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
             this.searchExactlySameToolStripMenuItem.Text = "search in edited";
             this.searchExactlySameToolStripMenuItem.Click += new System.EventHandler(this.searchExactlySameToolStripMenuItem_Click);
             // 
@@ -579,7 +574,7 @@
             // 
             this.hideMsgLogToolStripMenuItem.Name = "hideMsgLogToolStripMenuItem";
             this.hideMsgLogToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.W)));
-            this.hideMsgLogToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
+            this.hideMsgLogToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
             this.hideMsgLogToolStripMenuItem.Text = "hide msg log";
             this.hideMsgLogToolStripMenuItem.Click += new System.EventHandler(this.hideMsgLogToolStripMenuItem_Click);
             // 
@@ -587,25 +582,32 @@
             // 
             this.exportToolStripMenuItem.Name = "exportToolStripMenuItem";
             this.exportToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.E)));
-            this.exportToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
+            this.exportToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
             this.exportToolStripMenuItem.Text = "export";
             this.exportToolStripMenuItem.Click += new System.EventHandler(this.exportToolStripMenuItem_Click);
             // 
             // gotoPathToolStripMenuItem
             // 
             this.gotoPathToolStripMenuItem.Name = "gotoPathToolStripMenuItem";
-            this.gotoPathToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
-            this.gotoPathToolStripMenuItem.Text = "goto path";
             this.gotoPathToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
+            this.gotoPathToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.gotoPathToolStripMenuItem.Text = "goto path";
             this.gotoPathToolStripMenuItem.Click += new System.EventHandler(this.gotoPathToolStripMenuItem_Click);
             // 
             // showModelToolStripMenuItem
             // 
             this.showModelToolStripMenuItem.Name = "showModelToolStripMenuItem";
             this.showModelToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.X)));
-            this.showModelToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
+            this.showModelToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
             this.showModelToolStripMenuItem.Text = "show model";
             this.showModelToolStripMenuItem.Click += new System.EventHandler(this.showModelToolStripMenuItem_Click);
+            // 
+            // importToolStripMenuItem
+            // 
+            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
+            this.importToolStripMenuItem.Size = new System.Drawing.Size(236, 24);
+            this.importToolStripMenuItem.Text = "import";
+            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
             // 
             // button11
             // 
@@ -647,13 +649,30 @@
             this.richTextBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.richTextBox4.Font = new System.Drawing.Font("Courier New", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox4.ForeColor = System.Drawing.Color.MistyRose;
-            this.richTextBox4.Location = new System.Drawing.Point(66, 164);
+            this.richTextBox4.Location = new System.Drawing.Point(66, 156);
             this.richTextBox4.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox4.Name = "richTextBox4";
-            this.richTextBox4.Size = new System.Drawing.Size(663, 272);
+            this.richTextBox4.Size = new System.Drawing.Size(663, 292);
             this.richTextBox4.TabIndex = 0;
             this.richTextBox4.Text = "";
             this.richTextBox4.TextChanged += new System.EventHandler(this.richTextBox4_TextChanged);
+            // 
+            // listBox2
+            // 
+            this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.listBox2.Font = new System.Drawing.Font("Courier New", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listBox2.ForeColor = System.Drawing.Color.Aquamarine;
+            this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 24;
+            this.listBox2.Location = new System.Drawing.Point(0, 6);
+            this.listBox2.Name = "listBox2";
+            this.listBox2.Size = new System.Drawing.Size(726, 436);
+            this.listBox2.TabIndex = 8;
+            this.listBox2.Visible = false;
+            this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
             // 
             // button25
             // 
@@ -670,7 +689,7 @@
             this.button23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button23.ForeColor = System.Drawing.Color.DarkBlue;
-            this.button23.Location = new System.Drawing.Point(251, 574);
+            this.button23.Location = new System.Drawing.Point(244, 574);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(34, 33);
             this.button23.TabIndex = 15;
@@ -683,7 +702,7 @@
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button9.ForeColor = System.Drawing.Color.DarkRed;
-            this.button9.Location = new System.Drawing.Point(344, 576);
+            this.button9.Location = new System.Drawing.Point(337, 576);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(34, 30);
             this.button9.TabIndex = 13;
@@ -694,7 +713,7 @@
             // button19
             // 
             this.button19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button19.Location = new System.Drawing.Point(64, 575);
+            this.button19.Location = new System.Drawing.Point(57, 575);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(138, 29);
             this.button19.TabIndex = 11;
@@ -748,9 +767,9 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(392, 14);
+            this.label1.Location = new System.Drawing.Point(385, 14);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(49, 23);
+            this.label1.Size = new System.Drawing.Size(46, 22);
             this.label1.TabIndex = 5;
             this.label1.Text = "___";
             this.label1.Visible = false;
@@ -780,7 +799,7 @@
             this.treeView2.Location = new System.Drawing.Point(4, 41);
             this.treeView2.Margin = new System.Windows.Forms.Padding(4);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(455, 524);
+            this.treeView2.Size = new System.Drawing.Size(448, 524);
             this.treeView2.TabIndex = 0;
             this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView2_AfterSelect);
             this.treeView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView2_KeyDown);
@@ -954,16 +973,9 @@
             this.toolTip1.UseAnimation = false;
             this.toolTip1.UseFading = false;
             // 
-            // importToolStripMenuItem
-            // 
-            this.importToolStripMenuItem.Name = "importToolStripMenuItem";
-            this.importToolStripMenuItem.Size = new System.Drawing.Size(247, 26);
-            this.importToolStripMenuItem.Text = "import";
-            this.importToolStripMenuItem.Click += new System.EventHandler(this.importToolStripMenuItem_Click);
-            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(13F, 23F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(12F, 22F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(55)))));
             this.ClientSize = new System.Drawing.Size(1250, 630);
@@ -1072,6 +1084,7 @@
         private System.Windows.Forms.ToolStripMenuItem gotoPathToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem showModelToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem importToolStripMenuItem;
+        private System.Windows.Forms.Button button5;
     }
 }
 

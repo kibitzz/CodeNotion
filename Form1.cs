@@ -2117,6 +2117,13 @@ namespace basicClasses
             
 
         }
+
+        private void button5_Click_1(object sender, EventArgs e)
+        {
+            opis templates = Parser.ContextGlobal["words"]["version_control"];
+            if (EditingOpis != null)
+                templates[EditingOpis.PartitionName] = EditingOpis.Duplicate();
+        }
     }
 
     public class NodeSorter : IComparer
