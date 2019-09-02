@@ -231,6 +231,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(55)))));
+            this.splitContainer2.Panel2.Controls.Add(this.listBox2);
             this.splitContainer2.Panel2.Controls.Add(this.button5);
             this.splitContainer2.Panel2.Controls.Add(this.panel1);
             this.splitContainer2.Panel2.Controls.Add(this.button24);
@@ -248,7 +249,6 @@
             this.splitContainer2.Panel2.Controls.Add(this.button10);
             this.splitContainer2.Panel2.Controls.Add(this.button7);
             this.splitContainer2.Panel2.Controls.Add(this.richTextBox4);
-            this.splitContainer2.Panel2.Controls.Add(this.listBox2);
             this.splitContainer2.Size = new System.Drawing.Size(729, 607);
             this.splitContainer2.SplitterDistance = 155;
             this.splitContainer2.SplitterWidth = 8;
@@ -309,7 +309,7 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(61, 7);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(333, 202);
+            this.panel1.Size = new System.Drawing.Size(333, 198);
             this.panel1.TabIndex = 16;
             this.panel1.Visible = false;
             // 
@@ -324,7 +324,7 @@
             this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip2.Location = new System.Drawing.Point(0, 34);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(333, 155);
+            this.toolStrip2.Size = new System.Drawing.Size(333, 151);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip2_ItemClicked);
@@ -370,10 +370,10 @@
             this.toolStripButton5,
             this.toolStripButton6});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.toolStrip1.Location = new System.Drawing.Point(66, 156);
+            this.toolStrip1.Location = new System.Drawing.Point(66, 152);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.ShowItemToolTips = false;
-            this.toolStrip1.Size = new System.Drawing.Size(663, 285);
+            this.toolStrip1.Size = new System.Drawing.Size(660, 296);
             this.toolStrip1.TabIndex = 11;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
@@ -476,7 +476,7 @@
             // button18
             // 
             this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button18.Location = new System.Drawing.Point(-1, 301);
+            this.button18.Location = new System.Drawing.Point(-1, 297);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(56, 27);
             this.button18.TabIndex = 17;
@@ -530,7 +530,7 @@
             this.treeView3.LineColor = System.Drawing.Color.LightGray;
             this.treeView3.Location = new System.Drawing.Point(64, 3);
             this.treeView3.Name = "treeView3";
-            this.treeView3.Size = new System.Drawing.Size(659, 147);
+            this.treeView3.Size = new System.Drawing.Size(659, 143);
             this.treeView3.TabIndex = 10;
             this.treeView3.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_BeforeLabelEdit);
             this.treeView3.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_AfterLabelEdit);
@@ -649,7 +649,7 @@
             this.richTextBox4.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(30)))), ((int)(((byte)(30)))), ((int)(((byte)(30)))));
             this.richTextBox4.Font = new System.Drawing.Font("Courier New", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox4.ForeColor = System.Drawing.Color.MistyRose;
-            this.richTextBox4.Location = new System.Drawing.Point(66, 156);
+            this.richTextBox4.Location = new System.Drawing.Point(66, 152);
             this.richTextBox4.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox4.Name = "richTextBox4";
             this.richTextBox4.Size = new System.Drawing.Size(663, 292);
@@ -689,7 +689,7 @@
             this.button23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button23.ForeColor = System.Drawing.Color.DarkBlue;
-            this.button23.Location = new System.Drawing.Point(244, 574);
+            this.button23.Location = new System.Drawing.Point(240, 574);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(34, 33);
             this.button23.TabIndex = 15;
@@ -702,7 +702,7 @@
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button9.ForeColor = System.Drawing.Color.DarkRed;
-            this.button9.Location = new System.Drawing.Point(337, 576);
+            this.button9.Location = new System.Drawing.Point(333, 576);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(34, 30);
             this.button9.TabIndex = 13;
@@ -713,7 +713,7 @@
             // button19
             // 
             this.button19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button19.Location = new System.Drawing.Point(57, 575);
+            this.button19.Location = new System.Drawing.Point(53, 575);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(138, 29);
             this.button19.TabIndex = 11;
@@ -767,7 +767,7 @@
             this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.label1.AutoSize = true;
             this.label1.ForeColor = System.Drawing.SystemColors.ButtonFace;
-            this.label1.Location = new System.Drawing.Point(385, 14);
+            this.label1.Location = new System.Drawing.Point(381, 14);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(46, 22);
             this.label1.TabIndex = 5;
@@ -799,7 +799,7 @@
             this.treeView2.Location = new System.Drawing.Point(4, 41);
             this.treeView2.Margin = new System.Windows.Forms.Padding(4);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(448, 524);
+            this.treeView2.Size = new System.Drawing.Size(444, 524);
             this.treeView2.TabIndex = 0;
             this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView2_AfterSelect);
             this.treeView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView2_KeyDown);
