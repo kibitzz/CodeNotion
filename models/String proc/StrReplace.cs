@@ -22,14 +22,8 @@ namespace basicClasses.models.String_proc
         {
             opis spec = modelSpec.Duplicate();
             instanse.ExecActionModelsList(spec);
-
-            //if (spec.isHere(source))
-            //    csource = spec.V(source);
-
-         
-            message.body = message.body.Replace(spec.V(to_replace), spec.V(by_this));
-           // message.PartitionKind = "";
-          //  message.CopyArr(new opis());
+                   
+            message.body = message.body.Replace(spec.V(to_replace), spec.V(by_this));          
         }
     }
 }

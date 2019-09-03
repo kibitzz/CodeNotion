@@ -144,16 +144,16 @@ namespace basicClasses.models.SharedDataContextDrivers
                 {
                     // на випадок коли modelSpec і message це одна ссилка
                     opis procSpec = modelSpec[process].Duplicate();
-                   
-                    rez = rez.W();                 
+
+                    rez = rez.W();
 
                     if (modelSpec[duplicate].isInitlze)
                         rez = rez.Duplicate();
 
-                   
+
                     // якщо в якості параметру для заповнення передається якийсь обєкт
                     // наприклад дана модель в списку validate повідомлення, то ми не змінюємо його
-                    if (message.PartitionKind != "answer" && !modelSpec[do_not_modify].isInitlze )
+                    if (message.PartitionKind != "answer" && !modelSpec[do_not_modify].isInitlze)
                     {
                         if (modelSpec[do_wrap].isInitlze)
                         {
@@ -177,7 +177,10 @@ namespace basicClasses.models.SharedDataContextDrivers
                     instanse.ExecActionResponceModelsList(procSpec, rez);
                 }
                 else
+                {
+                    message.body = "";
                     message.CopyArr(new opis());
+                }
 
             } else
             {

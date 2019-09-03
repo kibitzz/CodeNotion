@@ -94,7 +94,8 @@ namespace basicClasses.models.String_proc
 
             if (mspec.isHere(Get_next_Week_monday))
             {
-                r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays(mspec[Get_next_Week_monday].intVal > 0
+                r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays(mspec[Get_next_Week_monday].intVal > 0 
+                                                                         || mspec[Get_next_Week_monday].PartitionKind != "spec_tag"
                                                                          ? mspec[Get_next_Week_monday].intVal : 7));
                 if (mspec.isHere(hour))
                 {

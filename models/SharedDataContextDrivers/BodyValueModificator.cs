@@ -188,12 +188,14 @@ namespace basicClasses.models.SharedDataContextDrivers
                             if (oper == "inc")
                             {
                                 lv = StrUtils.LongFromString(processThis.body);
+                                integerVal = StrUtils.LongFromString(ttt.body); 
                                 processThis.body = (lv+ (integerVal > 0 ? integerVal : 1)).ToString();
                             }
 
                             if (oper == "dec")
                             {
                                 lv = StrUtils.LongFromString(processThis.body);
+                                integerVal = StrUtils.LongFromString(ttt.body);
                                 processThis.body = (lv - integerVal > 0 ? lv - integerVal : 0).ToString();
                             }
 
@@ -278,6 +280,7 @@ namespace basicClasses.models.SharedDataContextDrivers
                         if (oper == "inc")
                         {
                             lv = StrUtils.LongFromString(message.body);
+                            integerVal = StrUtils.LongFromString(ttt.body);
                             message.body = (lv +( integerVal > 0 ? integerVal : 1)).ToString();
                             //message.intVal += integerVal > 0 ? integerVal : 1;
                         }
@@ -285,6 +288,7 @@ namespace basicClasses.models.SharedDataContextDrivers
                         if (oper == "dec")
                         {
                             lv = StrUtils.LongFromString(message.body);
+                            integerVal = StrUtils.LongFromString(ttt.body);
                             message.body = (lv - integerVal > 0 ? lv - integerVal : 0).ToString();
                         }
                     }
