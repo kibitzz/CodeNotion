@@ -26,7 +26,7 @@ namespace basicClasses.models.Rangers
             {
                 message["pass"].body = "y";
                 message["passCou"].intVal++;
-                message["range"].intVal += processThis.intVal;
+                message["range"].intVal +=  processThis.intVal;
             }
 
             //logopis["debug_template"] = ptt;
@@ -56,7 +56,7 @@ namespace basicClasses.models.Rangers
             {
                 message["pass"].body = "y";
                 message["passCou"].intVal++;
-                message["range"].intVal += 1000- processThis.intVal;
+                message["range"].intVal += 10000000- processThis.intVal;
             }
 
             //logopis["debug_template"] = ptt;

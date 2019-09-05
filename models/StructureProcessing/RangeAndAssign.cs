@@ -100,11 +100,11 @@ namespace basicClasses.models.StructureProcessing
 
                 int minDiff = -1;
                 int bestmin = -1;
-                int average = 0;
+                uint average = 0;
 
                 for (int i = 0; i < ranges.listCou; i++)
                 {
-                    int minDiffLoc = 1000;
+                    int minDiffLoc = 10000000;
                     int currDiff = 0;
                     int thisval = ranges[i][crit[c].PartitionName].intVal;
                     for (int k = 0; k < ranges[i].listCou; k++)
@@ -112,17 +112,17 @@ namespace basicClasses.models.StructureProcessing
                         if (ranges[i][k].PartitionName != crit[c].PartitionName)
                         {
                             currDiff = thisval - ranges[i][k].intVal;
-                            average+= ranges[i][k].intVal;
+                            average+= (uint)(ranges[i][k].intVal > 0 ? 3 : 0);
                         }
                         else
-                            currDiff = 1000;
+                            currDiff = 10000000;
 
                         if (currDiff < minDiffLoc)
                         {
                             minDiffLoc = currDiff;
                         }
                     }
-                    average += thisval;
+                    average += (uint)(thisval > 0 ? 3 : 0);
 
                     // якщо мінімальна перевага даного параметру над іншими позитивна, і найбільна з наявних
                     // то даний параметр береться як найпідходящий

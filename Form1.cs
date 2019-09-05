@@ -93,8 +93,8 @@ namespace basicClasses
             treeView3.ShowNodeToolTips = false;           
             //  treeView3.ShowLines = false;
 
-            treeView3.ItemHeight = 29;
-            treeView3.Indent = 32;
+            treeView3.ItemHeight = 32;
+            treeView3.Indent = 34;
             treeView3.LineColor = Color.FromArgb(59,59,59);
 
             //treeView3.ShowPlusMinus = false;

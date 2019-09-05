@@ -1451,7 +1451,10 @@ namespace basicClasses
                 tmp.ForeColor = getColorOfModel(PartitionKind);
                
                 tn.Nodes.Add(tmp);
-               
+                //if (PartitionKind == "func")
+                //    tn.Nodes.Add(new TreeNode());
+
+
                 for (int i = 0; i < paramCou ; i++)
                 {
                     if (arr[i]!=null && arr[i].PartitionName != "alreadyProcessed")
