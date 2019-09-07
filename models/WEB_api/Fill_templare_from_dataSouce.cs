@@ -123,6 +123,8 @@ namespace basicClasses.models.WEB_api
     
 
             message.body= data;
+            message.PartitionKind = "";
+            message.CopyArr(new opis());
 
         }
     }

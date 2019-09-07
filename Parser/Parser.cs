@@ -274,10 +274,16 @@ namespace basicClasses
         {
             if (!string.IsNullOrEmpty(data))
             {
-
-                using (StreamWriter sw = new StreamWriter(path))
+                try
                 {
-                    sw.WriteLine(data);
+                    using (StreamWriter sw = new StreamWriter(path))
+                    {
+                        sw.WriteLine(data);
+
+                    }
+                }
+                catch (Exception e)
+                {
 
                 }
             }
