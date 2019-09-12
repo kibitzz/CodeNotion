@@ -1720,7 +1720,7 @@ namespace basicClasses
                 then.CheckForVersionControl(then, now, "added");
                 then.CheckForVersionControl(now, then, "deleted");
               
-                then.PartitionKind = "previos";
+                then.PartitionKind = "previous";
                 now.PartitionKind = "current";
                 opis comp = new opis("comparison result");
                 comp.AddArr(now);
