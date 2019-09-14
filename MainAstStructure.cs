@@ -1463,6 +1463,9 @@ namespace basicClasses
                     }
                 }
 
+                if (PartitionKind == "func")
+                    tmp.Nodes.Add(new TreeNode());
+
                 isDuplicated = false;
             }
             else

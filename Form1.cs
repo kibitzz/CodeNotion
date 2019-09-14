@@ -1555,6 +1555,7 @@ namespace basicClasses
                 treeView2.Nodes.Clear();
                 treeView2.TreeViewNodeSorter = new NodeSorter();
                 treeView2.Nodes.Add(EditingOpis.GetDebugTree(40).FirstNode);
+                treeView2.TopNode.Expand();
             }
         }
 
@@ -1726,13 +1727,8 @@ namespace basicClasses
                 comp.AddArr(now);
                 comp.AddArr(then);
 
-                HighlightedOpis = comp;
-                EditingOpis = null;
-            //    PrepareWordInput();
-
-                //treeView3.Nodes.Clear();
-                //treeView3.Nodes.Add(comp.GetDebugTree());
-
+                HighlightedOpis = comp;              
+          
                 EditingOpis = comp;
                 button22_Click(true, null);
                 treeView3.Nodes.Clear();
@@ -2111,10 +2107,15 @@ namespace basicClasses
             Data_In_Buffer.rawData = txt;
 
             opis import = new opis();
-            import.load(txt);
-            copiedBranch = import;
+          
+            if (txt.Trim().StartsWith("{") || txt.Trim().StartsWith("["))
+                import.load(txt);
+            else
+            {
+                import.load(Compress.DeComprez(txt));
+            }
 
-            
+            copiedBranch = import;
 
         }
 
