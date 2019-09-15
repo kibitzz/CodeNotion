@@ -537,6 +537,21 @@ namespace basicClasses
             return rez;
         }
 
+        public int FindArrIdx(opis instance)
+        {
+            int rez = -1;
+
+            for (int i = 0; i < paramCou; i++)
+            {
+                if (arr[i] == instance)
+                {
+                    rez = i;
+                    return rez;
+                }
+            }
+            return rez;
+        }
+
         public void ForAllArrSetV(string part, string val)
         {
             for (int i = 0; i < listCou; i++)
@@ -637,6 +652,35 @@ namespace basicClasses
             }
            
             paramCou = paramCou - idxLess;    
+
+        }
+
+        public void InsertArrElem(opis elem, int pos)
+        {
+
+            if (arr.Length <= paramCou)
+            {
+                Array.Resize(ref arr, paramCou + AccommSize);
+            }
+
+            opis[] newArr = new opis[paramCou +1];
+
+            int idxShift = 0;
+            for (int i = 0; i < paramCou; i++)
+            {
+                if (i == pos)
+                {
+                    newArr[i] = elem;
+                    idxShift = 1;
+                }
+
+                newArr[i + idxShift] = arr[i];
+              
+            }
+
+            arr = newArr;
+
+            paramCou ++;
 
         }
 
@@ -1669,6 +1713,8 @@ namespace basicClasses
         public void CheckForVersionControl(opis partition, opis template, string markForVisualization)
         {
 
+            bool checkPosition = template.listCou == partition.listCou;
+
             for (int i = 0; i < template.listCou; i++)
             {
                 var elemN = template[i].PartitionName;
@@ -1677,17 +1723,26 @@ namespace basicClasses
                 {
                     var elem_opis = partition[elemN];
                     var info = "";
-
+                   
                     if (elem_opis.body != template[i].body)
                         info += "   ~prev  " + elem_opis.body + "";
 
                     if (elem_opis.PartitionKind != template[i].PartitionKind)
                         info += " / " + elem_opis.PartitionKind + " | "+ template[i].PartitionKind + " /";
 
-                    if (!string.IsNullOrEmpty(info) && elem_opis.PartitionKind != "modified")
+                    if (!string.IsNullOrEmpty(info) && elem_opis.PartitionKind != "modified" && elem_opis.PartitionKind != "moved")
                     {
                         template[i].PartitionKind = "modified";
                         template[i].body += info;
+                    }
+
+                    if (checkPosition && info.Length == 0 && elem_opis.PartitionKind != "moved"
+                        && partition.getPartitionIdx(elemN) != i
+                        )
+                    {
+                        template[i].body += template[i].PartitionKind.Length > 0 ? " /" + template[i].PartitionKind + "/" : "";
+                        template[i].PartitionKind = "moved";
+                       
                     }
 
                     CheckForVersionControl(elem_opis, template[i], markForVisualization);

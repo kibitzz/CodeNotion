@@ -97,6 +97,17 @@ namespace basicClasses
             treeView3.Indent = 34;
             treeView3.LineColor = Color.FromArgb(59,59,59);
 
+            #region node drag n drop sorting   
+            treeView3.AllowDrop = true;
+            // Add event handlers for the required drag events.  
+            treeView3.ItemDrag += new ItemDragEventHandler(treeView1_ItemDrag);
+            treeView3.DragEnter += new DragEventHandler(treeView1_DragEnter);
+            treeView3.DragOver += new DragEventHandler(treeView1_DragOver);
+            treeView3.DragDrop += new DragEventHandler(treeView1_DragDrop);
+
+
+            #endregion
+
             //treeView3.ShowPlusMinus = false;
             //// treeView3.ImageList
             //TreeNode tn = new TreeNode();
@@ -1636,11 +1647,11 @@ namespace basicClasses
             opis reflist = new opis();
 
             string[] arr = new string[] { "EditingPart", "Action", "Pause_To_debug", "MsgTemplate", "exec",
-                "initValues", "ConditionChecker", "SharedContextRoles","buildTreeVal_sdc_i","TreeDataExtractor", "global_log", "deleted","added", "modified"};
+                "initValues", "ConditionChecker", "SharedContextRoles","buildTreeVal_sdc_i","TreeDataExtractor", "global_log", "deleted","added", "modified", "moved"};
 
             if (sender is bool)
             {
-                arr = new string[] { "deleted", "added", "modified" };
+                arr = new string[] { "deleted", "added", "modified", "moved" };
             }
 
             foreach (string s in arr)
@@ -2125,6 +2136,111 @@ namespace basicClasses
             if (EditingOpis != null)
                 templates[EditingOpis.PartitionName] = EditingOpis.Duplicate();
         }
+
+
+        #region node drag n drop sorting          
+        private void treeView1_ItemDrag(object sender, ItemDragEventArgs e)
+        {
+            // Move the dragged node when the left mouse button is used.  
+            if (e.Button == MouseButtons.Left)
+            {
+                DoDragDrop(e.Item, DragDropEffects.Move);
+            }
+
+            // Copy the dragged node when the right mouse button is used.  
+            else if (e.Button == MouseButtons.Right)
+            {
+                DoDragDrop(e.Item, DragDropEffects.Copy);
+            }
+        }
+
+        private void treeView1_DragEnter(object sender, DragEventArgs e)
+        {
+            e.Effect = e.AllowedEffect;
+        }
+
+        private void treeView1_DragOver(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the mouse position.  
+            Point targetPoint = treeView3.PointToClient(new Point(e.X, e.Y));
+
+            // Select the node at the mouse position.  
+            treeView3.SelectedNode = treeView3.GetNodeAt(targetPoint);
+        }
+
+        private void treeView1_DragDrop(object sender, DragEventArgs e)
+        {
+            // Retrieve the client coordinates of the drop location.  
+            Point targetPoint = treeView3.PointToClient(new Point(e.X, e.Y));
+
+            // Retrieve the node at the drop location.  
+            TreeNode targetNode = treeView3.GetNodeAt(targetPoint);
+
+            // Retrieve the node that was dragged.  
+            TreeNode draggedNode = (TreeNode)e.Data.GetData(typeof(TreeNode));
+
+
+            if (draggedNode.Parent == targetNode.Parent)
+            {
+                opis commonParent = ((opis)draggedNode.Parent.Tag);
+                opis dragged = ((opis)draggedNode.Tag);
+                opis target = ((opis)targetNode.Tag);
+                int insertPos = -1;
+
+                if (Control.ModifierKeys == Keys.Alt)// one parent resorting -- add as subnode
+                {
+
+                    // do insert on same list item
+                }
+                else
+                {
+                    commonParent.RemoveArrElem(dragged);
+                    insertPos = commonParent.FindArrIdx(target);
+                    commonParent.InsertArrElem(dragged, insertPos );
+                  
+                    // do repositioning inside common parent list
+                }
+
+              
+                TreeNode[] arr = new TreeNode[commonParent.listCou];
+              
+                draggedNode.Remove();
+                commonParent.treeElem.Nodes.Insert(insertPos , draggedNode);
+               
+
+            }
+
+           
+
+        
+            //if (!draggedNode.Equals(targetNode) && !ContainsNode(draggedNode, targetNode))
+            //{
+            //    // If it is a move operation, remove the node from its current   
+            //    // location and add it to the node at the drop location.  
+            //    if (e.Effect == DragDropEffects.Move)
+            //    {
+            //        draggedNode.Remove();
+            //        targetNode.Nodes.Add(draggedNode);
+            //    }
+
+            //    // If it is a copy operation, clone the dragged node   
+            //    // and add it to the node at the drop location.  
+            //    else if (e.Effect == DragDropEffects.Copy)
+            //    {
+            //        targetNode.Nodes.Add((TreeNode)draggedNode.Clone());
+            //    }
+
+            //    // Expand the node at the location   
+            //    // to show the dropped node.  
+            //    targetNode.Expand();
+            //}
+
+        }
+
+
+
+        #endregion
+
     }
 
     public class NodeSorter : IComparer
