@@ -41,7 +41,7 @@ namespace basicClasses.models.sys_ext
             instanse.ExecActionModelsList(ex);
             modelSpec = ex;
 
-            string filename = modelSpec.V(file);
+            string filename = modelSpec.V(file).Replace("<%backslash%>", @"\");
             string[] proc= DataFileUtils.LoadLines(filename);
 
             string format = "my";

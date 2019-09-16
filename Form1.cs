@@ -2185,6 +2185,10 @@ namespace basicClasses
                 opis commonParent = ((opis)draggedNode.Parent.Tag);
                 opis dragged = ((opis)draggedNode.Tag);
                 opis target = ((opis)targetNode.Tag);
+
+                if (target == null || dragged == null)
+                    return;
+
                 int insertPos = -1;
 
                 if (Control.ModifierKeys == Keys.Alt)// one parent resorting -- add as subnode

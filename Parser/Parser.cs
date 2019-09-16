@@ -35,7 +35,7 @@ namespace basicClasses
             string data = "";
 
             string zipdata = DataFileUtils.LoadSingleLineZipped(path);
-            //string zipdata = DataFileUtils.LoadSingleLine(path);
+          //  string zipdata = DataFileUtils.LoadSingleLine(path);
             if (!string.IsNullOrEmpty(zipdata))
             {
                 data = zipdata;
