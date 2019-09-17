@@ -445,7 +445,7 @@ namespace basicClasses
         public void InitNameIndexHash()
         {
             UseNameIndexHash = true;
-            NamesIndexHash = new Dictionary<string, int>(700);
+            NamesIndexHash = new Dictionary<string, int>(4000);
         }
 
         public void CopyArr(opis elem, bool turnOffUniqControl = true)
@@ -645,7 +645,7 @@ namespace basicClasses
 
                 if (arr[i] == elem)
                 {
-                    idxLess++;
+                    idxLess = 1;
                     arr[i] = null;
 
                 }

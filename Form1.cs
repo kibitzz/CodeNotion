@@ -150,6 +150,12 @@ namespace basicClasses
             textBox5.Visible = true;
         }
 
+        public void popupBanner(string msg)
+        {
+            textBox5.Text = msg;
+            textBox5.Visible = true;
+        }
+
         public void CreateBrowserW()
         {
            
@@ -706,6 +712,7 @@ namespace basicClasses
                         texthighlight = false;
 
                         PrepareWordInput();
+                        popupBanner("array items count  " + mnmnm.listCou);
                     }
                 }
             }
@@ -1682,7 +1689,9 @@ namespace basicClasses
 
         private void button23_Click(object sender, EventArgs e)
         {
-            Parser.SaveEnvironment();
+            var bkgrsave = new Thread(new ThreadStart(Parser.SaveEnvironment));           
+            bkgrsave.Start();
+          
         }
 
         private void button24_Click(object sender, EventArgs e)
@@ -2186,7 +2195,7 @@ namespace basicClasses
                 opis dragged = ((opis)draggedNode.Tag);
                 opis target = ((opis)targetNode.Tag);
 
-                if (target == null || dragged == null)
+                if (target == null || dragged == null || target == dragged)
                     return;
 
                 int insertPos = -1;
@@ -2204,9 +2213,7 @@ namespace basicClasses
                   
                     // do repositioning inside common parent list
                 }
-
-              
-                TreeNode[] arr = new TreeNode[commonParent.listCou];
+                           
               
                 draggedNode.Remove();
                 commonParent.treeElem.Nodes.Insert(insertPos , draggedNode);

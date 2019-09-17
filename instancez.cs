@@ -568,10 +568,10 @@ namespace basicClasses
 
             // optimize - at start set enough size for this big and very active array
             thisins["sharedVariablesContext"].InitNameIndexHash(); //TODO: check for bugs caused by this optimization
-            thisins["sharedVariablesContext"].ArrResize(400);
+            thisins["sharedVariablesContext"].ArrResize(4000);
        
-            thisins["packages"].ArrResize(400);
-            thisins["packages"].bodyObject = new Dictionary<string, int>(200);
+            thisins["packages"].ArrResize(4000);
+            thisins["packages"].bodyObject = new Dictionary<string, int>(4000);
 
             spec = thisins.W(ModelG.spec);
 
