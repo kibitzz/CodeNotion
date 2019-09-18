@@ -69,7 +69,7 @@ namespace basicClasses.models.String_proc
                 r = DateTime.Now;
                 if (mspec.isHere(hour))
                 {
-                    TimeSpan sp = new TimeSpan(mspec[hour].intVal, mspec[minute].intVal, 0);
+                    TimeSpan sp = new TimeSpan(mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
 
                     r = r.Add(sp);
                 }

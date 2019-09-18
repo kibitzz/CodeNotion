@@ -594,7 +594,7 @@ namespace basicClasses
 
                         if (result1 == DialogResult.Yes)
                         {
-
+                            SetStateEdited();
                             copiedBranch = ((opis)e.Node.Tag).Duplicate();
                             paste_Click(null, null);
                         }
@@ -758,6 +758,8 @@ namespace basicClasses
                 opis ne = new opis();
                 ne.PartitionName = getNewPartitionIndexerName(EditingOpis);
                 AddElemToEditingOpis(ne);
+
+                SetStateEdited();
             }
             panel1.Visible = false;
             //PrepareWordInput();
@@ -785,7 +787,7 @@ namespace basicClasses
             {
                 EditingOpis.treeElem.Nodes.Add(ne.GetDebugTree().FirstNode);
             }
-
+            SetStateEdited();
             panel1.Visible = false;
         }
 
@@ -1171,7 +1173,7 @@ namespace basicClasses
 
         public void SaveTreeChanges(string newVal, string bodyVal)
         {
-            if (EditingOpis != null && !string.IsNullOrEmpty(newVal))
+            if (EditingOpis != null && EditingOpis.PartitionName != null && !string.IsNullOrEmpty(newVal))
             {
                 string[] arr = newVal.Split('[', ']');
                 if (arr.Length == 3)
@@ -1632,6 +1634,7 @@ namespace basicClasses
             opis templates = Parser.ContextGlobal["words"]["templates_of_models"];
             if (EditingOpis != null)
                 templates.AddArr(EditingOpis.Duplicate());
+            SetStateEdited();
         }
 
         private void button21_Click(object sender, EventArgs e)
@@ -2142,7 +2145,10 @@ namespace basicClasses
         {
             opis templates = Parser.ContextGlobal["words"]["version_control"];
             if (EditingOpis != null)
+            {
                 templates[EditingOpis.PartitionName] = EditingOpis.Duplicate();
+                SetStateEdited();
+            }
         }
 
 
@@ -2206,6 +2212,7 @@ namespace basicClasses
                 }
                 else
                 {
+                    SetStateEdited();
                     commonParent.RemoveArrElem(dragged);
                     insertPos = commonParent.FindArrIdx(target);
                     commonParent.InsertArrElem(dragged, insertPos );
