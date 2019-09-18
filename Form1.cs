@@ -369,7 +369,7 @@ namespace basicClasses
 
         private void button3_Click(object sender, EventArgs e)
         {
-            Parser.SaveEnvironment();
+          //  Parser.SaveEnvironment();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -444,29 +444,18 @@ namespace basicClasses
 
             if (!string.IsNullOrEmpty(HighlightedWord))
             {
-                //if (Parser.ContextGlobal["words"].getPartitionForm(HighlightedWord) == -1)
-                //{
-                //    HighlightedOpis = Parser.ContextGlobal["words"][HighlightedWord];
-                //    HighlightedOpis.CopyArr(objBases.baseOpisNotion());
-                //}else
+               // create and add new word to dictionary
                 HighlightedOpis = Parser.ContextGlobal["words"].getForm(HighlightedWord);
                 if (string.IsNullOrEmpty(HighlightedOpis.PartitionName))
                 {
                     HighlightedOpis = objBases.baseOpisNotion();
                     Parser.ContextGlobal["words"][HighlightedWord] = HighlightedOpis;
+                    SetStateEdited();
                 }
 
                 colorInput();
 
-                if (HighlightedOpis.treeElem != null)
-                {
-                  //  treeView2.SelectedNode = HighlightedOpis.treeElem; // readonly tree - show selected element
-                    PrepareWordInput();
-                }
-                else
-                {
-                    PrepareWordInput();
-                }
+                PrepareWordInput();              
 
             }
         }
@@ -1187,6 +1176,10 @@ namespace basicClasses
                 string[] arr = newVal.Split('[', ']');
                 if (arr.Length == 3)
                 {
+                    if (EditingOpis.PartitionName != arr[0].Trim()
+                        || EditingOpis.PartitionKind != arr[1].Trim()
+                        || EditingOpis.body != arr[2].Trim())
+                        SetStateEdited();
                     EditingOpis.PartitionName = arr[0].Trim();
 
                     if (!string.IsNullOrEmpty(arr[1])) // && string.IsNullOrEmpty(EditingOpis.PartitionKind))
@@ -1200,6 +1193,8 @@ namespace basicClasses
             if (EditingOpis != null && !string.IsNullOrEmpty(bodyVal)
                 && bodyVal.Trim() != "_")
             {
+                if ( EditingOpis.body != bodyVal.Trim())
+                    SetStateEdited();
                 EditingOpis.body = bodyVal.Trim();
             }
 
@@ -1211,6 +1206,7 @@ namespace basicClasses
 
         public void SaveTreeChangesAnywhere()
         {
+           
             SaveTreeChanges(EditingOpisValue, richTextBox4.Text);
 
         }
@@ -1317,9 +1313,10 @@ namespace basicClasses
         private void treeView3_KeyDown(object sender, KeyEventArgs e)
         {
             if (e.KeyValue == 46) //del
-            {
+            {               
                 if (EditingOpis != null && EditingOpis.treeElem != null)
                 {
+                    SetStateEdited();
                     if (EditingOpis.treeElem.Parent != null && EditingOpis.treeElem.Parent.Tag != null)
                     {
                         ((opis)EditingOpis.treeElem.Parent.Tag).RemoveArrElem(EditingOpis); ;
@@ -1331,13 +1328,13 @@ namespace basicClasses
 
             if (e.KeyCode == Keys.Space)
             {
-                partInfo = mf.GetModelInfo(EditingOpis.PartitionKind);
+                //partInfo = mf.GetModelInfo(EditingOpis.PartitionKind);
 
-                if (partInfo != null && partInfo[EditingOpis.PartitionKind].isInitlze)
-                {
-                    textBox5.Text = partInfo[EditingOpis.PartitionKind].body;
-                    textBox5.Visible = true;
-                }
+                //if (partInfo != null && partInfo[EditingOpis.PartitionKind].isInitlze)
+                //{
+                //    textBox5.Text = partInfo[EditingOpis.PartitionKind].body;
+                //    textBox5.Visible = true;
+                //}
             }
         }
 
@@ -1421,6 +1418,7 @@ namespace basicClasses
         {
             if (copiedBranch != null)
             {
+                SetStateEdited();
                 opis tt = copiedBranch.Duplicate();
 
                 if (Control.ModifierKeys == Keys.Alt)
@@ -1689,6 +1687,7 @@ namespace basicClasses
 
         private void button23_Click(object sender, EventArgs e)
         {
+            SavedStateLabel.Text = "";
             var bkgrsave = new Thread(new ThreadStart(Parser.SaveEnvironment));           
             bkgrsave.Start();
           
@@ -2252,6 +2251,15 @@ namespace basicClasses
 
         #endregion
 
+        private void saveToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            button23_Click(null, null);
+        }
+
+        private void SetStateEdited()
+        {
+            SavedStateLabel.Text = "#";
+        }
     }
 
     public class NodeSorter : IComparer

@@ -7,7 +7,7 @@ using System.Threading;
 namespace basicClasses.models.FunctionalInstances
 {
     [info(" instanse.PauseThread();")]
-    [appliable("Action func")]
+    [appliable("all Action func")]
    public class Pause_To_debug:ModelBase
     {
 
