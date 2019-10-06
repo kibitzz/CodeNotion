@@ -1019,7 +1019,9 @@ namespace basicClasses
 
                 notionTree = wrwr.GetDebugTree().FirstNode;
                 treeView2.Nodes.Add(notionTree);
-                treeView2.ExpandAll();
+
+                wrwr.RunRecursively(x => { if (x.listCou < 4 && x.treeElem != null) x.treeElem.Expand(); } );
+               // treeView2.ExpandAll();
                 //treeView2.TopNode.Expand();
             }
             else

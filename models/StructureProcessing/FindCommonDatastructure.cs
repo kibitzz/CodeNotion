@@ -244,6 +244,40 @@ namespace basicClasses.models.StructureProcessing
       
     }
 
+    [appliable("BodyValueModificator")]
+    [info("filler.  ")]
+    class FindCommonDatastructureStrict : ModelBase
+    {
+        [info(" any filler.   array of variants to proces")]
+        [model("")]
+        public static readonly string source = "source";
+   
+
+        bool addsubnames;
+
+        public override void Process(opis message)
+        {
+            opis spec = modelSpec.Duplicate();
+            instanse.ExecActionModelsList(spec);
+            var srs = spec[source];
+
+            var typesCou = srs.listCou;
+
+            if (srs.listCou == 0)
+            {
+                message.body = "empty array of variants";
+                return;
+            }
+
+
+
+
+        }
+
+
+
+    }
+
 
     public class opisStatStruct
     {     
