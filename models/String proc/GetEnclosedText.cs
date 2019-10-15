@@ -19,6 +19,10 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string start = "start";
 
+        [info("from the start put ###")]
+        [model("")]
+        public static readonly string alt_start = "alt_start";
+
         [info("to the end put ###")]
         [model("")]
         public static readonly string fin = "fin";
@@ -69,20 +73,21 @@ namespace basicClasses.models.String_proc
             bool startCloser_to_end = spec.isHere(start_closer_to_end);
             bool endingCloser_to_end = spec.isHere(fin_closer_to_end);
 
+            string st = string.IsNullOrEmpty(spec.V(start)) ? spec.V(alt_start) : spec.V(start);
 
-            var rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(fin), ref cpos, startCloser_to_end, endingCloser_to_end);
+            var rez = GetEnclosed("###" + csource + "###", st, spec.V(fin), ref cpos, startCloser_to_end, endingCloser_to_end);
 
             var enclfound = spec.V(fin);
 
             if (string.IsNullOrEmpty(rez) && spec.isHere(alt_fin))
             {
-                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin), ref cpos, startCloser_to_end, endingCloser_to_end);
+                rez = GetEnclosed("###" + csource + "###", st, spec.V(alt_fin), ref cpos, startCloser_to_end, endingCloser_to_end);
                 enclfound = spec.V(alt_fin);
             }
 
             if (string.IsNullOrEmpty(rez) && spec.isHere(alt_fin2))
             {
-                rez = GetEnclosed("###" + csource + "###", spec.V(start), spec.V(alt_fin2), ref cpos, startCloser_to_end, endingCloser_to_end);
+                rez = GetEnclosed("###" + csource + "###", st, spec.V(alt_fin2), ref cpos, startCloser_to_end, endingCloser_to_end);
                 enclfound = spec.V(alt_fin2);
             }
 

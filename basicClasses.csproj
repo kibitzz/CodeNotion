@@ -121,6 +121,8 @@
     <Compile Include="Atributes\appliableAttribute.cs" />
     <Compile Include="Atributes\ignoreAttribute.cs" />
     <Compile Include="Atributes\infoAttribute.cs" />
+    <Compile Include="models\Checkers\Check_contain_string.cs" />
+    <Compile Include="models\Checkers\Check_is_odd.cs" />
     <Compile Include="models\Messaging\Messenger.cs" />
     <Compile Include="models\Builders\BuildTermBasicValuesContainer.cs" />
     <Compile Include="models\Checkers\Check_body_isFilled.cs" />
@@ -145,7 +147,9 @@
     <Compile Include="models\FunctionalInstances\FillArgumentsArray.cs" />
     <Compile Include="models\FunctionalInstances\formula_exe.cs" />
     <Compile Include="models\SQL\ReplaceKeyByPresentation.cs" />
+    <Compile Include="models\String proc\PeriodIterator.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
+    <Compile Include="models\sys_ext\GlobalParamsProvider.cs" />
     <Compile Include="models\sys_ext\Pause_To_debug.cs" />
     <Compile Include="models\ModelAnswer.cs" />
     <Compile Include="Atributes\modelAttribute.cs" />

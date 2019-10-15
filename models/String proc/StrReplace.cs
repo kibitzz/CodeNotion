@@ -23,7 +23,9 @@ namespace basicClasses.models.String_proc
             opis spec = modelSpec.Duplicate();
             instanse.ExecActionModelsList(spec);
                    
-            message.body = message.body.Replace(spec.V(to_replace), spec.V(by_this));          
+            var repl = string.IsNullOrEmpty(spec.V(to_replace)) ? " " : spec.V(to_replace);
+
+            message.body = message.body.Replace(repl, spec.V(by_this));          
         }
     }
 }

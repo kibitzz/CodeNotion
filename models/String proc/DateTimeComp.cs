@@ -140,15 +140,38 @@ namespace basicClasses.models.String_proc
         //    return DateTimeOffset.FromUnixTimeSeconds(t).DateTime;
         //}
 
+        public static DateTime FromStringTicks(string d)
+        {
+            DateTime rez = new DateTime();
+           
+            long ticks = 0;
+            if (long.TryParse(d, out ticks))
+                rez = new DateTime(ticks);
+
+            return rez;
+        }
+
+        public static int WeekNumSince(DateTime st, DateTime to)
+        {
+            var sp = MondayForDate(st) - MondayForDate(to);
+
+            int weeks = (int)sp.TotalDays / 7;
+
+           
+
+            return weeks;
+        }
+
         public static List<DateTime> DaysInPeriod(DateTime st, DateTime fin)
         {
+          
             var rez = new List<DateTime>();
             var sp = fin - st;
 
             rez.Add(st.Date);
             var tmp = st.Date;
-
-            for (int i = 1; i <= sp.Days; i++)
+           
+            for (int i = 1; i <= sp.TotalDays; i++)
             {
                 tmp = tmp.AddDays(1).Date;
                 rez.Add(tmp);
@@ -164,7 +187,7 @@ namespace basicClasses.models.String_proc
 
             var sp = MondayForDate(target) - MondayForDate(modelDate);
 
-            if (IsOdd(sp.Days / 7))
+            if (IsOdd((int)sp.TotalDays / 7))
                 rez += rez == 1 ? 1 : -1;
 
             return rez;

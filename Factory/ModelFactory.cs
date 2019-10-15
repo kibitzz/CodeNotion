@@ -150,6 +150,9 @@ namespace basicClasses.Factory
             models.Add("TemplateSearch", new TemplateSearch());            
             models.Add("Make_pause", new Make_pause());
             models.Add("Check_isInArray", new Check_isInArray());
+            models.Add("Check_is_odd", new Check_is_odd());
+            models.Add("Check_contain_string", new Check_contain_string());         
+
             models.Add("boardsset_ParserModel", new boardsset_ParserModel());
             models.Add("Compress", new Compress());
             models.Add("cleaner", new cleaner());
@@ -183,7 +186,11 @@ namespace basicClasses.Factory
             models.Add("send_mail", new send_mail());
             models.Add("smtp_settings", new smtp_settings());
 
-            models.Add("Data_In_Buffer", new Data_In_Buffer());            
+            models.Add("Data_In_Buffer", new Data_In_Buffer());
+            models.Add("PeriodIterator", new PeriodIterator());
+            models.Add("GlobalParamsProvider", new GlobalParamsProvider());
+           
+            
 
 
             if (ExternalModels != null)

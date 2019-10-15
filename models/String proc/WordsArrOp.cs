@@ -22,6 +22,10 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string first_N = "first_N";
 
+        [info("")]
+        [model("")]
+        public static readonly string separator = "separator";
+
 
         public override void Process(opis message)
         {
@@ -30,7 +34,15 @@ namespace basicClasses.models.String_proc
 
             string csource = spec.V(source);
 
-            var arr = csource.Split();
+           
+            var arr = string.IsNullOrEmpty(spec.V(separator)) ? csource.Split() : csource.Split(spec.V(separator)[0]);
+
+            opis word_arr = new opis();
+           
+            for(int i =0; i < arr.Length; i++)
+            {
+                word_arr.Vset(i.ToString(), arr[i].Trim());
+            }
 
             var rez = "";
 
@@ -53,7 +65,7 @@ namespace basicClasses.models.String_proc
 
             message.body = rez.Trim();
             message.PartitionKind = "";
-            message.CopyArr(new opis());
+            message.CopyArr(word_arr);
         }
 
 
