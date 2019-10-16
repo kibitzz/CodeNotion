@@ -97,7 +97,10 @@ namespace basicClasses.models.String_proc
                     cpos -= enclfound.Length;
 
                 if (spec.isHere(if_not_empty))
-                    instanse.ExecActionModelsList(spec[if_not_empty]);
+                {
+                    var par = new opis() {body = rez, PartitionName = "rez" };
+                    instanse.ExecActionResponceModelsList(spec[if_not_empty], par);
+                }
             }
 
             message.body = rez.Trim();

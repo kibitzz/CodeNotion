@@ -153,7 +153,7 @@ namespace basicClasses.models.String_proc
 
         public static int WeekNumSince(DateTime st, DateTime to)
         {
-            var sp = MondayForDate(st) - MondayForDate(to);
+            var sp = MondayForDate(to) - MondayForDate(st) ;
 
             int weeks = (int)sp.TotalDays / 7;
 
