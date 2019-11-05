@@ -53,6 +53,14 @@ namespace basicClasses.models.String_proc
         [info(" ")]
         public static readonly string return_actual_date = "return_actual_date";
 
+        [model("")]
+        [info(" fill ticks here to be parced (and modified)  ")]
+        public static readonly string from_ticks = "from_ticks";
+
+        [model("")]
+        [info(" fill unix epoch time here to be parced (and modified)  ")]
+        public static readonly string from_unix = "from_unix";
+
         DateTime curr;
 
         public override void Process(opis message)
@@ -62,7 +70,26 @@ namespace basicClasses.models.String_proc
 
             DateTime r = new DateTime();
 
-          
+
+            if (mspec.isHere(from_ticks) && mspec[from_ticks].isInitlze)
+            {
+                r = Dates.FromStringTicks(mspec.V(from_ticks));
+                if (mspec.isHere(hour) || mspec.isHere(day))
+                {
+                    TimeSpan sp = new TimeSpan(mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
+                    r = r.Add(sp);
+                }
+            }
+
+            if (mspec.isHere(from_unix) && mspec[from_unix].isInitlze)
+            {
+                r = Dates.FromEpochTime(mspec.V(from_unix));
+                if (mspec.isHere(hour) || mspec.isHere(day))
+                {
+                    TimeSpan sp = new TimeSpan(mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
+                    r = r.Add(sp);
+                }
+            }
 
             if (mspec.isHere(return_actual_date))
             {
@@ -121,24 +148,24 @@ namespace basicClasses.models.String_proc
 
    public class Dates
     {
-        //public static long EpochTime(DateTime d)
-        //{
-        //    var x = new DateTimeOffset(d);
-        //    return x.ToUnixTimeSeconds();
-        //}
+        public static long EpochTime(DateTime d)
+        {
+            var x = new DateTimeOffset(d);
+            return x.ToUnixTimeSeconds();
+        }
 
-        //public static DateTime FromEpochTime(string t)
-        //{
-        //    long lt = 0;
-        //    long.TryParse(t, out lt);
+        public static DateTime FromEpochTime(string t)
+        {
+            long lt = 0;
+            long.TryParse(t, out lt);
 
-        //    return FromEpochTime(lt);
-        //}
+            return FromEpochTime(lt);
+        }
 
-        //public static DateTime FromEpochTime(long t)
-        //{
-        //    return DateTimeOffset.FromUnixTimeSeconds(t).DateTime;
-        //}
+        public static DateTime FromEpochTime(long t)
+        {
+            return DateTimeOffset.FromUnixTimeSeconds(t).DateTime;
+        }
 
         public static DateTime FromStringTicks(string d)
         {
