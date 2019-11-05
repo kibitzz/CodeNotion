@@ -25,12 +25,15 @@ namespace basicClasses.models.sys_ext
             instanse.ExecActionModelsList(spec);
 
 
+            var p = spec.V(pname);
+
             if (spec.isHere(val))
-                Set(spec.V(pname), spec[val]);
+                Set(p, spec[val]);
             else
             {
-                message.CopyArr(storage[pname]);
-                message.body = storage[pname].body;
+                message.PartitionKind = "";
+                message.CopyArr(storage[p]);
+                message.body = storage[p].body;
             }
 
         }

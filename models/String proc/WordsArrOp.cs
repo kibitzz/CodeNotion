@@ -26,6 +26,10 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string separator = "separator";
 
+        [info("if use last_N or first_N  -- then use this value as separator in join operation")]
+        [model("")]
+        public static readonly string glue_with = "glue_with";
+
 
         public override void Process(opis message)
         {
@@ -46,18 +50,20 @@ namespace basicClasses.models.String_proc
 
             var rez = "";
 
+            string join_sep = spec[glue_with].isInitlze ? spec.V(glue_with).Replace('_', ' ') : " ";
+
             if (spec.isHere(last_N))
             {
                 int n = 0;
                 int.TryParse(spec.V(last_N), out n);
-                rez = String.Join(" ", arr.Skip(arr.Length > n ? arr.Length - n : 0).ToList());
+                rez = String.Join(join_sep, arr.Skip(arr.Length > n ? arr.Length - n : 0).ToList());
             }
 
             if (spec.isHere(first_N))
             {
                 int n = 0;
                 int.TryParse(spec.V(first_N), out n);
-                rez = String.Join(" ", arr.Take(arr.Length < n ? arr.Length  : n).ToList());
+                rez = String.Join(join_sep, arr.Take(arr.Length < n ? arr.Length  : n).ToList());
             }
 
 
