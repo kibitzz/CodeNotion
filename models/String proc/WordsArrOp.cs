@@ -14,6 +14,10 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string source = "source";
 
+        [info("")]
+        [model("")]
+        public static readonly string array_source = "array_source";
+
         [info("return text composed by last N count of words. Put value of N to this field")]
         [model("")]
         public static readonly string last_N = "last_N";
@@ -40,6 +44,16 @@ namespace basicClasses.models.String_proc
 
            
             var arr = string.IsNullOrEmpty(spec.V(separator)) ? csource.Split() : csource.Split(spec.V(separator)[0]);
+
+            if (spec.isHere(array_source))
+            {
+                var srs = spec[array_source];
+                arr = new string[srs.listCou];
+                for (int i = 0; i < srs.listCou; i++)
+                {
+                    arr[i] = srs[i].body;
+                }
+            }
 
             opis word_arr = new opis();
            
