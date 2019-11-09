@@ -1,4 +1,6 @@
-﻿using System;
+﻿// Copyright (C) 2015 Igor Proskochilo
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;

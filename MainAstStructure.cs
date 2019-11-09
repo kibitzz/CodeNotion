@@ -1,4 +1,6 @@
-﻿using basicClasses.models;
+﻿// Copyright (C) 2015 Igor Proskochilo
+
+using basicClasses.models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
