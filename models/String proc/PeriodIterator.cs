@@ -52,6 +52,7 @@ namespace basicClasses.models.String_proc
             {
                 var d = date.AddHours(h).AddMinutes(m);
                 opis dayInfo = new opis();
+                dayInfo.PartitionName = "d";
                 dayInfo.Vset("DayOfYear", d.DayOfYear.ToString());
                 dayInfo.Vset("Year", d.Year.ToString());
                 dayInfo.Vset("Month", d.Month.ToString());
