@@ -22,10 +22,10 @@ namespace basicClasses.models.String_proc
         {
             opis spec = modelSpec.Duplicate();
             instanse.ExecActionModelsList(spec);
-                   
-            var repl = string.IsNullOrEmpty(spec.V(to_replace)) ? " " : spec.V(to_replace);
+                              
+            var repl = string.IsNullOrEmpty(spec.V(to_replace)) ? " " : spec.V(to_replace).Replace('_', ' ');
 
-            message.body = message.body.Replace(repl, spec.V(by_this));          
+            message.body = message.body.Replace(repl, spec.V(by_this).Replace('_', ' '));          
         }
     }
 }
