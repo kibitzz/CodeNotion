@@ -1767,10 +1767,10 @@ namespace basicClasses
 
         }
 
-        private void kkk(opis o, bool alltypes)
+        private opis kkk(opis o, opis EditingOpis, bool alltypes)
         {
             if (EditingOpis == null)
-                return;
+                return new opis();
 
             opis reflist = new opis();
 
@@ -1925,6 +1925,12 @@ namespace basicClasses
                 }
             }
 
+            return reflist;
+        }
+
+
+        void ShowReferencesList(opis reflist)
+        {
             reflist.PartitionName = "references_list";
 
             treeView2.Nodes.Clear();
@@ -1934,13 +1940,12 @@ namespace basicClasses
 
             foreach (TreeNode node in treeView2.TopNode.Nodes)
             {
-                if(node.Nodes.Count <12)
-                node.Expand();
+                if (node.Nodes.Count < 12)
+                    node.Expand();
             }
 
             PrepareWordInput();
         }
-
 
 
         private void toolStripSearchModel_Click(object sender, EventArgs e)
@@ -1950,7 +1955,6 @@ namespace basicClasses
 
         private void searchExactlySameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             opis now = null;
             if (treeView2.Focused)
                 now = ((opis)treeView2.SelectedNode.Tag);
@@ -1961,12 +1965,11 @@ namespace basicClasses
             richTextBox4.Text = "";
 
             EditingOpis = HighlightedOpis;
-            kkk(now, true);
+            ShowReferencesList(kkk(now, EditingOpis, true));
         }
 
         private void searchNameToolStripMenuItem_Click(object sender, EventArgs e)
         {
-
             opis now = null;
             if (treeView2.Focused)
                 now = ((opis)treeView2.SelectedNode.Tag);
@@ -1976,13 +1979,31 @@ namespace basicClasses
             EditingOpis = Parser.ContextGlobal["words"];
 
             HighlightedWord = "";
-            HighlightedOpis = EditingOpis;
-
-            //PrepareWordInput();
+                      
             EditingOpisValue = "";
             richTextBox4.Text = "";
 
-            kkk(now, true);
+            opis totalref = new opis();
+            opis wordsContain = new opis();
+
+            for (int i = 0; i < EditingOpis.listCou; i++)
+            {
+                opis rl = kkk(now, EditingOpis[i], true);
+                if (rl.listCou > 0 && EditingOpis[i].PartitionName != "version_control")
+                {
+                    wordsContain.AddArr(EditingOpis[i]);
+
+                    for (int k = 0;k < rl.listCou; k++)
+                    {
+                        totalref[rl[k].PartitionName].AddArrRange(rl[k]);
+                    }
+
+                }
+            }
+
+           EditingOpis = wordsContain;
+           HighlightedOpis = EditingOpis;
+           ShowReferencesList(totalref);          
         }
 
         private void hideMsgLogToolStripMenuItem_Click(object sender, EventArgs e)

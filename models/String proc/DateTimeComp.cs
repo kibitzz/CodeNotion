@@ -107,7 +107,7 @@ namespace basicClasses.models.String_proc
                 try
                 {
                     var yr = !string.IsNullOrEmpty(mspec.V(year)) ? mspec[year].intVal : DateTime.Now.Year;
-                    yr = yr < 100 ? 2000 + yr : yr;
+                    yr = yr < 100 ? 2000 + yr : yr;                 
                     r = new DateTime(yr, mspec[month].intVal, mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
                 }
                 catch
