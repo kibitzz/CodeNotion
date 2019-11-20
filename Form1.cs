@@ -14,6 +14,7 @@ using basicClasses.Factory;
 using basicClasses.models.WEB_api;
 using System.Net;
 using basicClasses.models.sys_ext;
+using basicClasses.models.StructureProcessing;
 
 namespace basicClasses
 {
@@ -1738,18 +1739,7 @@ namespace basicClasses
                 else
                  then = EditingOpis.Duplicate();
 
-                
-                then.NormalizeNamesForComparison(now);
-                then.NormalizeNamesForComparison(then);
-
-                then.CheckForVersionControl(then, now, "added");
-                then.CheckForVersionControl(now, then, "deleted");
-              
-                then.PartitionKind = "previous";
-                now.PartitionKind = "current";
-                opis comp = new opis("comparison result");
-                comp.AddArr(now);
-                comp.AddArr(then);
+                opis comp = CompareFill.VerControlCompare(now, then);            
 
                 HighlightedOpis = comp;              
           

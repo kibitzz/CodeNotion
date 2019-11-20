@@ -34,12 +34,24 @@ namespace basicClasses.models.StructureProcessing
         [info("int")]
         public static readonly string koef_mult = "koef_mult";
 
+        [model("spec_tag")]
+        [info("use strict comparison algorithm applied for version control. numerate partitions with same name, do not alanyse moved elements ")]
+        public static readonly string VerControlAlgorithm = "VerControlAlgorithm";
+
 
         public override void Process(opis message)
         {
             opis ms = modelSpec.Duplicate();
             instanse.ExecActionModelsList(ms);
             opis rez = new opis();
+
+            if (ms.isHere(VerControlAlgorithm))
+            {
+               opis r = VerControlCompare(ms[first].Duplicate(), ms[second].Duplicate());
+                message.CopyArr(new opis());
+                message.AddArr(r);
+                return;
+            }
 
             var sec = ms[second].Duplicate();
 
@@ -74,6 +86,23 @@ namespace basicClasses.models.StructureProcessing
             message["compare_listCou"].PartitionKind = "different listCou";
             message["compare_b+listCou"].PartitionKind = "different body different listCou";
 
+        }
+
+        public static opis VerControlCompare(opis now, opis then)
+        {
+            then.NormalizeNamesForComparison(now);
+            then.NormalizeNamesForComparison(then);
+
+            then.CheckForVersionControl(then, now, "added");
+            then.CheckForVersionControl(now, then, "deleted");
+
+            then.PartitionKind = "previous";
+            now.PartitionKind = "current";
+            opis comp = new opis("comparison result");
+            comp.AddArr(now);
+            comp.AddArr(then);
+
+            return comp;
         }
 
     }
