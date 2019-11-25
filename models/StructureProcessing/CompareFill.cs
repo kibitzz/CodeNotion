@@ -11,11 +11,11 @@ namespace basicClasses.models.StructureProcessing
     class CompareFill : ModelBase
     {
         [model("")]
-        [info("")]
+        [info("used as NOW in VerControlAlgorithm")]
         public static readonly string first = "first";
 
         [model("")]
-        [info("")]
+        [info("used as PREV in VerControlAlgorithm")]
         public static readonly string second = "second";
 
         [model("spec_tag")]

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.WEB_api
 {
+    [info("fill currently active settings")]
     class UseSecurityProtocol : ModelBase
     {
         [info("")]
@@ -37,6 +38,8 @@ namespace basicClasses.models.WEB_api
         [ignore]
         static bool callbIsSet;
 
+        public bool AcceptAllCertificate;
+
         public override void Process(opis message)
         {
             if(modelSpec.isHere(use_Tls12))
@@ -53,9 +56,12 @@ namespace basicClasses.models.WEB_api
 
             if (modelSpec.isHere(ServerCertificateValidationCallback) && !callbIsSet)
             {
-                ServicePointManager.ServerCertificateValidationCallback += AcceptAllCertificatePolicy;
+                //ServicePointManager.ServerCertificateValidationCallback += AcceptAllCertificatePolicy;
                 callbIsSet = true;
+                AcceptAllCertificate = true;
             }
+
+            message.Vset("AcceptAllCertificate", AcceptAllCertificate ? "true" : "false");
 
             if (modelSpec.isHere(use_mix))
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;

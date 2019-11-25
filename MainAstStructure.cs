@@ -2298,7 +2298,25 @@ namespace basicClasses
                 return l.Where(x => x != null).OrderBy(key).ToList();
             else
                 return l.Where(x => x != null).OrderByDescending(key).ToList();
-        }             
+        }
+
+        public List<string> ListValues(string part)
+        {
+            List<string> idList = new List<string>(listCou);
+
+            for (int i = 0; i < listCou; i++)
+                idList.Add(arr[i][part].body);
+
+            return idList;
+        }
+
+        public List<int> ListValuesInt(string part)
+        {
+            var l = ListValues(part);
+
+            return l.Select(x => { int.TryParse(x, out int v); return v; }).ToList();
+        }
+
 
     }
 

@@ -84,7 +84,8 @@ namespace basicClasses.models.WEB_api
         [model("")]
         public static readonly string ProxySettings = "ProxySettings";
 
-
+        [info("to activate this feature -- add SUB partition AcceptAllCertificate : true")]
+        public static readonly string AcceptAllCertificate = "AcceptAllCertificate";
 
         public override void Process(opis message)
         {
@@ -104,6 +105,7 @@ namespace basicClasses.models.WEB_api
                     hc.AddHeader(headerz[i].PartitionName + ":" + headerz[i].body);
             }
 
+            hc.AcceptAllCertificates = ex[AcceptAllCertificate][AcceptAllCertificate].isInitlze;
             hc.allowAutoRedrect = ex.isHere(allowAutoRedrect);
 
             bool rez = false;

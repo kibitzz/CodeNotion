@@ -252,6 +252,7 @@ namespace basicClasses.models.WEB_api
 
         string refer;
         public  bool allowAutoRedrect;
+        public bool AcceptAllCertificates;
 
         public httpClient()
         {
@@ -552,6 +553,9 @@ namespace basicClasses.models.WEB_api
             myHttpWebRequest.Method = metod;
             myHttpWebRequest.Timeout = 200000;
             EncoderOfResponce = Encoder;
+
+            if (AcceptAllCertificates)
+                myHttpWebRequest.ServerCertificateValidationCallback = UseSecurityProtocol.AcceptAllCertificatePolicy;
 
             #region  Proxy
             if (useProxy)
