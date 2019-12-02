@@ -1731,15 +1731,19 @@ namespace basicClasses
             {
                 opis now = ((opis)now_node.Tag).Duplicate();
 
+                opis time = new opis();
                 opis then = null;
                 if (EditingOpis == now_node.Tag)
                 {
                     then = Parser.ContextGlobal["words"]["version_control"][now.PartitionName].Duplicate();
+                    time = then["time point"];
+                    then.RemoveArrElem(time);
                 }
                 else
                  then = EditingOpis.Duplicate();
 
-                opis comp = CompareFill.VerControlCompare(now, then);            
+                opis comp = CompareFill.VerControlCompare(now, then);
+                comp.AddArr(time);
 
                 HighlightedOpis = comp;              
           
@@ -2160,6 +2164,7 @@ namespace basicClasses
             if (EditingOpis != null)
             {
                 templates[EditingOpis.PartitionName] = EditingOpis.Duplicate();
+                templates[EditingOpis.PartitionName].Vset("time point", DateTime.Now.ToString());
                 SetStateEdited();
             }
         }

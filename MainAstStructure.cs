@@ -649,7 +649,6 @@ namespace basicClasses
                 {
                     idxLess = 1;
                     arr[i] = null;
-
                 }
             }
            

@@ -79,6 +79,9 @@
     <Reference Include="BouncyCastle.Crypto, Version=1.8.3.0, Culture=neutral, PublicKeyToken=0e99375e54769942">
       <HintPath>packages\BouncyCastle.1.8.3.1\lib\BouncyCastle.Crypto.dll</HintPath>
     </Reference>
+    <Reference Include="FluentFTP, Version=28.0.2.0, Culture=neutral, PublicKeyToken=f4af092b1d8df44f, processorArchitecture=MSIL">
+      <HintPath>packages\FluentFTP.28.0.2\lib\net45\FluentFTP.dll</HintPath>
+    </Reference>
     <Reference Include="Google.Protobuf, Version=3.6.1.0, Culture=neutral, PublicKeyToken=a7d26565bac4d604, processorArchitecture=MSIL">
       <HintPath>packages\Google.Protobuf.3.6.1\lib\net45\Google.Protobuf.dll</HintPath>
     </Reference>
@@ -97,6 +100,7 @@
     <Reference Include="System.Drawing.Design" />
     <Reference Include="System.Management" />
     <Reference Include="System.Transactions" />
+    <Reference Include="System.Web" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -212,6 +216,7 @@
     <Compile Include="models\WEB_api\Compress.cs" />
     <Compile Include="models\WEB_api\ConcPostDataFormat.cs" />
     <Compile Include="models\WEB_api\Fill_templare_from_dataSouce.cs" />
+    <Compile Include="models\WEB_api\Ftp_client.cs" />
     <Compile Include="models\WEB_api\HtmlParser_HAP.cs" />
     <Compile Include="models\WEB_api\http_client.cs" />
     <Compile Include="models\WEB_api\jsonParserModel.cs" />

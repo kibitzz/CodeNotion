@@ -185,6 +185,9 @@ namespace basicClasses.Factory
             models.Add("FindCommonDatastructure", new FindCommonDatastructure());
             models.Add("send_mail", new send_mail());
             models.Add("smtp_settings", new smtp_settings());
+            models.Add("Ftp_client", new Ftp_client());
+            models.Add("ftp_settings", new ftp_settings());
+
 
             models.Add("Data_In_Buffer", new Data_In_Buffer());
             models.Add("PeriodIterator", new PeriodIterator());
