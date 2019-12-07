@@ -1196,6 +1196,9 @@ namespace basicClasses
                 {
                     if (mod.body.Contains("|"))
                     {
+                        SVC["VVV"].body = req.body;
+                        SVC["AAA"].body = req.PartitionName;
+                       
                         rez.PartitionKind = "exec_inline";
                     }
                 }
