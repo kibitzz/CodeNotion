@@ -1978,7 +1978,9 @@ namespace basicClasses
                         arr[i].PartitionName == templ.PartitionName) &&
                         (string.IsNullOrEmpty(templ.body)
                         || templ.body.StartsWith("???")
-                       || arr[i].body == templ.body)
+                       || arr[i].body == templ.body 
+                       || (templ.body.StartsWith("###") && arr[i].body.Contains(templ.body.Substring(3)))
+                        )
                         )
                     {
 

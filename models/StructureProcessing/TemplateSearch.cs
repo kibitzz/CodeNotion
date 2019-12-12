@@ -14,7 +14,7 @@ namespace basicClasses.models.StructureProcessing
         public static readonly string source = "source";
 
         [model("")]
-        [info("put ??? to body of any template node to get matched item in results")]
+        [info("put ??? to body of any template node to get matched item in results.   You can name extracted branches by putting some text after ??? in body (NOTE !!! in this case only one item of each named branch kind will be returned).  put ### to search body as substring template ")]
         public static readonly string template = "template";
 
         [model("spec_tag")]
