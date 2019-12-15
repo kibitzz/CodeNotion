@@ -14,7 +14,7 @@ namespace basicClasses.models.WEB_api
         [info("")]
         public static readonly string HtmlText = "HtmlText";
 
-        [info("for optimization big raw html not added in structure, only parsed data.   optional, set constant for this instance.")]
+        [info("for optimization big raw html not added in structure, only parsed data.   optional, set constant for this instance.  Set 0 (zero) value to omit InnerHtml generation")]
         public static readonly string InnerHtmlLengthLimit = "InnerHtmlLengthLimit";
 
         //[model("spec_tag")]
@@ -24,10 +24,14 @@ namespace basicClasses.models.WEB_api
         [model("spec_tag")]
         [info(" use this to set rules of replacing incorrect html substrings in further parsing. add elements to this partition where PN <bad> is text to replace and <good> is what replace it (only for this instance)")]
         public static readonly string fix_html = "fix_html";
-       
+
+        [model("spec_tag")]
+        [info(" do not calculate InnerHtml and InnerText for branch names listed here")]
+        public static readonly string ignore_names_attr = "ignore_names_attr";
+
         int maxHtmlShow = 500;
         opis fixes;
-
+        List<string> namesAtrIgnore = null;
 
         public override void Process(opis message)
         {
@@ -38,7 +42,14 @@ namespace basicClasses.models.WEB_api
             {
                 int.TryParse(spec.V(InnerHtmlLengthLimit), out maxHtmlShow);
             }
-         
+
+            if (spec.isHere(ignore_names_attr))
+            {
+                namesAtrIgnore = new List<string>();
+                for (int i = 0; i < spec[ignore_names_attr].listCou; i++)
+                    namesAtrIgnore.Add(spec[ignore_names_attr][i].PartitionName);
+            }
+
             var htmltext = spec.V(HtmlText);
             if (spec.isHere(fix_html))
             {
@@ -68,32 +79,39 @@ namespace basicClasses.models.WEB_api
         }
 
 
-        void Trace(HtmlNode node, opis rn)
+        void Trace(HtmlNode node, opis rn, bool ignoreattr = false)
         {
             foreach (var a in node.Attributes)
-                rn["Attributes"].Vset(a.Name, a.Value);
+                rn["Attributes"].Vset(a.Name, a.Value);          
+            
 
-            var htmobj = rn["Attributes"]["InnerHtml"];
-         //   var html = node.InnerHtml;
-
-            var html = "";
-
-            try
+            if (!ignoreattr && (namesAtrIgnore == null || !namesAtrIgnore.Contains(node.Name)))
             {
-                html = node.InnerHtml;
-            }
-            catch (ArgumentOutOfRangeException e)
-            {
-                html = "";
-            }
+                var htmobj = rn["Attributes"]["InnerHtml"];
 
-            if (html.Length < maxHtmlShow)
-                htmobj.body = html.Trim()
-                                                .Replace('\n', ' ')
-                                                .Replace('\t', ' ');
-                                                
-            rn["Attributes"].Vset("InnerText", node.InnerText.Trim().Replace("\n", " ")
-                                                .Replace("\t", " ").Replace("                ", " ").Replace("     ", " "));            
+                if (maxHtmlShow != 0)
+                {                  
+                    var html = "";
+
+                    try
+                    {
+                        html = node.InnerHtml;
+                    }
+                    catch (ArgumentOutOfRangeException e)
+                    {
+                        html = "";
+                    }
+
+                    if (html.Length < maxHtmlShow)
+                        htmobj.body = html.Trim()
+                                                        .Replace('\n', ' ')
+                                                        .Replace('\t', ' ');
+                }
+
+                rn["Attributes"].Vset("InnerText", node.InnerText.Trim().Replace("\n", " ")
+                                                    .Replace("\t", " ").Replace("                ", " ").Replace("     ", " "));
+            } else
+                ignoreattr = !ignoreattr;
 
             foreach (var n in node.ChildNodes)
             {
@@ -103,7 +121,7 @@ namespace basicClasses.models.WEB_api
                     cn.PartitionName = n.Name;
                    
                     rn.AddArr(cn);
-                    Trace(n, cn);
+                    Trace(n, cn, ignoreattr);
                 }
             }               
         }
