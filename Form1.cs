@@ -1085,6 +1085,7 @@ namespace basicClasses
             if (modelLocherThread == null)
             {
                 modelLocherThread = new Thread(new ThreadStart(SysInstance.ModelStopLockThread));
+                modelLocherThread.IsBackground = true;
                 modelLocherThread.Start();
             }
 
@@ -1107,6 +1108,7 @@ namespace basicClasses
           
 
             Thread thth = new Thread(new ThreadStart(tpb.igniteTree),200000);
+            thth.IsBackground = true;
             thth.Start();
             
             currContext["globalcomm"].lockThisForDuplication();

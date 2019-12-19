@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.String_proc
 {
-    [info("split text to array of words and give you ability to choose which one to return")]
+    [info("filler.  split text to array of words and give you ability to choose which one to return")]
     [appliable("func")]
     class WordsArrOp : ModelBase
     {
