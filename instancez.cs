@@ -1155,15 +1155,16 @@ namespace basicClasses
 
                 opis modelSpec = new opis();
                 bool modelIsProducer = (mod.body != null && mod.body.Contains("@"));
-                
 
-               #region create container for model execution
 
-                rez = new opis();
-                rez.PartitionKind = "exec";
+                #region create container for model execution
 
-                rez[exec.message_as_parameter_for_instructions].body = "y";
-                rez[exec.instructions].CopyArr(mod);
+                rez = GenExecInstr(mod);
+                //rez = new opis();
+                //rez.PartitionKind = "exec";
+
+                //rez[exec.message_as_parameter_for_instructions].body = "y";
+                //rez[exec.instructions].CopyArr(mod);
 
                 #endregion
 
@@ -1205,23 +1206,7 @@ namespace basicClasses
            
                 #endregion
 
-                #region partial application
-
-                //if (mod.body == "%")
-                //{
-                //    modelSpec.CopyArr(req.Duplicate());
-
-                //    opis r = GetPartialRec_LocalDataModel(mod[0], modelSpec);
-                //    mod = r;
-                //    rez[exec.instructions].CopyArr(r);
-
-                //    modelSpec.Vset("v", req.body);
-                //    modelSpec.Vset("a", req.PartitionName);
-                //}
-
-                #endregion
-
-              
+                            
                 string b = req.body !=null ? req.body:"";
                 opis processObj = processParameter;
                 string nameOfSubj = "";
@@ -1316,15 +1301,17 @@ namespace basicClasses
                 #endregion
 
                 #region context switching []*
-
-                bool contextByName = false;
+                bool subscribeProduce = false;
                 if (b.StartsWith("*") && req.PartitionKind !="func")
                 {
                   string pn = b.Trim('>', '<',' ', '*');
                     if (pn.Length > 0)
-                    {                      
-                        nameOfSubj = GetTempValName(SVC, tempNames);
+                    {
+                        subscribeProduce = modelIsProducer 
+                                       && (SVC["SYS_use_container_do_not_owerlap"].W().isHere(pn + "_sys_subscript")
+                                       || modelSpec.isHere(pn + "_sys_subscript"));
 
+                        nameOfSubj = GetTempValName(SVC, tempNames);                       
                         b = b.Replace("*", "");
                         SVC[nameOfSubj].Wrap(getSYSContainetP(SVC, pn, modelIsProducer));
                         modelSpec.Vset("v", nameOfSubj);
@@ -1332,9 +1319,7 @@ namespace basicClasses
                     else
                     {
                         nameOfSubj = GetTempValName(SVC, tempNames) ;
-
-                        modelSpec.Vset("v", nameOfSubj);
-                        contextByName = true;
+                        modelSpec.Vset("v", nameOfSubj);                       
                     }
                 }
 
@@ -1344,34 +1329,54 @@ namespace basicClasses
 
                 ExecActionModel(rez, processObj); // M A I N
 
-              
+
                 if (b == ">")  // pipeline operator
-                {                    
-                  //  if (modelIsProducer)   //     nameOfSubj
-                        SVC[exec.SUBJ].Wrap(SVC[modelSpec.V("v")].W());  
-                    //else
-                    //    SVC[exec.SUBJ].Wrap(processObj);
+                {
+                    SVC[exec.SUBJ].Wrap(SVC[modelSpec.V("v")].W());
                 }
 
-                // TODO: replace if crash b.Contains("*")
                 if (b == "*" && req.PartitionKind != "func")
                 {
                     SVC["SYS_use_container_do_not_owerlap"].ArrResize(0);
-
-                    //if (contextByName)
-                        SVC["SYS_use_container_do_not_owerlap"].Wrap(SVC[nameOfSubj].W());
-                    //else
-                    //    SVC["SYS_use_container_do_not_owerlap"].Wrap(processObj);
+                    SVC["SYS_use_container_do_not_owerlap"].Wrap(SVC[nameOfSubj].W());
                 }
 
-           
-                foreach(string tn in tempNames)
+                if (subscribeProduce)
+                {
+                    string pn = b.Trim('>', '<', ' ', '*') + "_sys_subscript";
+
+                    if (SVC["SYS_use_container_do_not_owerlap"].W().isHere(pn))
+                    {
+                        var subscription = SVC["SYS_use_container_do_not_owerlap"].W()[pn].Duplicate();
+                        ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
+                    }else
+                    if (modelSpec.isHere(pn))
+                    {
+                        var subscription = modelSpec[pn].Duplicate();
+                        ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
+                    }                 
+                }
+
+
+
+                foreach (string tn in tempNames)
                 tempSDCstack.Push(tn);
 
                 SVC["modelSpec"] = ms;
             }
 
             return rezb;
+        }
+
+        opis GenExecInstr(opis code)
+        {
+            var rez = new opis();
+            rez.PartitionKind = "exec";
+
+            rez[exec.message_as_parameter_for_instructions].body = "y";
+            rez[exec.instructions].CopyArr(code);
+
+            return rez;
         }
 
         string GetTempValName(opis SVC, List<string> tempNames)

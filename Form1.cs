@@ -1288,7 +1288,7 @@ namespace basicClasses
             }
 
             if (EditingOpis != null && EditingOpis.body != null
-                 && EditingOpis.body.Length < 17)
+                 && EditingOpis.body.Length < 6)
                 toolStrip1.Visible = (modlist.Count > 0);
             else
                 toolStrip1.Visible = false;
