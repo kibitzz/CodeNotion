@@ -2311,6 +2311,16 @@ namespace basicClasses
             return idList;
         }
 
+        public List<string> ListValues()
+        {
+            List<string> idList = new List<string>(listCou);
+
+            for (int i = 0; i < listCou; i++)
+                idList.Add(arr[i].body);
+
+            return idList;
+        }
+
         public List<int> ListValuesInt(string part)
         {
             var l = ListValues(part);

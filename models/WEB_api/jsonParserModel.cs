@@ -266,4 +266,35 @@ namespace basicClasses.models.WEB_api
     }
 
 
+    [appliable("file_formats")]
+    public class SingleLineText_ParserModel : ModelBase
+    {
+
+        public override void Process(opis message)
+        {
+            if (message.PartitionKind != "stringArray")
+                logopis["err:"].body = "message is not a stringArray ";
+
+            opis rez = new opis();
+            string[] proc = (string[])message.bodyObject;
+
+            var sb = new StringBuilder(proc.Length);
+
+            for (int i = 0; i < proc.Length; i++)
+            {
+                //if (proc[i].Length > 0)
+                //{
+                    sb.Append(proc[i]+ "\n");
+                //}
+            }
+
+            rez.body = sb.ToString();
+
+            message["data"] = rez;
+
+        }
+
+    }
+
+
 }

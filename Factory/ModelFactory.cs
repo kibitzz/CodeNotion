@@ -164,9 +164,9 @@ namespace basicClasses.Factory
             models.Add("Parce_Body_as_Json", new Parce_Body_as_Json());
             models.Add("CheckOverrides", new CheckOverrides());
 
-            
 
 
+            models.Add("jint", new jint());
             models.Add("HtmlParser_HAP", new HtmlParser_HAP());
             models.Add("UseSecurityProtocol", new UseSecurityProtocol());
             models.Add("code_point", new code_point());
@@ -180,6 +180,7 @@ namespace basicClasses.Factory
             
 
             models.Add("universal_line_pareser", new universal_line_pareser());
+            models.Add("SingleLineText_ParserModel", new SingleLineText_ParserModel());            
             models.Add("MySqlQuery", new MySqlQuery());
             models.Add("CompDataExport", new CompDataExport());
             models.Add("FindCommonDatastructure", new FindCommonDatastructure());
@@ -192,6 +193,7 @@ namespace basicClasses.Factory
             models.Add("Data_In_Buffer", new Data_In_Buffer());
             models.Add("PeriodIterator", new PeriodIterator());
             models.Add("GlobalParamsProvider", new GlobalParamsProvider());
+
            
             
 

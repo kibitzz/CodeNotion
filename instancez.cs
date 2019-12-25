@@ -1155,18 +1155,7 @@ namespace basicClasses
 
                 opis modelSpec = new opis();
                 bool modelIsProducer = (mod.body != null && mod.body.Contains("@"));
-
-
-                #region create container for model execution
-
-                rez = GenExecInstr(mod);
-                //rez = new opis();
-                //rez.PartitionKind = "exec";
-
-                //rez[exec.message_as_parameter_for_instructions].body = "y";
-                //rez[exec.instructions].CopyArr(mod);
-
-                #endregion
+                rez = GenExecInstr(mod);             
 
                 #region create modelSpec
 
@@ -1300,7 +1289,7 @@ namespace basicClasses
 
                 #endregion
 
-                #region context switching []*
+                #region context variables []*name
                 bool subscribeProduce = false;
                 if (b.StartsWith("*") && req.PartitionKind !="func")
                 {
@@ -1335,6 +1324,7 @@ namespace basicClasses
                     SVC[exec.SUBJ].Wrap(SVC[modelSpec.V("v")].W());
                 }
 
+                //context switch []*
                 if (b == "*" && req.PartitionKind != "func")
                 {
                     SVC["SYS_use_container_do_not_owerlap"].ArrResize(0);
