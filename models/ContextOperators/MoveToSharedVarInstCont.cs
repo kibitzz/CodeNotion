@@ -33,17 +33,6 @@ namespace basicClasses.models.ContextOperators
           
         }
     }
-
-
-    [info("obsolete ")]
-    [appliable("")]
-    public class messageTo_Role : ModelBase
-    {             
-        public override void Process(opis message)
-        {           
-            if (!string.IsNullOrEmpty(modelSpec.body))
-                SharedContextRoles.SetRole(message, modelSpec.body, sharedVal);           
-        }
-    }
+   
 
 }

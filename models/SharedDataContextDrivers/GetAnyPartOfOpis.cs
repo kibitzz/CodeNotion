@@ -72,12 +72,13 @@ namespace basicClasses.models.SharedDataContextDrivers
 
             if (modelSpec.isHere(sdc_item))
             {
+                opis svc = sharedVal;
                 opis p = modelSpec[sdc_item].Duplicate();
                 instanse.ExecActionModel(p, p);                
-                source = sharedVal.isHere(p.body)? sharedVal[p.body] : null;
+                source = svc.isHere(p.body)? svc[p.body] : null;
 
                 if (currSpec[create].isInitlze)
-                    source = sharedVal[p.body];
+                    source = svc[p.body];
             }
 
             if (modelSpec.isHere(sdc_Role))

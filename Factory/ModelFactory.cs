@@ -75,16 +75,12 @@ namespace basicClasses.Factory
             models.Add("context", new context());
             models.Add("Fill_Spec_Info", new Fill_Spec_Info());           
             models.Add("formula_exe", new formula_exe());           
-            models.Add("messageTo_Role", new messageTo_Role());
+          
             
-            models.Add("MoveToSharedVarInstCont", new MoveToSharedVarInstCont());
-            models.Add("connect_context_instance", new connect_context_instance());                   
-            models.Add("fill_Context_info", new fill_Context_info());                       
-            models.Add("fill_shared_context_val", new fill_shared_context_val());
-            models.Add("ConditionResponceModel", new ConditionResponceModel());
-            models.Add("NotifySharedContextSubscr", new NotifySharedContextSubscr());
-            models.Add("ClearSharedContext", new ClearSharedContext());
-            models.Add("contextRole", new contextRole());
+            models.Add("MoveToSharedVarInstCont", new MoveToSharedVarInstCont());                  
+            models.Add("fill_Context_info", new fill_Context_info());                                
+            models.Add("ConditionResponceModel", new ConditionResponceModel());           
+            models.Add("ClearSharedContext", new ClearSharedContext());        
             models.Add("SharedContextRoles", new SharedContextRoles());
             models.Add("SubContextHandler", new SubContextHandler());
             
@@ -92,9 +88,7 @@ namespace basicClasses.Factory
             models.Add("TagsTypes", new TagsTypes());          
             models.Add("SysInst_contextsArray", new SysInst_contextsArray());         
             models.Add("ContextHierarchyTypes", new ContextHierarchyTypes());
-
-            models.Add("FillArgumentsArray", new FillArgumentsArray());
-            
+        
             models.Add("ModelBase", new ModelBase());
             models.Add("ModelNotion", new ModelNotion());
             models.Add("modelReq", new modelReq());
@@ -122,8 +116,7 @@ namespace basicClasses.Factory
             models.Add("RangeMin", new RangeMin());
             models.Add("RangingList", new RangingList());
             models.Add("GetWordForm", new GetWordForm());
-            models.Add("GenerateID", new GenerateID());
-            models.Add("share_context_instance", new share_context_instance());
+            models.Add("GenerateID", new GenerateID());         
                               
             models.Add("load_data_file", new load_data_file());
             models.Add("Check_list_more_1", new Check_list_more_1());

@@ -1015,8 +1015,8 @@ namespace basicClasses
             if (obj is IActionProcessor)
             {
                 IActionProcessor processor = (IActionProcessor)obj;
-                processor.InitAct(this);
-                processor.CpecifyActionModel(req);
+                processor.InitAct(this, req);
+                //processor.CpecifyActionModel(req);
                 processor.Process(elemToChange);
                 if (req.PartitionName != MsgTemplate.context)
                     processor.log.AddArr(req);
@@ -1105,8 +1105,8 @@ namespace basicClasses
                     {
                        
                         IActionProcessor processor = (IActionProcessor)obj;
-                        processor.InitAct(this);
-                        processor.CpecifyActionModel(req);
+                        processor.InitAct(this, req);
+                        //processor.CpecifyActionModel(req);
 
                         processor.Process(processParameter);
                     }

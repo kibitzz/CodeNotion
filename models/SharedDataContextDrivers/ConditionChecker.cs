@@ -118,61 +118,15 @@ namespace basicClasses.models.SharedDataContextDrivers
                     rez = left.body == right.body;
                     break;
                     
-            }
-
-            //if (modelSpec.getPartitionIdx(autoRevalidate) != -1 
-            //    && !modelSpec.isHere("alreadyBound"))
-            //{
-            //    opis eventhandler = new opis("eventhandler");
-
-            //    eventhandler["items to listen"].AddArr(left.Duplicate());
-            //    eventhandler["items to listen"].AddArr(right.Duplicate());
-
-            //    eventhandler["exec"] = modelSpec;
-            //    modelSpec.Vset("alreadyBound", "yep");
-
-            //    //eventhandler.WrapByName(logopis, "log");
-               
-            //    BindToDataContext(eventhandler);
-            //}
+            }         
 
             if (rez)
                 instanse.ExecActionResponceModelsList(locModel[responce][ConditionResponceModel.yess], new opis());
             else
-                instanse.ExecActionResponceModelsList(locModel[responce][ConditionResponceModel.no],  new opis());
-           
-            //if (modelSpec[result].isInitlze)
-            //    sharedVal[modelSpec[result][0].PartitionKind].body = rez ? "yess" : "no";
+                instanse.ExecActionResponceModelsList(locModel[responce][ConditionResponceModel.no],  new opis());                     
            
         }
-
-        public override void ProcessWaiter(opis evento, opis sender)
-        {
-            opis handler = evento.W(ModelOpisEvent.receiver);
-            //  sender is sharedVal data storage in current cntext
-            sharedVal = sender;
-
-            if (handler.PartitionKind == "eventhandler")
-            {
-                bool haveChanged = false;
-                for (int i = 0; i < handler["items to listen"].listCou; i++)
-                {
-                    if (sharedVal.V(handler["items to listen"][i].PartitionName) !=
-                        handler["items to listen"][i].body)
-                        haveChanged = true;
-                }
-
-                if (haveChanged)
-                {
-                    //logopis = handler["log"].W();
-                                   
-                    modelSpec = handler["exec"];
-                    Process(handler["exec"]);
-                }
-               
-            }
-
-        }
+      
 
     }
 }

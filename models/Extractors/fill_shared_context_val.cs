@@ -5,30 +5,7 @@ using System.Linq;
 using System.Text;
 
 namespace basicClasses.models.Extractors
-{
-    [info("DO NOT use  ")]
-    [appliable("")]
-    public class fill_shared_context_val:ModelBase
-    {
-
-        public override void Process(opis message)
-        {
-            if (message.listCou > 0)
-            {
-                string name = message[0].PartitionName;
-                message.body = sharedVal[name].body;
-
-                message.CopyArr(sharedVal[name]);
-
-            }
-            else
-            {
-
-            }
-        }
-
-    }
-
+{   
 
     [info("Put global variable name in BODY to put it in this partition (key) . filler type of function (those who replace its call by resulted value) ")]
     [appliable("  creation    ")]

@@ -25,8 +25,8 @@ namespace basicClasses.models.SharedDataContextDrivers
 
         public override void Process(opis message)
         {
-
             opis itemsToInit = modelSpec;
+            opis svc = sharedVal;
 
             opis modelsPart = thisins["packages"];
             Dictionary<string, int> cash= (Dictionary<string, int>)thisins["packages"].bodyObject;
@@ -57,14 +57,13 @@ namespace basicClasses.models.SharedDataContextDrivers
                 else
                 {
                     itm = itm.Duplicate();
-                }
-          
+                }               
 
             // одразу додаємо в контекст, щоб наступна могла взяти це значення
-            if (!isModel && itm.PartitionName != "Run_multiple_times"
+                if (!isModel && itm.PartitionName != "Run_multiple_times"
                     && itm.PartitionName != "_path_")
                 {
-                    sharedVal[itm.PartitionName] = itm;
+                    svc[itm.PartitionName] = itm;
                 }
             }
 

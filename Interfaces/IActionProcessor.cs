@@ -13,7 +13,7 @@ namespace basicClasses
 
         opis log { get; }
 
-        void InitAct(SysInstance ins);
+        void InitAct(SysInstance ins, opis specification);
 
         void CpecifyActionModel(opis specification);
 

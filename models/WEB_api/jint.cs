@@ -8,6 +8,7 @@ using Jint;
 namespace basicClasses.models.WEB_api
 {
 
+    [appliable("Action")]
     [info("filler.   message.body.  Jint is a Javascript interpreter for .NET which provides full ECMA 5.1")]
     class jint : ModelBase
     {
@@ -29,8 +30,9 @@ namespace basicClasses.models.WEB_api
         {
             opis spec = modelSpec.Duplicate();
             instanse.ExecActionModelsList(spec);
+            instanse.ExecActionModelsList(spec[arguments]);
 
-            if(spec.isHere(source))
+            if (spec.isHere(source))
             eng = new Jint.Engine().Execute(spec.V(source)); ;
 
             if (eng != null && spec.isHere(function))

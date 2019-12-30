@@ -50,9 +50,11 @@ namespace basicClasses.models.StructureProcessing
             instanse.ExecActionModel(bp, bp);
             modelSpec = locmod;
 
+            opis vk = sharedVal;
+
             if (bp.listCou > 0)
             {
-                if (modelSpec.getPartitionIdx(values_container) != -1)
+                if (modelSpec.isHere(values_container))
                 {
                     opis t = null;
                     if (modelSpec[values_container].isInitlze
@@ -66,12 +68,11 @@ namespace basicClasses.models.StructureProcessing
                     }
                     else
                         t = SharedContextRoles.GetRole("valuesContainer", sharedVal);
-                    
 
-                    sharedVal = t.W();
+                    vk = t.W();
                 }
 
-                build(bp, null);
+                build(bp, null, vk);
               
               
                 if (bp.listCou == 1 && message.PartitionKind != "template")
@@ -115,42 +116,42 @@ namespace basicClasses.models.StructureProcessing
 
         }
 
-        public void build(opis bp, opis holder)
+        public void build(opis bp, opis holder, opis valContainer)
         {
             bool donotrecurce = !modelSpec.isHere(recurce_all) && bp.PartitionKind == "buildTreeVal_sdc_i";
           
             if (bp.body.StartsWith("$"))           
-                bp.body = sharedVal[bp.body.Replace("$", "")].body;
+                bp.body = valContainer[bp.body.Replace("$", "")].body;
 
             if (bp.PartitionName.StartsWith("$"))
-                bp.PartitionName = sharedVal[bp.PartitionName.Replace("$", "")].body;
+                bp.PartitionName = valContainer[bp.PartitionName.Replace("$", "")].body;
 
             if (bp.body.StartsWith("&b"))
-                bp.body = sharedVal.body;
+                bp.body = valContainer.body;
             if (bp.body.StartsWith("&p"))
-                bp.body = sharedVal.PartitionName;
+                bp.body = valContainer.PartitionName;
 
             if (bp.PartitionName.StartsWith("&b"))
-                bp.PartitionName = sharedVal.body;
+                bp.PartitionName = valContainer.body;
             if (bp.PartitionName.StartsWith("&p"))
-                bp.PartitionName = sharedVal.PartitionName;
+                bp.PartitionName = valContainer.PartitionName;
 
             if (bp.PartitionKind =="&b")
-                bp.PartitionKind = sharedVal.body;
+                bp.PartitionKind = valContainer.body;
             if (bp.PartitionKind == "&p")
-                bp.PartitionKind = sharedVal.PartitionName;
+                bp.PartitionKind = valContainer.PartitionName;
 
             if (bp.PartitionKind.StartsWith("$"))
-                bp.PartitionKind = sharedVal[bp.PartitionKind.Replace("$", "")].body;
+                bp.PartitionKind = valContainer[bp.PartitionKind.Replace("$", "")].body;
 
             if (bp.body.StartsWith("*"))
             {
                 donotrecurce = true;
 
                 if (bp.body.Length > 1)
-                    bp.CopyArr(sharedVal[bp.body.Replace("*", "")].W());
+                    bp.CopyArr(valContainer[bp.body.Replace("*", "")].W());
                 else
-                    bp.CopyArr(sharedVal);
+                    bp.CopyArr(valContainer);
 
                 bp.body = "";
             }
@@ -160,9 +161,9 @@ namespace basicClasses.models.StructureProcessing
                 donotrecurce = true;
 
                 if (bp.body.Length > 1)
-                    bp.AddArrRange(sharedVal[bp.body.Replace("+", "")].W());
+                    bp.AddArrRange(valContainer[bp.body.Replace("+", "")].W());
                 else
-                    bp.AddArrRange(sharedVal);
+                    bp.AddArrRange(valContainer);
 
                 bp.body = "";
             }
@@ -173,9 +174,9 @@ namespace basicClasses.models.StructureProcessing
                 donotrecurce = true;
 
                 if (bp.body.Length > 1)
-                    bp.Wrap(sharedVal[bp.body.Replace("@", "")].W());
+                    bp.Wrap(valContainer[bp.body.Replace("@", "")].W());
                 else
-                    bp.Wrap(sharedVal.W());
+                    bp.Wrap(valContainer.W());
             }
 
             if (bp.body.StartsWith("%"))
@@ -188,7 +189,7 @@ namespace basicClasses.models.StructureProcessing
             {
                 donotrecurce = true;
 
-                opis branchVal = sharedVal[bp.PartitionName.Replace("#", "")].W();
+                opis branchVal = valContainer[bp.PartitionName.Replace("#", "")].W();
                 if (!modelSpec.isHere(do_not_duplicate_branch) 
                     || bp.PartitionName.StartsWith("##"))
                 {
@@ -233,7 +234,7 @@ namespace basicClasses.models.StructureProcessing
 
             if (!donotrecurce)
             for (int i = 0; i < bp.listCou; i++)
-                build(bp[i], bp);
+                build(bp[i], bp, valContainer);
 
         }
     }

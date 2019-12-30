@@ -138,9 +138,7 @@
     <Compile Include="models\Checkers\Check_Key_value_presence.cs" />
     <Compile Include="models\Checkers\Check_list_more_1.cs" />
     <Compile Include="models\Checkers\Check_TimestampDiff.cs" />
-    <Compile Include="models\ContextOperators\connect_context_instance.cs" />
     <Compile Include="models\ContextOperators\MoveToSharedVarInstCont.cs" />
-    <Compile Include="models\DataSets\Arguments.cs" />
     <Compile Include="models\DataSets\file_formats.cs" />
     <Compile Include="models\DataSets\SharedContextRoles.cs" />
     <Compile Include="models\DataSets\spec_tag.cs" />
@@ -151,7 +149,6 @@
     <Compile Include="models\Extractors\Fill_p_notify_specs.cs" />
     <Compile Include="models\Extractors\fill_shared_context_val.cs" />
     <Compile Include="models\Extractors\Fill_Spec_Info.cs" />
-    <Compile Include="models\FunctionalInstances\FillArgumentsArray.cs" />
     <Compile Include="models\FunctionalInstances\formula_exe.cs" />
     <Compile Include="models\SQL\ReplaceKeyByPresentation.cs" />
     <Compile Include="models\String proc\PeriodIterator.cs" />
@@ -172,7 +169,6 @@
     <Compile Include="models\SharedDataContextDrivers\BodyValueModificator.cs" />
     <Compile Include="models\SharedDataContextDrivers\ConditionChecker.cs" />
     <Compile Include="models\SharedDataContextDrivers\ConditionResponceModel.cs" />
-    <Compile Include="models\SharedDataContextDrivers\contextRole.cs" />
     <Compile Include="models\SharedDataContextDrivers\exec.cs" />
     <Compile Include="models\SharedDataContextDrivers\GetAnyPartOfOpis.cs" />
     <Compile Include="models\SharedDataContextDrivers\initValues.cs" />

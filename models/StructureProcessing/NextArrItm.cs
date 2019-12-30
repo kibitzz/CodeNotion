@@ -37,7 +37,9 @@ namespace basicClasses.models.StructureProcessing
         public override void Process(opis message)
         {
             opis surc = message;
-            opis iter = SharedContextRoles.GetRole(modelSpec[Iterator].body, sharedVal);
+            opis svc = sharedVal;
+
+            opis iter = SharedContextRoles.GetRole(modelSpec[Iterator].body, svc);
 
             if (iter.PartitionKind == "null" || !iter.isInitlze 
                 || (modelSpec.isHere(reinit_iterator) 
@@ -56,7 +58,7 @@ namespace basicClasses.models.StructureProcessing
                 iter[source] = surc;
                 iter["pos"].body ="0";
 
-                SharedContextRoles.SetRole(iter, modelSpec[Iterator].body, sharedVal);
+                SharedContextRoles.SetRole(iter, modelSpec[Iterator].body, svc);
             }
 
             if(modelSpec.isHere(loop) && iter[source].listCou == iter["pos"].intVal)
@@ -68,11 +70,11 @@ namespace basicClasses.models.StructureProcessing
             {
                 itm = iter[source][iter["pos"].intVal];
                 iter["pos"].intVal++;
-                SharedContextRoles.SetRole(itm, modelSpec.V(role), sharedVal);
+                SharedContextRoles.SetRole(itm, modelSpec.V(role), svc);
 
 
             }else
-            SharedContextRoles.SetRole(new opis(), modelSpec.V(role), sharedVal);
+            SharedContextRoles.SetRole(new opis(), modelSpec.V(role), svc);
 
 
             if (itm != null)

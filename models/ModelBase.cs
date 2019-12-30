@@ -6,13 +6,18 @@ using System.Text;
 
 namespace basicClasses.models
 {
-  public class ModelBase: ModelInfo, IActionProcessor, IOpisFuncInstanceWaiter
+    public class ModelBase : ModelInfo, IActionProcessor, IOpisFuncInstanceWaiter
     {
         protected opis env;
         protected SysInstance instanse;
-
-        protected opis thisins;
-        protected opis spec;
+        protected opis thisins
+        {
+            get { return env.W("thisins"); }
+        }
+        protected opis spec
+        {
+            get { return env.W("spec"); }
+        }
         /// <summary>
         /// current context
         /// </summary>
@@ -22,14 +27,31 @@ namespace basicClasses.models
         {
             get { return env.W("contexts"); }
         }
-        protected contex CTX;
+
+        protected contex _CTX;
+
+        protected contex CTX
+        {
+            get
+            {
+                if (_CTX == null)
+                    _CTX = new contex(spec.V(ModelNotion.canHandleParentRange));
+
+                _CTX.Handle(o);
+                return _CTX;
+            }
+        }
         protected opis waiter
         {
             get { return env.W("waiter"); }
         }
 
         protected opis modelSpec;
-        protected opis sharedVal;
+
+        protected opis sharedVal
+        {
+            get { return thisins["sharedVariablesContext"]; }
+        }
 
         protected opis logopis;
         public opis log { get { return logopis; } }
@@ -47,23 +69,22 @@ namespace basicClasses.models
             return rez;
         }
 
-        public void InitAct(SysInstance ins)
+        public void InitAct(SysInstance ins, opis specification)
         {
-            modelSpec = new opis();
+            //modelSpec = new opis();
             instanse = ins;          
             env = ins.GetEnvirinmentForModel();
           
-            thisins = env.W("thisins");
-            spec = env.W("spec");
+            //thisins = env.W("thisins");
+            //spec = env.W("spec");
             o = env.W("currCont");
          
-            sharedVal = thisins["sharedVariablesContext"];
-            modelSpec = null;
+            //sharedVal = thisins["sharedVariablesContext"];
+            modelSpec = specification;
 
-            if (CTX ==null)
-            CTX = new contex(spec.V(ModelNotion.canHandleParentRange));
-
-            CTX.Handle(o);
+            //if (CTX ==null)
+            //CTX = new contex(spec.V(ModelNotion.canHandleParentRange));
+            //CTX.Handle(o);
 
             if(logopis==null)
             logopis = new opis(name);          
