@@ -288,6 +288,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Examples\" />
+    <Folder Include="models\SelectFilter\" />
     <Folder Include="SubjectArea\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

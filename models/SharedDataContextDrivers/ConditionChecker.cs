@@ -59,8 +59,8 @@ namespace basicClasses.models.SharedDataContextDrivers
 
             opis left = p.listCou==2? p[0]: new opis();
             opis right = p.listCou == 2 ? p[1] : new opis();
+        
 
-          
             //logopis.AddArr(sharedVal);
             //logopis.AddArr(left);
             //logopis.AddArr(right);
@@ -96,6 +96,17 @@ namespace basicClasses.models.SharedDataContextDrivers
 
                 case "<":
                     rez = left.intVal < right.intVal;
+                    break;
+
+                case "<l":
+                    long leftL = long.Parse(left.body.Trim());
+                    long rightL = long.Parse(right.body.Trim());
+                    rez = leftL < rightL;
+                    break;
+                case ">l":
+                    leftL = long.Parse(left.body.Trim());
+                    rightL = long.Parse(right.body.Trim());
+                    rez = leftL > rightL;
                     break;
 
                 case ">":

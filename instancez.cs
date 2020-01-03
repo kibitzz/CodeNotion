@@ -1291,6 +1291,7 @@ namespace basicClasses
 
                 #region context variables []*name
                 bool subscribeProduce = false;
+                //bool prodLocalContext = false;
                 if (b.StartsWith("*") && req.PartitionKind !="func")
                 {
                   string pn = b.Trim('>', '<',' ', '*');
@@ -1299,6 +1300,7 @@ namespace basicClasses
                         subscribeProduce = modelIsProducer 
                                        && (SVC["SYS_use_container_do_not_owerlap"].W().isHere(pn + "_sys_subscript")
                                        || modelSpec.isHere(pn + "_sys_subscript"));
+                        //prodLocalContext = modelIsProducer;
 
                         nameOfSubj = GetTempValName(SVC, tempNames);                       
                         b = b.Replace("*", "");
@@ -1331,6 +1333,12 @@ namespace basicClasses
                     SVC["SYS_use_container_do_not_owerlap"].Wrap(SVC[nameOfSubj].W());
                 }
 
+                //if (prodLocalContext)
+                //{
+                //    string pn = b.Trim('>', '<', ' ', '*');
+                //    SVC["SYS_use_container_do_not_owerlap"].W()[pn] = SVC[nameOfSubj].W();                   
+                //}
+
                 if (subscribeProduce)
                 {
                     string pn = b.Trim('>', '<', ' ', '*') + "_sys_subscript";
@@ -1346,7 +1354,6 @@ namespace basicClasses
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
                     }                 
                 }
-
 
 
                 foreach (string tn in tempNames)
