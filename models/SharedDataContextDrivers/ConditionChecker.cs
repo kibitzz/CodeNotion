@@ -99,13 +99,17 @@ namespace basicClasses.models.SharedDataContextDrivers
                     break;
 
                 case "<l":
-                    long leftL = long.Parse(left.body.Trim());
-                    long rightL = long.Parse(right.body.Trim());
+                    long leftL = 0;
+                    long.TryParse(left.body.Trim(), out leftL);
+                    long rightL = 0;
+                    long.TryParse(right.body.Trim(), out rightL);
                     rez = leftL < rightL;
                     break;
                 case ">l":
-                    leftL = long.Parse(left.body.Trim());
-                    rightL = long.Parse(right.body.Trim());
+                    leftL = 0;
+                    long.TryParse(left.body.Trim(), out leftL);
+                    rightL = 0;
+                    long.TryParse(right.body.Trim(), out rightL);
                     rez = leftL > rightL;
                     break;
 
