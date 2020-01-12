@@ -51,6 +51,10 @@ namespace basicClasses.models.String_proc
         [info("seach last contained item of <fin> substring")]
         public static readonly string fin_closer_to_end = "fin_closer_to_end";
 
+        [model("spec_tag")]
+        [info("result should contain start text or/and fin text  {sf, s, f}")]
+        public static readonly string add_closures = "add_closures";
+
         [info("if result is not empty - run some code")]
         [model("Action")]
         public static readonly string if_not_empty = "if_not_empty";
@@ -96,12 +100,29 @@ namespace basicClasses.models.String_proc
                 if (spec.isHere(fin_as_separator))
                     cpos -= enclfound.Length;
 
+                if (spec.isHere(add_closures))
+                {
+                    switch (spec.V(add_closures))
+                    {
+                        case "sf":
+                            rez = st + rez + enclfound;
+                            break;
+                        case "s":
+                            rez = st + rez;
+                            break;
+                        case "f":
+                            rez = rez + enclfound;
+                            break;
+                    }
+                }
+
                 if (spec.isHere(if_not_empty))
                 {
                     var par = new opis() {body = rez, PartitionName = "rez" };
                     instanse.ExecActionResponceModelsList(spec[if_not_empty], par);
                 }
             }
+           
 
             message.body = rez.Trim();
             message.PartitionKind = "";

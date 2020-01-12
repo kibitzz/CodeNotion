@@ -61,7 +61,7 @@ namespace basicClasses.models.String_proc
                     string v = pcont["service"][i].body;
 
                     if (v.Length > 0)
-                        serviceSymb[i] = pcont["service"][i].body[0];
+                        serviceSymb[i] = v[0];
                     else serviceSymb[i] = ' ';
                 }
 
