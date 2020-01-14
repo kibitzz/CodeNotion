@@ -177,13 +177,14 @@ namespace basicClasses.models.WEB_api
                 t[webResponceModel.responseHeaders] = hc.responceHeaders;
 
                 t.Vset(webResponceModel.responseData, hc.responseData.Replace("\n", " "));
-                t.Vset(webResponceModel.NewCookies, hc.NewCookies);
+                var NewCookies = hc.NewCookies;
+                t.Vset(webResponceModel.NewCookies, NewCookies);
 
                 #region NewCookies
 
-                if (hc.NewCookies != null)
+                if (NewCookies != null)
                 {
-                    string[] cookarr = hc.NewCookies.Split(';');
+                    string[] cookarr = NewCookies.Split(';');
                     foreach (string s in cookarr)
                     {
                         //opis o = new opis();

@@ -86,30 +86,40 @@ namespace basicClasses.models.WEB_api
                 if (string.IsNullOrEmpty(respCookies)) { return cookies; }
                 string[] spl = respCookies.Split(new char[] { ';', ',' });
 
-                //string[] splKK;
-                //string kkExpr = QueryParser.GetExpresionStructUntyped(cookies, out splKK);
+                foreach (string s in spl)
+                {
+                    var v = s.Trim();
+                    if (v.StartsWith("path=")
+                        || v.StartsWith("HttpOnly") || v.StartsWith("expires="))
+                        continue;
 
-                //foreach (string s in spl)
-                //{
-                //    string[] lex;
-                //    string expr = QueryParser.GetExpresionStructUntyped(s, out lex);
-                //    if (expr.StartsWith("O=O") && !s.StartsWith(" expires") && !s.StartsWith(" path") && !s.StartsWith(" domain"))
-                //    {
-                //        int idx = Array.IndexOf(splKK, lex[0]);
-                //        if (idx != -1)
-                //        {
-                //            splKK[idx + 1] = lex[1].Trim();
-                //        }
-                //        else
-                //        {
-                //            rez += s + "; ";
-                //        }
-                //    }
-                //}              
+                    rez += v + "; ";
+                }
 
-                //rez = rez + QueryParser.Merge(kkExpr, splKK);
+                    //string[] splKK;
+                    //string kkExpr = QueryParser.GetExpresionStructUntyped(cookies, out splKK);
 
-                return rez;
+                    //foreach (string s in spl)
+                    //{
+                    //    string[] lex;
+                    //    string expr = QueryParser.GetExpresionStructUntyped(s, out lex);
+                    //    if (expr.StartsWith("O=O") && !s.StartsWith(" expires") && !s.StartsWith(" path") && !s.StartsWith(" domain"))
+                    //    {
+                    //        int idx = Array.IndexOf(splKK, lex[0]);
+                    //        if (idx != -1)
+                    //        {
+                    //            splKK[idx + 1] = lex[1].Trim();
+                    //        }
+                    //        else
+                    //        {
+                    //            rez += s + "; ";
+                    //        }
+                    //    }
+                    //}              
+
+                    //rez = rez + QueryParser.Merge(kkExpr, splKK);
+
+                    return rez;
 
             }
         }
@@ -680,13 +690,15 @@ namespace basicClasses.models.WEB_api
                 responceHeaders = new opis();
 
                 #region WebResponse Headers: Cookie, gzip Encoding
+
+                respCookies = "";
                 for (int i = 0; i < _myHttpWebResponse.Headers.Count; ++i)
                 {
                     responceHeaders.Vset(_myHttpWebResponse.Headers.Keys[i], _myHttpWebResponse.Headers[i]);
 
                     if (_myHttpWebResponse.Headers.Keys[i].Contains("Set-Cookie"))
                     {
-                        respCookies = _myHttpWebResponse.Headers[i];
+                        respCookies += _myHttpWebResponse.Headers[i];
 
                         //						cociDoc.SetCookies(urlUri ,  respCookies);
                     }

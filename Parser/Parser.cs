@@ -127,6 +127,8 @@ namespace basicClasses
 
             long dis = 1;
 
+            if (alphanum.StartsWith("-"))
+                dis = -1;
 
             for (int i = (alphanum.Length - 1); i >= 0; i--)
             {
