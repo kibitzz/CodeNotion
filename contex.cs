@@ -212,6 +212,89 @@ namespace basicClasses
         
     }
 
+    public class ScriptRuntime
+    {
+        object scriptLocker = new object();
+
+        opis ScriptContext;
+
+        opis CreateMethodMessage(string specName, string method, string param = "")
+        {
+            var methodRun = new opis();
+            var req = "{\"N\": \"api_provider\",\"K\": \"message\",\"B\": \"###msgtype\",\"a\": [{\"N\": \"contTargetModel\",\"K\": \"TargetingChecks\",\"B\": \"\",\"a\": [{\"N\": \"1\",\"K\": \"targetAnyCont\",\"B\": \"\"}]},{\"N\": \"p\",\"K\": \"\",\"B\": \"" + param + "\"}]}";
+            methodRun.load(req.Replace("###msgreceiv", specName)
+                .Replace("###msgtype", method));
+
+            return methodRun;
+        }
+
+        opis CreateMethodMessage(string specName, string method, opis param)
+        {
+            var t = CreateMethodMessage(specName, method);
+            t["p"] = param;
+
+            return t;
+        }
+
+
+        public opis CodenotionScript(string specName, string sysName, string method, opis param)
+        {
+            var methodRun = CreateMethodMessage(sysName, method, param);
+         
+            lock (scriptLocker)
+            {              
+                if (ScriptContext == null)
+                {                   
+                    OntologyTreeBuilder tpb = new OntologyTreeBuilder();
+                    tpb.context = Parser.ContextGlobal["words"];
+
+                    opis o = new opis("context");
+                    o.PartitionName = "context";
+                    o.Vset("level", "topBranch");
+                    o.Vset(context.Higher, "none");
+                    o.Vset(context.Organizer, "контекстречення");
+
+                    tpb.buildTree(tpb.context.Find(specName), o);
+
+                    opis currContext = o;
+                    currContext["globalcomm"] = new opis();
+
+                    var vmsg = CreateMethodMessage(sysName, "version");
+
+                    tpb.messagesToSend = new opis();
+                    tpb.messagesToSend.AddArr(vmsg);
+
+                    tpb.initInstances(currContext);
+
+                    if (SysInstance.Log != null)
+                        SysInstance.Log.Clear();
+
+                    tpb.contextToIgnite = currContext;
+                    tpb.igniteTree();
+
+                    ScriptContext = currContext;
+                    //AddAnalytic(222, "Init new ScriptContext ", specName, vmsg["p"].serialize(), "");
+                    ScriptContext["globalcomm"][sysName] = methodRun;
+                }
+                else
+                {
+                    try
+                    {
+                        ScriptContext["globalcomm"][sysName] = methodRun;
+                    }
+                    catch (Exception e)
+                    {
+                        //AddAnalytic(222, "Exception running ScriptContext " + e.StackTrace, specName, methodRun.serialize(), e.Message);
+                    }                    
+                }
+            }
+          
+            return methodRun["p"];
+        }
+
+    }
+
+
     public class root : SysInstance
     {
 
