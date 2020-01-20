@@ -37,6 +37,10 @@ namespace basicClasses.models.WEB_api
         public static readonly string params_full_url_encoding = "params_full_url_encoding";
 
         [model("spec_tag")]
+        [info(" space to +     /  to  %2F   and other non aplha symbols.   kirill convert too.  specially fitted to emulate aspnet form encoding of values")]
+        public static readonly string aspnet_form_encoding = "aspnet_form_encoding";
+
+        [model("spec_tag")]
         [info("   %D0%90  to  %25D0%2590")]
         public static readonly string params_UTF_to_UTF25pref_encoding = "params_UTF_to_UTF25pref_encoding";
 
@@ -77,6 +81,9 @@ namespace basicClasses.models.WEB_api
 
                     if (modelSpec.isHere(params_full_url_encoding))                    
                         replacement = TemplatesMan.UrlEncodeFull(replacement);
+                    else
+                    if (modelSpec.isHere(aspnet_form_encoding))
+                        replacement = TemplatesMan.AspnetUrlEncodeFull(replacement);
 
                     if (modelSpec.isHere(params_UTF_to_UTF25pref_encoding))
                         replacement = TemplatesMan.UTF_to_UTF25pref(replacement);

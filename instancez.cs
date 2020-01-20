@@ -1533,6 +1533,8 @@ namespace basicClasses
             BuildActionPath(rez, "code_point");
             BuildActionPath(rez, "fill");
             BuildActionPath(rez, "fc");
+            //BuildActionPath(rez, "http get", true);
+            //BuildActionPath(rez, "http post", true);
 
         }
 
