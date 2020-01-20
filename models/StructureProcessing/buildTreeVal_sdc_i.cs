@@ -22,6 +22,10 @@ namespace basicClasses.models.StructureProcessing
         public static readonly string values_container = "values_container";
 
         [model("spec_tag")]
+        [info("reduce blueprint special symbols to {  $  #  &b  &p }.  other is ignored { * @ + }")]
+        public static readonly string func_symbols_ignore = "func_symbols_ignore";
+
+        [model("spec_tag")]
         [info("якщо в шаблоні вказано # - копіювання всієї гілки та для даних котрі потрібні в оригіналі (параметри ссилки на обєкти) можна відключити дуплікацію")]
         public static readonly string do_not_duplicate_branch = "do_not_duplicate_branch";
 
@@ -41,7 +45,7 @@ namespace basicClasses.models.StructureProcessing
         [model("spec_tag")]
         [info("bug fix when ")]
         public static readonly string putWholeResult = "putWholeResult";
-
+       
 
         public override void Process(opis message)
         {
@@ -72,7 +76,7 @@ namespace basicClasses.models.StructureProcessing
                     vk = t.W();
                 }
 
-                build(bp, null, vk);
+                build(bp, null, vk, modelSpec.isHere(func_symbols_ignore));
               
               
                 if (bp.listCou == 1 && message.PartitionKind != "template")
@@ -116,11 +120,11 @@ namespace basicClasses.models.StructureProcessing
 
         }
 
-        public void build(opis bp, opis holder, opis valContainer)
+        public void build(opis bp, opis holder, opis valContainer, bool funcSymbIgnore)
         {
             bool donotrecurce = !modelSpec.isHere(recurce_all) && bp.PartitionKind == "buildTreeVal_sdc_i";
-          
-            if (bp.body.StartsWith("$"))           
+
+            if (bp.body.StartsWith("$"))
                 bp.body = valContainer[bp.body.Replace("$", "")].body;
 
             if (bp.PartitionName.StartsWith("$"))
@@ -136,7 +140,7 @@ namespace basicClasses.models.StructureProcessing
             if (bp.PartitionName.StartsWith("&p"))
                 bp.PartitionName = valContainer.PartitionName;
 
-            if (bp.PartitionKind =="&b")
+            if (bp.PartitionKind == "&b")
                 bp.PartitionKind = valContainer.body;
             if (bp.PartitionKind == "&p")
                 bp.PartitionKind = valContainer.PartitionName;
@@ -144,44 +148,49 @@ namespace basicClasses.models.StructureProcessing
             if (bp.PartitionKind.StartsWith("$"))
                 bp.PartitionKind = valContainer[bp.PartitionKind.Replace("$", "")].body;
 
-            if (bp.body.StartsWith("*"))
+            if (!funcSymbIgnore)
             {
-                donotrecurce = true;
+                if (bp.body.StartsWith("*"))
+                {
+                    donotrecurce = true;
 
-                if (bp.body.Length > 1)
-                    bp.CopyArr(valContainer[bp.body.Replace("*", "")].W());
-                else
-                    bp.CopyArr(valContainer);
+                    if (bp.body.Length > 1)
+                        bp.CopyArr(valContainer[bp.body.Replace("*", "")].W());
+                    else
+                        bp.CopyArr(valContainer);
 
-                bp.body = "";
-            }
+                    bp.body = "";
+                }
 
-            if (bp.body.StartsWith("+"))
-            {
-                donotrecurce = true;
+                if (bp.body.StartsWith("+"))
+                {
+                    donotrecurce = true;
 
-                if (bp.body.Length > 1)
-                    bp.AddArrRange(valContainer[bp.body.Replace("+", "")].W());
-                else
-                    bp.AddArrRange(valContainer);
+                    if (bp.body.Length > 1)
+                        bp.AddArrRange(valContainer[bp.body.Replace("+", "")].W());
+                    else
+                        bp.AddArrRange(valContainer);
 
-                bp.body = "";
-            }
+                    bp.body = "";
+                }
 
 
-            if (bp.body.StartsWith("@"))
-            {
-                donotrecurce = true;
+                if (bp.body.StartsWith("@"))
+                {
+                    donotrecurce = true;
 
-                if (bp.body.Length > 1)
-                    bp.Wrap(valContainer[bp.body.Replace("@", "")].W());
-                else
-                    bp.Wrap(valContainer.W());
-            }
+                    if (bp.body.Length > 1)
+                        bp.Wrap(valContainer[bp.body.Replace("@", "")].W());
+                    else
+                        bp.Wrap(valContainer.W());
+                }
 
-            if (bp.body.StartsWith("%"))
-            {
-                bp.body = "random body "+ rnd.Next().ToString() + rnd.Next().ToString(); ;
+                if (bp.body.StartsWith("%"))
+                {
+                    bp.body = "random body " + rnd.Next().ToString() + rnd.Next().ToString(); ;
+                }
+
+              
             }
 
             // # in PartitionName means that whole tree must be assigned
@@ -190,15 +199,15 @@ namespace basicClasses.models.StructureProcessing
                 donotrecurce = true;
 
                 opis branchVal = valContainer[bp.PartitionName.Replace("#", "")].W();
-                if (!modelSpec.isHere(do_not_duplicate_branch) 
+                if (!modelSpec.isHere(do_not_duplicate_branch)
                     || bp.PartitionName.StartsWith("##"))
                 {
                     branchVal = branchVal.Duplicate();
 
                     bp.PartitionName = branchVal.PartitionName;
                     bp.body = branchVal.body;
-                    if(string.IsNullOrEmpty(bp.PartitionKind))
-                    bp.PartitionKind = branchVal.PartitionKind;
+                    if (string.IsNullOrEmpty(bp.PartitionKind))
+                        bp.PartitionKind = branchVal.PartitionKind;
                     bp.CopyArr(branchVal);
                 }
                 else
@@ -228,13 +237,14 @@ namespace basicClasses.models.StructureProcessing
                 }
             }
 
+
             bp.body = bp.body.Replace("{star}", "*");
             //if (bp.PartitionName.StartsWith("$"))           
             //    bp.PartitionName = sharedVal[bp.PartitionName.Replace("$", "")].body;
 
             if (!donotrecurce)
             for (int i = 0; i < bp.listCou; i++)
-                build(bp[i], bp, valContainer);
+                build(bp[i], bp, valContainer, funcSymbIgnore);
 
         }
     }
