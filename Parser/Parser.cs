@@ -314,8 +314,7 @@ namespace basicClasses
                 using (GZipStream zs = new GZipStream(fs, CompressionMode.Compress, true))
                 using (StreamWriter sw = new StreamWriter(zs))
                 {
-                    sw.WriteLine(data);
-
+                    sw.WriteLine(data);               
                 }
             
         }

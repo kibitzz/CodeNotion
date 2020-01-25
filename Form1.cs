@@ -1655,11 +1655,19 @@ namespace basicClasses
         private void button22_Click(object sender, EventArgs e)
         {
             if (EditingOpis == null)
-                return;
+            {
+                if (HighlightedOpis != null)
+                {
+                    EditingOpis = HighlightedOpis;
+                }
+                else
+                    return;
+            }
+                
 
             opis reflist = new opis();
 
-            string[] arr = new string[] { "EditingPart", "Action", "Pause_To_debug", "MsgTemplate", "exec",
+            string[] arr = new string[] { "EditingPart", "Action", "func", "Pause_To_debug", "MsgTemplate", "exec",
                 "initValues", "ConditionChecker", "SharedContextRoles","buildTreeVal_sdc_i","TreeDataExtractor", "global_log", "deleted","added", "modified", "moved"};
 
             if (sender is bool)
@@ -1684,6 +1692,7 @@ namespace basicClasses
             treeView2.TreeViewNodeSorter = new NodeSorter();
             treeView2.Nodes.Add(reflist.GetDebugTree().FirstNode);
             treeView2.TopNode.Expand();
+            expandMainBranch(treeView2, 17);
 
             if (!(sender is bool))
             {
@@ -1933,16 +1942,25 @@ namespace basicClasses
             treeView2.TreeViewNodeSorter = new NodeSorter();
             treeView2.Nodes.Add(reflist.GetDebugTree().FirstNode);
             treeView2.TopNode.Expand();
+            expandMainBranch(treeView2);
 
-            foreach (TreeNode node in treeView2.TopNode.Nodes)
-            {
-                if (node.Nodes.Count < 12)
-                    node.Expand();
-            }
+            //foreach (TreeNode node in treeView2.TopNode.Nodes)
+            //{
+            //    if (node.Nodes.Count < 12)
+            //        node.Expand();
+            //}
 
             PrepareWordInput();
         }
 
+        void expandMainBranch(TreeView tw, int lim = 12)
+        {
+            foreach (TreeNode node in tw.TopNode.Nodes)
+            {
+                if (node.Nodes.Count < lim)
+                    node.Expand();
+            }
+        }
 
         private void toolStripSearchModel_Click(object sender, EventArgs e)
         {

@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.IO;
+using System.IO.Compression;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -17,7 +19,7 @@ namespace basicClasses.models.WEB_api
         [info("  ")]
         public static readonly string ftp_setting = "ftp_setting";
 
-        [info("")]
+        [info("NOTE!!!  filename should NOT start with space")]
         public static readonly string local_file = "local_file";
 
         [info("/htdocs/MyVideo.mp4   filename on ftp side")]
@@ -39,6 +41,14 @@ namespace basicClasses.models.WEB_api
 
         [model("spec_tag")]
         [info(" ")]
+        public static readonly string compres_upload = "compres_upload";
+
+        [model("spec_tag")]
+        [info(" ")]
+        public static readonly string delete_local = "delete_local";
+
+        [model("spec_tag")]
+        [info(" ")]
         public static readonly string download = "download";
 
         [model("spec_tag")]
@@ -49,7 +59,7 @@ namespace basicClasses.models.WEB_api
         [info("int val 1250 – English + Central Europe  1251 – English + Cyrillic(Russian)  1252 – English + European(accented characters)")]
         public static readonly string encoding = "encoding";
 
-        opis sett;       
+        opis sett;
         int port = 21;
 
         public override void Process(opis message)
@@ -70,12 +80,12 @@ namespace basicClasses.models.WEB_api
                 var cr = new NetworkCredential(sett.V(ftp_settings.username), sett.V(ftp_settings.password));
                 FtpClient client = new FtpClient(sett.V(ftp_settings.FtpServer), port, cr);
 
-                             
-                if(spec.isHere(encoding))
-                   client.Encoding = Encoding.GetEncoding(spec[encoding].intVal);
+
+                if (spec.isHere(encoding))
+                    client.Encoding = Encoding.GetEncoding(spec[encoding].intVal);
                 //client.ListingCulture = new CultureInfo("ru-RU");
                 client.Connect();
-               
+
 
                 if (spec.isHere(delete))
                     client.DeleteFile(spec.V(remote_file));
@@ -84,7 +94,41 @@ namespace basicClasses.models.WEB_api
                     rez[rename].body = client.MoveFile(spec.V(local_file), spec.V(remote_file)).ToString();
 
                 if (spec.isHere(upload))
-                    rez[upload].body = client.UploadFile(spec.V(local_file), spec.V(remote_file), FtpExists.Overwrite).ToString();
+                    rez[upload].body = client.UploadFile(spec.V(local_file), spec.V(remote_file), FtpRemoteExists.Overwrite).ToString();
+
+                if (spec.isHere(compres_upload))
+                {
+
+                    //using (FileStream originalFileStream = File.OpenRead(spec.V(local_file)))
+                    //{                       
+                    //        using (FileStream compressedFileStream = File.Create(spec.V(remote_file)))
+                    //        {
+                    //            using (GZipStream compressionStream = new GZipStream(compressedFileStream,
+                    //               CompressionMode.Compress))
+                    //            {
+                    //                originalFileStream.CopyTo(compressionStream);
+                    //            }
+                    //        }                                                 
+                    //}
+
+
+                    using (FileStream originalFileStream = File.OpenRead(spec.V(local_file)))
+                    {
+                        using (MemoryStream mso = new MemoryStream())
+                        {
+                            using (Stream compressedFTPFileStream = client.OpenWrite(spec.V(remote_file), FtpDataType.Binary))
+                            //using (FileStream compressedFileStream = File.OpenWrite(spec.V(remote_file)))
+                            using (GZipStream compressionStream = new GZipStream(compressedFTPFileStream, CompressionMode.Compress))                           
+                            {
+                                originalFileStream.CopyTo(compressionStream);
+                                //originalFileStream.Flush();  makes archive broken in the end                               
+                            }
+                        }
+                    }
+                }
+
+                if (spec.isHere(delete_local))
+                    File.Delete(spec.V(local_file));
 
                 if (spec.isHere(download))
                     rez[download].body = client.DownloadFile(spec.V(local_file), spec.V(remote_file), FtpLocalExists.Overwrite).ToString();
@@ -92,18 +136,19 @@ namespace basicClasses.models.WEB_api
                 if (spec.isHere(scan))
                     rez[scan] = spec.V(scan) == "ALL" ? dir(client, spec.V(remote_file)) : dir(client, spec.V(remote_file), false);
 
-                    client.Disconnect();
+                client.Disconnect();
 
             }
             catch (Exception e)
             {
-                rez["Exception"].body = e.Message;               
+                rez["Exception"].body = e.Message;
+              
             }
 
-           
+
             message.CopyArr(rez);
         }
-      
+
 
         opis dir(FtpClient client, string path, bool rec = true)
         {
@@ -115,7 +160,7 @@ namespace basicClasses.models.WEB_api
 
                 itm.PartitionName = item.Name;
                 var dd = client.GetModifiedTime(item.FullName);
-              //  itm.body = dd.ToString();
+                //  itm.body = dd.ToString();
 
                 if (item.Type == FtpFileSystemObjectType.File)
                 {
