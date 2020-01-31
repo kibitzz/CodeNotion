@@ -61,7 +61,11 @@ namespace basicClasses.models.String_proc
         [info(" fill unix epoch time here to be parced (and modified)  ")]
         public static readonly string from_unix = "from_unix";
 
+        [info("fill this field (ticks number) to return as <actual_date> instead of real value ")]
+        public static readonly string override_actual_date = "override_actual_date";
+
         DateTime curr;
+        DateTime overrideActual;
 
         public override void Process(opis message)
         {
@@ -70,6 +74,13 @@ namespace basicClasses.models.String_proc
 
             DateTime r = new DateTime();
 
+            if (mspec.isHere(override_actual_date))
+            {
+                if (mspec[override_actual_date].isInitlze)
+                    overrideActual = Dates.FromStringTicks(mspec.V(override_actual_date));
+                else
+                    overrideActual = new DateTime(2);
+            }
 
             if (mspec.isHere(from_ticks) && mspec[from_ticks].isInitlze)
             {
@@ -94,12 +105,16 @@ namespace basicClasses.models.String_proc
             if (mspec.isHere(return_actual_date))
             {
                 r = DateTime.Now;
+
+                if (overrideActual.Year > 2000)
+                    r = overrideActual;
+
                 if (mspec.isHere(hour))
                 {
                     TimeSpan sp = new TimeSpan(mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
 
                     r = r.Add(sp);
-                }
+                }              
             }
 
             if (mspec.isHere(month))
