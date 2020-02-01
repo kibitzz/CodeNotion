@@ -2110,19 +2110,8 @@ namespace basicClasses
 
             if (now != null && now.PartitionKind != null)
             {
-                opis so = new opis();
-                so.PartitionName = now.PartitionKind;
-                so.PartitionKind = "func";
-
-                opis reflisttmp = new opis();
-                HighlightedOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
-
-                if (reflisttmp.listCou == 0)
-                {
-                    so.PartitionKind = "Action"; 
-                     reflisttmp = new opis();
-                    HighlightedOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
-                }
+                opis so = SearchStructureFunction(now.PartitionKind);                           
+                opis reflisttmp = FindDefinition(so, HighlightedOpis);
 
                 if (reflisttmp.listCou > 0)
                 {
@@ -2135,9 +2124,16 @@ namespace basicClasses
                     treeView3.SelectedNode = now.treeElem;
                 }else
                 {
-                    string path = "";
-                    reflisttmp = new opis();
+                    string path = "";                   
+
+                    reflisttmp = FindDefinitionInOntology(HighlightedOpis.V("intellection"), so);               
+
+                    if (reflisttmp.listCou == 0)
+                        reflisttmp = FindDefinitionInOntology(HighlightedOpis.V("ontology"), so);
+
+                    if (reflisttmp.listCou == 0)
                     Parser.ContextGlobal["words"].FindTreePartitions(so, "", reflisttmp);
+
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
                         path = reflisttmp[i].PartitionName;
@@ -2157,6 +2153,44 @@ namespace basicClasses
                 }
             }
         
+        }
+
+        opis SearchStructureFunction(string funcName)
+        {
+            opis so = new opis();
+            so.PartitionName = funcName;
+            so.PartitionKind = "func";
+
+            return so;
+        }
+
+        opis FindDefinition(opis search, opis notion)
+        {           
+            opis reflisttmp = new opis();
+            search.PartitionKind = "func";
+            notion.FindTreePartitions(search, notion.PartitionName, reflisttmp);
+
+            if (reflisttmp.listCou == 0)
+            {
+                search.PartitionKind = "Action";
+                reflisttmp = new opis();
+                notion.FindTreePartitions(search, notion.PartitionName, reflisttmp);
+            }
+
+            return reflisttmp;
+        }
+
+        opis FindDefinitionInOntology(string ontology, opis search)
+        {
+            opis rez = new opis();
+            string[] notions = ontology.Split();
+
+            foreach (var n in notions)
+            {
+                rez.AddArrRange(FindDefinition(search, Parser.ContextGlobal["words"][n]));
+            }
+
+            return rez;
         }
 
         private void importToolStripMenuItem_Click(object sender, EventArgs e)
