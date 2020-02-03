@@ -1828,7 +1828,9 @@ namespace basicClasses
                 }
 
 
-                if (!string.IsNullOrEmpty(o.PartitionKind))
+                if (!string.IsNullOrEmpty(o.PartitionKind) 
+                    && o.PartitionKind != "func" 
+                    && o.PartitionKind != "Action")
                 {
                     so = new opis();
                     reflisttmp = new opis();
