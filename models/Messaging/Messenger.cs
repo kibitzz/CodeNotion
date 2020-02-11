@@ -6,7 +6,7 @@ using System.Text;
 namespace basicClasses.models.Actions
 {
     [info("Use mechanism of messaging between objects in context. Compose and send message")]
-    [appliable("Action ")]
+    [appliable("Action func")]
    public class Messenger:ModelBase
     {
         [info("template of message to send")]

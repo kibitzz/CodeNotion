@@ -115,6 +115,17 @@ namespace basicClasses
         protected opis waiter;
         protected opis curr_msgProc;
         protected bool cacheAnwers;
+        
+        /// <summary>
+        /// local data context for optimization
+        /// </summary>
+        public opis LDC;
+
+        /// <summary>
+        /// lookup optimization
+        /// </summary>
+        public opis procesParam;
+
 
         public static bool debugNext;
         public static bool showOverrideWarnings;

@@ -12,6 +12,7 @@ namespace basicClasses.models.sys_ext
 
     }
 
+    [info("  context.Higher not just any of the top     ")]
     [appliable("TargetingChecks")]
     public class targetParentCont : ModelBase
     {
@@ -40,6 +41,7 @@ namespace basicClasses.models.sys_ext
 
     }
 
+    [info("CheckParentOrder  -- anyone who is placed upper in tree   ")]
     [appliable("TargetingChecks")]
     public class targetUpper : ModelBase
     {
