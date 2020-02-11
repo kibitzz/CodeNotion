@@ -12,14 +12,14 @@ using basicClasses.models.WEB_api;
 
 namespace basicClasses
 {
- 
 
-   public class opis
+
+    public class opis
     {
         public static bool do_not_build_debug;
         public static opis listOfVisualisedCircularRefs;
-        public const int InitialArrSize =7;
-        public const int AccommSize =3;
+        public const int InitialArrSize = 7;
+        public const int AccommSize = 3;
 
         public bool raiseEvents;
         public TreeNode treeElem;
@@ -27,11 +27,11 @@ namespace basicClasses
         #region  variables  properties
 
         public static ObjectsFactory OF;
-     
+
         string PartitionName_Lower;
         string PartitionName_;
-        
-        public string PartitionName  
+
+        public string PartitionName
         {
             get
             {
@@ -39,30 +39,31 @@ namespace basicClasses
             }
             set
             {
-                if ( raiseEvents && !string.IsNullOrEmpty(PartitionName_))
+                if (raiseEvents && !string.IsNullOrEmpty(PartitionName_))
                 {
                     ActionDone(new opis("подія", "вид змінено імя", "імя " + PartitionName, "тип " + PartitionKind,
                        "нове " + value, "старе " + PartitionName_));
                 }
 
                 PartitionName_ = value;
-                PartitionName_Lower = value ==null ? null: value.ToLower();
+                PartitionName_Lower = value == null ? null : value.ToLower();
             }
         }
 
-       
-        string PartitionKind_;      
-        public string PartitionKind 
+
+        string PartitionKind_;
+        public string PartitionKind
         {
-             get{
-                 return PartitionKind_;
+            get
+            {
+                return PartitionKind_;
             }
 
             set
             {
                 if (raiseEvents) ActionDone(new opis("подія", "попередній " + PartitionKind_, "новий " + value, "вид змінено тип частини", "імя " + PartitionName, "тіло " + body, ""));
                 PartitionKind_ = value;
-               
+
             }
         }
 
@@ -90,12 +91,13 @@ namespace basicClasses
         {
             get
             {
-                return (!string.IsNullOrEmpty(body) || paramCou>0);
+                return (!string.IsNullOrEmpty(body) || paramCou > 0);
             }
         }
         public int intVal
         {
-            get{
+            get
+            {
                 return StrUtils.PriceFromString(body);
             }
 
@@ -111,7 +113,7 @@ namespace basicClasses
         }
 
         string body_;
-        public string body 
+        public string body
         {
             get
             {
@@ -120,15 +122,18 @@ namespace basicClasses
 
             set
             {
-                if (raiseEvents){ ActionDone(new opis("подія", "вид змінено тіло", "імя " + PartitionName, "тип " + PartitionKind,
-                 "нове " + value, "старе " + body, "позиція " + paramCou.ToString())); }
+                if (raiseEvents)
+                {
+                    ActionDone(new opis("подія", "вид змінено тіло", "імя " + PartitionName, "тип " + PartitionKind,
+   "нове " + value, "старе " + body, "позиція " + paramCou.ToString()));
+                }
 
                 body_ = value;
             }
 
         }
 
-        public object bodyObject; 
+        public object bodyObject;
         public object FuncObj;
 
         public bool UseNameIndexHash;
@@ -166,7 +171,7 @@ namespace basicClasses
                     }
                 }
                 else
-                {                               
+                {
                     if (arr.Length <= paramCou)
                     {
                         Array.Resize(ref arr, paramCou + AccommSize);
@@ -174,14 +179,14 @@ namespace basicClasses
                     arr[paramCou] = value;
 
                     if (UseNameIndexHash)
-                        NamesIndexHash.Add(index, paramCou);                
+                        NamesIndexHash.Add(index, paramCou);
 
                     paramCou++;
 
                     if (raiseEvents)
-                    {                       
+                    {
                         ActionDone(new opis("подія", "вид додано", "імя " + index,
-                            "тип " + value.PartitionKind, "тіло " + value.body, "позиція " + (paramCou-1).ToString()));
+                            "тип " + value.PartitionKind, "тіло " + value.body, "позиція " + (paramCou - 1).ToString()));
                     }
                 }
             }
@@ -225,7 +230,7 @@ namespace basicClasses
             return rez;
         }
 
-      public int getPartitionIdx(string part)
+        public int getPartitionIdx(string part)
         {
             if (part == null)
                 return -1;
@@ -234,8 +239,8 @@ namespace basicClasses
 
             if (UseNameIndexHash)
 
-                rez = NamesIndexHash.TryGetValue(part, out rez)? rez : -1;
-            
+                rez = NamesIndexHash.TryGetValue(part, out rez) ? rez : -1;
+
             else
                 for (int i = 0; i < arr.Length; i++)
                 {
@@ -246,14 +251,14 @@ namespace basicClasses
                         rez = i;
                         break;
                     }
-                }           
+                }
 
             return rez;
         }
 
         public opis getForm(string part)
         {
-            opis rez ;
+            opis rez;
             int p = getPartitionIdx(part);
             p = (p == -1) ? getPartitionForm(part) : p;
 
@@ -302,8 +307,8 @@ namespace basicClasses
         void init()
         {
             body = "";
-            paramCou = 0;           
-           
+            paramCou = 0;
+
             arr = new opis[InitialArrSize];
         }
 
@@ -312,7 +317,7 @@ namespace basicClasses
             bool prev = raiseEvents;
             raiseEvents = false;
 
-            PartitionKind = "";     
+            PartitionKind = "";
             init();
 
             raiseEvents = prev;
@@ -344,10 +349,10 @@ namespace basicClasses
             {
                 string v = pair.Trim();
                 int idx = v.IndexOf(" ");
-                if (idx >0)
+                if (idx > 0)
                 {
-                   string name = v.Substring(0,idx);
-                    string val = v.Substring(idx+1);
+                    string name = v.Substring(0, idx);
+                    string val = v.Substring(idx + 1);
                     if (name != "body")
                     {
                         this[name].body = val;
@@ -363,24 +368,24 @@ namespace basicClasses
             raiseEvents = prev;
         }
 
-             
+
         public opis(string PartKind)
         {
             bool prev = raiseEvents;
             raiseEvents = false;
-                  
+
 
             PartitionKind = PartKind;
             init();
 
             raiseEvents = prev;
         }
-        
+
         public opis(string PartKind, object bodyp)
         {
             bool prev = raiseEvents;
             raiseEvents = false;
-        
+
             PartitionKind = PartKind;
             bodyObject = bodyp;
             init();
@@ -425,7 +430,7 @@ namespace basicClasses
                     rez = getPartition(index[id]).V(index, id + 1);
                 }
             }
-           
+
             return rez;
         }
 
@@ -433,15 +438,15 @@ namespace basicClasses
         public void Vset(string index, string data)
         {
             if (raiseEvents) ActionDone(new opis("подія", "вид змінено тіло", "імя " + index, "тип " + getPartition(index).PartitionKind,
-                "нове " + data, "старе " + getPartition(index).body)   );           
-            getPartition(index).body = data;            
+                "нове " + data, "старе " + getPartition(index).body));
+            getPartition(index).body = data;
         }
 
         public void Vadd(string index, string data)
         {
             if (raiseEvents) ActionDone(new opis("подія", "вид змінено тіло", "імя " + index, "тип " + getPartition(index).PartitionKind,
                 "нове " + data, "старе " + getPartition(index).body));
-            getPartition(index).body +=","+ data;
+            getPartition(index).body += "," + data;
         }
 
         public void InitNameIndexHash()
@@ -457,13 +462,13 @@ namespace basicClasses
 
             arr = new opis[0];
             paramCou = 0;
-            AddArrRange(elem, turnOffUniqControl);           
+            AddArrRange(elem, turnOffUniqControl);
         }
 
         public void SetArr(opis[] narr)
         {
             arr = narr;
-            paramCou = narr.Length;           
+            paramCou = narr.Length;
         }
 
         public void CopyParams(opis elem)
@@ -481,7 +486,7 @@ namespace basicClasses
                         arr[idx] = elem[s];
                 }
             }
-                    
+
         }
 
         /// <summary>
@@ -494,7 +499,7 @@ namespace basicClasses
             string[] tmp = elem.ParamsNames();
             foreach (string s in tmp)
             {
-                if (s != "waiters"  
+                if (s != "waiters"
                     && s != MsgTemplate.msg
                     && s != MsgTemplate.context
                     && s != MsgTemplate.msg_receiver
@@ -502,8 +507,8 @@ namespace basicClasses
                     && s != MsgTemplate.responce
                      && s != MsgTemplate.getAnswerDetails
                       && s != MsgTemplate.responce
-                     //&& s != MsgTemplate.times_repeat
-                     
+                    //&& s != MsgTemplate.times_repeat
+
                     )
                 {
                     int idx = getPartitionIdx(s);
@@ -511,8 +516,8 @@ namespace basicClasses
                         idx = AddArr(elem[s]);
                     else
                     {
-                        if(!arr[idx].isInitlze)
-                        arr[idx] = elem[s];
+                        if (!arr[idx].isInitlze)
+                            arr[idx] = elem[s];
                         else
                         if (arr[idx].PartitionKind == "Action")
                             arr[idx].AddArrRange(elem[s]);
@@ -529,7 +534,7 @@ namespace basicClasses
             bool rez = false;
 
             for (int i = 0; i < paramCou; i++)
-            {            
+            {
                 if (arr[i] == instance)
                 {
                     rez = true;
@@ -567,8 +572,8 @@ namespace basicClasses
             //if (raiseEvents) ActionDone(new opis("подія", "вид додано масив", "імя " + elem.PartitionName,
             //    "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + paramCou.ToString()));
             //PartitionKind_ = (string.IsNullOrEmpty(PartitionKind_) ? "" : PartitionKind_);
-            
-            Array.Resize(ref arr, paramCou + elem.listCou+ AccommSize);
+
+            Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
 
             for (int i = 0; i < elem.listCou; i++)
             {
@@ -578,11 +583,11 @@ namespace basicClasses
                     paramCou++;
                 }
             }
-                     
+
         }
 
         public void AddArrMissing(opis elem)
-        {           
+        {
             Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
 
             for (int i = 0; i < elem.listCou; i++)
@@ -596,7 +601,7 @@ namespace basicClasses
         }
 
         public int AddArr(opis elem)
-        {           
+        {
             PartitionKind_ = (string.IsNullOrEmpty(PartitionKind_) ? "" : PartitionKind_);
             if (arr.Length <= paramCou)
             {
@@ -604,10 +609,10 @@ namespace basicClasses
             }
 
             int rez = paramCou;
-         
+
             if (UseNameIndexHash)
             {
-                 if (!NamesIndexHash.ContainsKey(elem.PartitionName))
+                if (!NamesIndexHash.ContainsKey(elem.PartitionName))
                     NamesIndexHash.Add(elem.PartitionName, paramCou);
                 else
                     global_log.log?.AddArr(new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name " });
@@ -617,7 +622,7 @@ namespace basicClasses
             paramCou++;
 
             if (raiseEvents) ActionDone(new opis("подія", "вид додано", "імя " + elem.PartitionName,
-               "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + (paramCou-1).ToString()));
+               "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + (paramCou - 1).ToString()));
 
             return rez;
 
@@ -638,7 +643,7 @@ namespace basicClasses
         public void RemoveArrElem(opis elem)
         {
             if (raiseEvents) ActionDone(new opis("подія", "вид видалено", "імя " + elem.PartitionName,
-                "тип " + elem.PartitionKind, "тіло " + elem.body ));
+                "тип " + elem.PartitionKind, "тіло " + elem.body));
 
             int idxLess = 0;
             for (int i = 0; i < paramCou; i++)
@@ -651,8 +656,8 @@ namespace basicClasses
                     arr[i] = null;
                 }
             }
-           
-            paramCou = paramCou - idxLess;    
+
+            paramCou = paramCou - idxLess;
 
         }
 
@@ -664,7 +669,7 @@ namespace basicClasses
                 Array.Resize(ref arr, paramCou + AccommSize);
             }
 
-            opis[] newArr = new opis[paramCou +1];
+            opis[] newArr = new opis[paramCou + 1];
 
             int idxShift = 0;
             for (int i = 0; i < paramCou; i++)
@@ -676,12 +681,12 @@ namespace basicClasses
                 }
 
                 newArr[i + idxShift] = arr[i];
-              
+
             }
 
             arr = newArr;
 
-            paramCou ++;
+            paramCou++;
 
         }
 
@@ -690,7 +695,7 @@ namespace basicClasses
             string[] rez = new string[paramCou];
             for (int i = 0; i < paramCou; i++)
             {
-                rez[i] = arr[i].PartitionName != null ? arr[i].PartitionName.Trim(): "";
+                rez[i] = arr[i].PartitionName != null ? arr[i].PartitionName.Trim() : "";
             }
 
             return rez;
@@ -698,20 +703,20 @@ namespace basicClasses
 
         public string info()
         {
-            string rez = PartitionKind.Length >0 ? PartitionKind+"\n" :"";
+            string rez = PartitionKind.Length > 0 ? PartitionKind + "\n" : "";
             for (int i = 0; i < paramCou; i++)
             {
-                 string dat = arr[i].body.Trim();
+                string dat = arr[i].body.Trim();
                 int partsize = 35;
                 int maxlen = partsize;
-                if (dat.Length > 0 && dat!="_")
+                if (dat.Length > 0 && dat != "_")
                 {
-                    string tmp="";
+                    string tmp = "";
                     string shift = "       ";
                     shift = shift.PadLeft(arr[i].PartitionName.Length, ' ');
 
                     if (dat.Length > partsize)
-                    {                      
+                    {
                         int prevpos = 0;
                         int p = dat.IndexOf(' ', partsize);
                         while (dat.Length > prevpos && p > 0)
@@ -724,8 +729,8 @@ namespace basicClasses
                                 p = -1;
                             }
                             else
-                                p =  dat.IndexOf(' ', prevpos + partsize);
-                         
+                                p = dat.IndexOf(' ', prevpos + partsize);
+
                         }
                         if (prevpos + partsize < dat.Length)
                         {
@@ -733,7 +738,7 @@ namespace basicClasses
                         }
 
                         dat = tmp.Length > 0 ? tmp.Trim() : dat;
-                        
+
                     }
                     rez += arr[i].PartitionName + ": " + dat + " \n";
                 }
@@ -752,14 +757,14 @@ namespace basicClasses
         {
             this.PartitionKind_ = "wrapper";
             this.body_ = o.PartitionName;
-            
+
             this[this.body_] = o;
         }
 
         public void WrapByName(opis o, string name, string renameO)
         {
             o.PartitionName = renameO;
-            WrapByName( o,  name);
+            WrapByName(o, name);
         }
 
         public void WrapByName(opis o, string name)
@@ -780,13 +785,13 @@ namespace basicClasses
         public opis W(string name)
         {
             opis o = this[name];
-            return o[o.body];         
+            return o[o.body];
         }
 
         public opis W()
-        {      
-            if(this.PartitionKind_ == "wrapper")      
-            return this[this.body];
+        {
+            if (this.PartitionKind_ == "wrapper")
+                return this[this.body];
             else
                 return this;
         }
@@ -806,7 +811,7 @@ namespace basicClasses
 
         #endregion
 
-         #region LinkMethods
+        #region LinkMethods
 
         /// <summary>
         /// get word or its form, useful in contexts
@@ -815,13 +820,13 @@ namespace basicClasses
         /// <returns></returns>
         public opis Find(string name)
         {
-            opis wordo =new opis();
-            if (getPartitionIdx(name) !=-1)
+            opis wordo = new opis();
+            if (getPartitionIdx(name) != -1)
             {
                 wordo = this[name];
             }
 
-            if (wordo !=null && !wordo.isInitlze)// search in forms of neutral words
+            if (wordo != null && !wordo.isInitlze)// search in forms of neutral words
             {
                 int iii = getPartitionForm(name);
                 if (iii != -1 && this[iii].isInitlze)
@@ -830,27 +835,27 @@ namespace basicClasses
                 }
                 else
                 {
-                                       
+
                 }
             }
 
             return wordo;
         }
-                       
-         #endregion
+
+        #endregion
 
         public void InitFuncObj()
-        {           
+        {
             if (!string.IsNullOrEmpty(PartitionName_))
             {
                 FuncObj = ObjectsFactory.GetInstance(string.IsNullOrEmpty(V(ModelNotion.InitFuncObj)) ? PartitionName_ : V(ModelNotion.InitFuncObj));
 
-                if (V(ModelNotion.InitFuncObj)=="root")
+                if (V(ModelNotion.InitFuncObj) == "root")
                 {
                     root r = (root)FuncObj;
                     r.nameSpec = PartitionName_;
                 }
-               
+
             }
         }
 
@@ -860,7 +865,7 @@ namespace basicClasses
             {
                 root r = new root();
                 r.nameSpec = PartitionName_;
-                FuncObj = r;               
+                FuncObj = r;
             }
         }
 
@@ -882,7 +887,7 @@ namespace basicClasses
         /// <param name="partKind">тип частини</param>
         public void ActionDone(string type, string partName, string partKind)
         {
-            if (this.V("waiters") =="")
+            if (this.V("waiters") == "")
             {
                 return;
             }
@@ -915,7 +920,7 @@ namespace basicClasses
                 return;
             }
             o["count"].intVal = paramCou;
-            
+
             opis w = this["waiters"];
             for (int i = 0; i < w.paramCou; i++)
             {
@@ -949,7 +954,7 @@ namespace basicClasses
             {
                 return;
             }
-                
+
             raiseEvents = autoRaise;
             this["waiters"].body = "present";
             this["waiters"].AddArr(waiter);
@@ -978,15 +983,15 @@ namespace basicClasses
                 this["waiters"].AddArr(wp[i]);
 
                 if (sendAll)
-                {              
-                      opis msg=  new opis("подія", "вид оповіщення штучне", "імя "+ ModelG.allarraycheck,
-                         "тип " + ModelG.allarraycheck);
-                      wp[i].ReceiveAction(msg, this);
-                   
+                {
+                    opis msg = new opis("подія", "вид оповіщення штучне", "імя " + ModelG.allarraycheck,
+                       "тип " + ModelG.allarraycheck);
+                    wp[i].ReceiveAction(msg, this);
+
                 }
 
-            }       
-           
+            }
+
         }
 
         public void NotifyReceivers()
@@ -998,7 +1003,7 @@ namespace basicClasses
 
         public void StopReceive(opis waiter)
         {
-            this["waiters"].RemoveArrElem(waiter);           
+            this["waiters"].RemoveArrElem(waiter);
         }
 
         public void ReceiveAction(opis action, opis sender)
@@ -1007,7 +1012,7 @@ namespace basicClasses
             {
                 return;
             }
-            
+
             if (FuncObj is IOpisFuncInstanceWaiter)
             {
                 IOpisFuncInstanceWaiter i = (IOpisFuncInstanceWaiter)FuncObj;
@@ -1020,7 +1025,7 @@ namespace basicClasses
             {
                 IOpisFunctionalInstance i = (IOpisFunctionalInstance)FuncObj;
                 i.ProcessWaiter(action, sender);
-            }            
+            }
         }
 
         #endregion
@@ -1037,7 +1042,7 @@ namespace basicClasses
             {
                 return new opis("process_accompl_status", "status no functional object assigned");
             }
-           
+
             IOpisFunctionalInstance i = (IOpisFunctionalInstance)FuncObj;
 
             return i.Process(internl, environment);
@@ -1069,18 +1074,18 @@ namespace basicClasses
             {
                 return "";
             }
-            isDuplicated = true;         
+            isDuplicated = true;
 
             string rez = "";
             StringBuilder sb = new StringBuilder(paramCou);
 
             sb.Append("{");
-            sb.Append("\"N\": \"" + (PartitionName != null ? PartitionName.Replace("\"", "[&amp]") : "")  + "\",");
+            sb.Append("\"N\": \"" + (PartitionName != null ? PartitionName.Replace("\"", "[&amp]") : "") + "\",");
             sb.Append("\"K\": \"" + PartitionKind + "\",");
-            if(body !=null)
-            sb.Append("\"B\": \"" + body.Replace("\"", "[&amp]") + "\"");           
+            if (body != null)
+                sb.Append("\"B\": \"" + body.Replace("\"", "[&amp]") + "\"");
 
-            if ( paramCou >0)
+            if (paramCou > 0)
             {
                 sb.Append(",\"a\": [");
 
@@ -1096,8 +1101,8 @@ namespace basicClasses
 
                 sb.Append("]");
             }
-   
-            sb.Append("}");            
+
+            sb.Append("}");
 
             rez = sb.ToString();
 
@@ -1129,8 +1134,8 @@ namespace basicClasses
                 idxShift = 1;
 
 
-                if (data[idx] == '{' && idx>0)
-                {                
+                if (data[idx] == '{' && idx > 0)
+                {
                     if (currprop.Length > 0)
                     {
                         idx = this[currprop].load(data, idx + 1);
@@ -1147,10 +1152,10 @@ namespace basicClasses
                     currtext = "";
                 }
 
-             
+
                 if (data[idx] == '[')
                 {
-               
+
                     if (currprop.Length > 0)
                     {
                         if (currprop == "array" || currprop == "a")
@@ -1173,11 +1178,11 @@ namespace basicClasses
                     currprop = "";
                     currtext = "";
                 }
-            
+
 
                 if (data[idx] == '"')
                 {
-                    currtext = enclosed( data, idx, '"', '"');
+                    currtext = enclosed(data, idx, '"', '"');
                     idxShift = currtext.Length + 2;
                 }
 
@@ -1188,22 +1193,24 @@ namespace basicClasses
                     {
                         currtext = currtext.Replace("[&amp]", "\"");
                         rawtext = rawtext.Replace("[&amp]", "\"");
-                        if ( currprop == "PN" || currprop == "N")
+                        if (currprop == "PN" || currprop == "N")
                         {
                             PartitionName = currtext;
-                        }else
-                            if ( currprop == "PK" || currprop == "K")
-                            {
-                                PartitionKind = currtext;
-                            }
-                            else
+                        }
+                        else
+                            if (currprop == "PK" || currprop == "K")
+                        {
+                            PartitionKind = currtext;
+                        }
+                        else
                                 if (currprop == "B" || currprop == "body")
-                                {
-                                    body = currtext;
-                                }else
-                            {
-                                this[currprop].body = currtext.Length > 0 ? currtext : rawtext;
-                            }
+                        {
+                            body = currtext;
+                        }
+                        else
+                        {
+                            this[currprop].body = currtext.Length > 0 ? currtext : rawtext;
+                        }
                     }
                     else
                     {
@@ -1218,7 +1225,7 @@ namespace basicClasses
                 {
                     return idx + 1;
                 }
-                
+
 
                 if (data[idx] == ':')
                 {
@@ -1226,9 +1233,9 @@ namespace basicClasses
                     rawtext = "";
                 }
 
-                if (data[idx] !=' ')
+                if (data[idx] != ' ')
                 {
-                    rawtext +=data[idx];
+                    rawtext += data[idx];
                 }
 
                 idx += idxShift;
@@ -1263,7 +1270,7 @@ namespace basicClasses
                 idxShift = 1;
 
 
-                if (data[idx] == '{' )
+                if (data[idx] == '{')
                 {
                     currprop = "";
                     rawtext = "";
@@ -1294,7 +1301,7 @@ namespace basicClasses
                     }
                 }
 
-                if (data[idx] == '[' )
+                if (data[idx] == '[')
                 {
                     thisIsArray = true;
                     objectIsOpen = true;
@@ -1307,27 +1314,27 @@ namespace basicClasses
                     idx += idxShift;
                     continue;
                 }
-              
+
 
                 if (data[idx] == ',')
-                {                   
-                    if (thisIsArray && rawtext.Length >0)
+                {
+                    if (thisIsArray && rawtext.Length > 0)
                     {
-                        this[paramCou.ToString()].body = (currtext.Length>= rawtext.Length)
+                        this[paramCou.ToString()].body = (currtext.Length >= rawtext.Length)
                             ? TemplatesMan.UTF8BigEndian_to_Kirill(currtext)
-                            : TemplatesMan.UTF8BigEndian_to_Kirill(rawtext);                       
+                            : TemplatesMan.UTF8BigEndian_to_Kirill(rawtext);
                         rawtext = "";
                         currprop = "";
                         currtext = "";
                         idx += idxShift;
                         continue;
                     }
-                    
+
                     if (!objectIsOpen)
                     {
                         this.body = currtext.Length > 0 ? currtext : rawtext.Trim('"');
                         this.body = TemplatesMan.UTF8BigEndian_to_Kirill(this.body);
-                        return idx +1;
+                        return idx + 1;
                     }
                 }
 
@@ -1346,9 +1353,9 @@ namespace basicClasses
                             this[paramCou.ToString()].body = (currtext.Length >= rawtext.Length)
                             ? TemplatesMan.UTF8BigEndian_to_Kirill(currtext)
                             : TemplatesMan.UTF8BigEndian_to_Kirill(rawtext);
-                        }                        
+                        }
                     }
-                    return idx +1 ;
+                    return idx + 1;
                 }
 
                 if (data[idx] == '"')
@@ -1386,40 +1393,40 @@ namespace basicClasses
 
         public string enclosed(string data, int pos, char open, char close)
         {
-            string rez ="";
+            string rez = "";
 
-           int openpos=   data.IndexOf(open, pos);
-           int closepos = -1;
+            int openpos = data.IndexOf(open, pos);
+            int closepos = -1;
 
-           if (open == '"')
-           {
+            if (open == '"')
+            {
 
-               if (openpos != -1)
-               {
-                   closepos = data.IndexOf(close, openpos + 1);
-                   while (closepos != -1 && data[closepos - 1] == '\\')
-                   {
-                       closepos = data.IndexOf(close, closepos + 1);
-                   }
+                if (openpos != -1)
+                {
+                    closepos = data.IndexOf(close, openpos + 1);
+                    while (closepos != -1 && data[closepos - 1] == '\\')
+                    {
+                        closepos = data.IndexOf(close, closepos + 1);
+                    }
 
-                   if (closepos != -1)
-                   {
-                       rez = data.Substring(openpos + 1, closepos - openpos-1);
-                   }
-               }
-           }
-           else
-           {
-               if (openpos != -1)
-               {
-                  
-                   if (closepos != -1)
-                   {
-                       rez = data.Substring(openpos + 1, closepos - openpos);
-                   }
-               }
+                    if (closepos != -1)
+                    {
+                        rez = data.Substring(openpos + 1, closepos - openpos - 1);
+                    }
+                }
+            }
+            else
+            {
+                if (openpos != -1)
+                {
 
-           }
+                    if (closepos != -1)
+                    {
+                        rez = data.Substring(openpos + 1, closepos - openpos);
+                    }
+                }
+
+            }
 
             return rez;
         }
@@ -1429,14 +1436,14 @@ namespace basicClasses
             bool rez = false;
             int qcou = 0;
 
-           int closepos = data.IndexOf('"', pos + 1);
-           
-           while (closepos != -1 && closepos< poslast)
+            int closepos = data.IndexOf('"', pos + 1);
+
+            while (closepos != -1 && closepos < poslast)
             {
                 qcou += data[closepos - 1] == '\\' ? 0 : 1;
                 closepos = data.IndexOf('"', closepos + 1);
             }
-            rez = (qcou %2) ==0;
+            rez = (qcou % 2) == 0;
 
             return rez;
         }
@@ -1447,13 +1454,13 @@ namespace basicClasses
             return GetDebugTreeIL(160000);
         }
 
-        public TreeNode GetDebugTree( int maxDepth)
+        public TreeNode GetDebugTree(int maxDepth)
         {
             TreeNode rez = new TreeNode("-=#Root#=-");
 
             listOfVisualisedCircularRefs.AddArr(this);
-            if (! do_not_build_debug)
-            BuildTree(rez, 0, maxDepth, null);
+            if (!do_not_build_debug)
+                BuildTree(rez, 0, maxDepth, null);
 
             return rez;
         }
@@ -1463,7 +1470,7 @@ namespace basicClasses
             TreeNode rez = new TreeNode("-=#Root#=-");
 
             if (!do_not_build_debug)
-                BuildTree(rez, 0, 70, new opis("", "max "+ maxitemsCount.ToString()));
+                BuildTree(rez, 0, 70, new opis("", "max " + maxitemsCount.ToString()));
 
             return rez;
         }
@@ -1473,15 +1480,15 @@ namespace basicClasses
             isDuplicated = true;
         }
 
-       public void UnlockThisForDuplication()
+        public void UnlockThisForDuplication()
         {
             isDuplicated = false;
         }
 
         void BuildTree(TreeNode tn, int depth, int maxDepth, opis maxItems)
         {
-            if (!isDuplicated && depth< maxDepth 
-                && (maxItems==null || maxItems["max"].intVal > maxItems["cou"].intVal))
+            if (!isDuplicated && depth < maxDepth
+                && (maxItems == null || maxItems["max"].intVal > maxItems["cou"].intVal))
             {
                 if (maxItems != null)
                 {
@@ -1489,22 +1496,22 @@ namespace basicClasses
                 }
 
                 isDuplicated = true;
-                TreeNode tmp = new TreeNode(PartitionName + "[" + PartitionKind + "]  " + ((body!=null && body.Length> 2000)? "//long data//": body));
+                TreeNode tmp = new TreeNode(PartitionName + "[" + PartitionKind + "]  " + ((body != null && body.Length > 2000) ? "//long data//" : body));
                 tmp.Tag = this;
                 //if (treeElem != null) treeElem.Tag = null;
                 treeElem = tmp;
                 tmp.ForeColor = getColorOfModel(PartitionKind);
-               
+
                 tn.Nodes.Add(tmp);
                 //if (PartitionKind == "func")
                 //    tn.Nodes.Add(new TreeNode());
 
 
-                for (int i = 0; i < paramCou ; i++)
+                for (int i = 0; i < paramCou; i++)
                 {
-                    if (arr[i]!=null && arr[i].PartitionName != "alreadyProcessed")
+                    if (arr[i] != null && arr[i].PartitionName != "alreadyProcessed")
                     {
-                        arr[i].BuildTree(tmp, depth+1, maxDepth, maxItems);
+                        arr[i].BuildTree(tmp, depth + 1, maxDepth, maxItems);
                     }
                 }
 
@@ -1519,7 +1526,7 @@ namespace basicClasses
                 tmp.Tag = this;
                 tn.Nodes.Add(tmp);
             }
-   
+
         }
 
         private Color getColorOfModel(string partKind)
@@ -1531,8 +1538,8 @@ namespace basicClasses
 
             switch (partKind)
             {
-               
-                 case "filler":
+
+                case "filler":
                     rez = Color.Cornsilk;
                     break;
 
@@ -1545,8 +1552,8 @@ namespace basicClasses
                     rez = Color.Chocolate;
                     break;
 
-                case "func":              
-                  //  rez = Color.FromArgb(225,199,117);
+                case "func":
+                    //  rez = Color.FromArgb(225,199,117);
                     //rez = Color.FromArgb(217, 188, 92);
                     rez = Color.FromArgb(226, 205, 133);
                     break;
@@ -1564,7 +1571,7 @@ namespace basicClasses
                     break;
 
                 case "BodyValueModificator":
-                    
+
                 case "GetAnyPartOfOpis":
                     rez = Color.FromArgb(113, 204, 182);
                     break;
@@ -1579,7 +1586,7 @@ namespace basicClasses
                     rez = Color.FromArgb(179, 179, 255);
                     break;
 
-                case "RangingList":                    
+                case "RangingList":
                 case "RangeAndAssign":
                     rez = Color.FromArgb(255, 151, 185);
                     break;
@@ -1614,29 +1621,29 @@ namespace basicClasses
             }
             isDuplicated = true;
 
-                int idxLess = 0;
-                for (int i = 0; i < paramCou; i++)
+            int idxLess = 0;
+            for (int i = 0; i < paramCou; i++)
+            {
+                arr[i - idxLess] = arr[i];
+                for (int p = 0; p < arrp.Length; p++)
                 {
-                    arr[i - idxLess] = arr[i];
-                    for (int p = 0; p < arrp.Length; p++)
+                    if (arr[i].PartitionName.ToLower() == arrp[p])
                     {
-                        if (arr[i].PartitionName.ToLower() == arrp[p])
-                        {
-                            idxLess++;
-                            arr[i] = null;
-                            break;
-                        }
+                        idxLess++;
+                        arr[i] = null;
+                        break;
                     }
-                    if (i - idxLess >= 0)
-                    {
-                        arr[i - idxLess].CleanPartitions(arrp);
-                    }
-
-                    //tn.Nodes.Add(tmp);
+                }
+                if (i - idxLess >= 0)
+                {
+                    arr[i - idxLess].CleanPartitions(arrp);
                 }
 
-                isDuplicated = false;
-                paramCou = paramCou - idxLess;          
+                //tn.Nodes.Add(tmp);
+            }
+
+            isDuplicated = false;
+            paramCou = paramCou - idxLess;
         }
 
 
@@ -1658,7 +1665,7 @@ namespace basicClasses
                 }
             }
 
-            isDuplicated = false;            
+            isDuplicated = false;
         }
 
         public void ClearNodesRef()
@@ -1670,7 +1677,7 @@ namespace basicClasses
 
         public int CheckConformity(opis partition, opis template)
         {
-            return CheckConformity( partition,  template,  null);
+            return CheckConformity(partition, template, null);
         }
 
         public int CheckConformity(opis partition, opis template, string markForVisualization)
@@ -1687,7 +1694,7 @@ namespace basicClasses
                     if (template[i].PartitionKind != "Fill_Spec_Info"
                         && template[i].listCou > 0)
                     {
-                        int subtreerez = CheckConformity(partition[template[i].PartitionName], template[i] , markForVisualization);
+                        int subtreerez = CheckConformity(partition[template[i].PartitionName], template[i], markForVisualization);
 
                         if (template[i].listCou != subtreerez)
                             rez--;
@@ -1697,8 +1704,8 @@ namespace basicClasses
                 {
                     if (markForVisualization != null)
                     {
-                        if(partition.getPartitionIdx(template[i].PartitionName) == -1)
-                        template[i].PartitionKind = markForVisualization;
+                        if (partition.getPartitionIdx(template[i].PartitionName) == -1)
+                            template[i].PartitionKind = markForVisualization;
                         else
                             template[i].PartitionKind = "modified";
                     }
@@ -1724,12 +1731,12 @@ namespace basicClasses
                 {
                     var elem_opis = partition[elemN];
                     var info = "";
-                   
+
                     if (elem_opis.body != template[i].body)
                         info += "   ~prev  " + elem_opis.body + "";
 
                     if (elem_opis.PartitionKind != template[i].PartitionKind)
-                        info += " / " + elem_opis.PartitionKind + " | "+ template[i].PartitionKind + " /";
+                        info += " / " + elem_opis.PartitionKind + " | " + template[i].PartitionKind + " /";
 
                     if (!string.IsNullOrEmpty(info) && elem_opis.PartitionKind != "modified" && elem_opis.PartitionKind != "moved")
                     {
@@ -1743,7 +1750,7 @@ namespace basicClasses
                     {
                         template[i].body += template[i].PartitionKind.Length > 0 ? " /" + template[i].PartitionKind + "/" : "";
                         template[i].PartitionKind = "moved";
-                       
+
                     }
 
                     CheckForVersionControl(elem_opis, template[i], markForVisualization);
@@ -1766,7 +1773,7 @@ namespace basicClasses
 
 
             numArrNames.do_num(p);
-            
+
             for (int i = 0; i < p.listCou; i++)
             {
                 NormalizeNamesForComparison(p[i]);
@@ -1780,7 +1787,7 @@ namespace basicClasses
         /// <param name="templ"></param>
         /// <param name="srs"></param>
         /// <returns></returns>
-        public static  opis GetLevelByTemplate(opis templ, opis srs, bool create)
+        public static opis GetLevelByTemplate(opis templ, opis srs, bool create)
         {
             opis rez = null;
             if (srs.getPartitionIdx(templ.PartitionName) != -1
@@ -1804,12 +1811,12 @@ namespace basicClasses
 
         public opis Duplicate()
         {
-            if (isDuplicated && copy!=null)
+            if (isDuplicated && copy != null)
             {
                 return copy;
             }
 
-            if(PartitionKind =="dataref" && this.paramCou >0)
+            if (PartitionKind == "dataref" && this.paramCou > 0)
             {
                 return this;
             }
@@ -1825,7 +1832,7 @@ namespace basicClasses
             isDuplicated = true;
 
             rez.arr = new opis[this.paramCou];
-             
+
 
             for (int i = 0; i < this.paramCou; i++)
             {
@@ -1858,18 +1865,18 @@ namespace basicClasses
             FindTreePartitions(templ, path, referers, true);
         }
 
-       public void FindTreePartitions(opis templ, string path, opis referers, bool recursive)
+        public void FindTreePartitions(opis templ, string path, opis referers, bool recursive)
         {
 
             for (int i = 0; i < paramCou; i++)
             {
-                if ((string.IsNullOrEmpty(templ.PartitionKind)|| 
+                if ((string.IsNullOrEmpty(templ.PartitionKind) ||
                     arr[i].PartitionKind == templ.PartitionKind) &&
                     (string.IsNullOrEmpty(templ.PartitionName) ||
                     arr[i].PartitionName == templ.PartitionName) &&
                     (string.IsNullOrEmpty(templ.body) ||
                     arr[i].body == templ.body)
-                    )                 
+                    )
                 {
                     opis refitem = new opis();
                     refitem.PartitionName = path + "->" + arr[i].PartitionName;
@@ -1877,30 +1884,30 @@ namespace basicClasses
                     refitem.AddArr(arr[i]);
 
                     referers.AddArr(refitem);
-                   
+
                 }
 
-                if(recursive)
-                arr[i].FindTreePartitions(templ, path+"->"+ arr[i].PartitionName, referers);
+                if (recursive)
+                    arr[i].FindTreePartitions(templ, path + "->" + arr[i].PartitionName, referers);
             }
 
             isDuplicated = false;
-           
+
         }
 
         public opis GetItemByModel(string modelName)
         {
             opis rez = null;
-           
-                for (int i = 0; i < listCou; i++)
-                {                   
-                    if (arr[i].PartitionKind == modelName)
-                    {
-                        rez = arr[i];
-                        break;
-                    }
+
+            for (int i = 0; i < listCou; i++)
+            {
+                if (arr[i].PartitionKind == modelName)
+                {
+                    rez = arr[i];
+                    break;
                 }
-            
+            }
+
             return rez;
         }
 
@@ -1908,7 +1915,7 @@ namespace basicClasses
         {
             bool rez = false;
 
-            rez =  this.V(kvp.PartitionName) == kvp.body;
+            rez = this.V(kvp.PartitionName) == kvp.body;
 
             if (!rez)
             {
@@ -1940,7 +1947,7 @@ namespace basicClasses
             isDuplicated = false;
         }
 
-        void AddTemplData(opis templ, opis data,  opis rez)
+        void AddTemplData(opis templ, opis data, opis rez)
         {
             if (templ.body != "???")
             {
@@ -1952,9 +1959,9 @@ namespace basicClasses
                 rez.AddArr(data);
         }
 
-        public int FindByTemplateValue(opis strucTmpl, opis rez,bool exactOnly, bool retdata, bool isTop, bool getdata = false)
+        public int FindByTemplateValue(opis strucTmpl, opis rez, bool exactOnly, bool retdata, bool isTop, bool getdata = false)
         {
-           
+
             if (isDuplicated) return 0;
 
             lockThisForDuplication();
@@ -1978,7 +1985,7 @@ namespace basicClasses
                         arr[i].PartitionName == templ.PartitionName) &&
                         (string.IsNullOrEmpty(templ.body)
                         || templ.body.StartsWith("???")
-                       || arr[i].body == templ.body 
+                       || arr[i].body == templ.body
                        || (templ.body.StartsWith("###") && arr[i].body.Contains(templ.body.Substring(3)))
                         )
                         )
@@ -1988,7 +1995,7 @@ namespace basicClasses
                         match[k] += r;
 
                         if (getdata && (r > 0 || templ.listCou == 0) && templ.body.StartsWith("???"))
-                        {                          
+                        {
                             AddTemplData(templ, arr[i], rez);
                         }
 
@@ -2000,7 +2007,7 @@ namespace basicClasses
                             {
                                 UnlockThisForDuplication();
 
-                                if(templ.body.StartsWith("???"))
+                                if (templ.body.StartsWith("???"))
                                     AddTemplData(templ, arr[i], rez);
 
                                 arr[i].FindByTemplateValue(templ, rez, exactOnly, retdata, false, true);
@@ -2018,13 +2025,13 @@ namespace basicClasses
             if (!exactOnly)
                 matched = (x => (x == strucTmpl.listCou));
             else
-                matched =  x => (x == strucTmpl.listCou && x == paramCou);          
+                matched = x => (x == strucTmpl.listCou && x == paramCou);
 
             if (isTop)
             {
                 if (matched(matchedLvl)
                     && strucTmpl.listCou != 1)
-                {                  
+                {
                     if (!retdata)
                         rez.AddArr(this);
                     else
@@ -2063,7 +2070,7 @@ namespace basicClasses
         }
 
         public int Difference(opis strucTmpl, bool isTop, bool mark_nodes, bool deepIsPrior, bool range_body, int koef = 1, int koefStep = 1)
-        {           
+        {
 
             if (isDuplicated) return 0;
 
@@ -2084,10 +2091,10 @@ namespace basicClasses
                 for (int i = 0; i < paramCou; i++)
                 {
                     if (arr[i].PartitionName == templ.PartitionName)
-                    {                      
+                    {
                         var r = arr[i].Difference(templ, false, false, deepIsPrior, range_body, deepIsPrior ? koef * koefStep : koef / koefStep,
                             koefStep);
-                        mostAlikeNode[i] = r +1;
+                        mostAlikeNode[i] = r + 1;
 
                         if (range_body
                           && (arr[i].body == templ.body))
@@ -2097,12 +2104,12 @@ namespace basicClasses
                     }
                 }
 
-               
-                int maxMatch = mostAlikeNode.Length >0?  mostAlikeNode.Max() : 0;
+
+                int maxMatch = mostAlikeNode.Length > 0 ? mostAlikeNode.Max() : 0;
                 match[k] += maxMatch;
 
-                if ((isTop || mark_nodes) && mostAlikeNode.Length > 0 )                
-                {                  
+                if ((isTop || mark_nodes) && mostAlikeNode.Length > 0)
+                {
                     int pos = -1;
                     int idx = 0;
                     int minWeight = 1000000000;
@@ -2110,23 +2117,27 @@ namespace basicClasses
                     int CountOfMaxRanged = mostAlikeNode.Where(x => x == maxMatch).Count();
 
                     if (maxMatch > 0)
-                        while (idx != -1) {
+                        while (idx != -1)
+                        {
                             idx = Array.IndexOf(mostAlikeNode, maxMatch, idx);
 
-                            if (idx >= 0) {
+                            if (idx >= 0)
+                            {
                                 int w = arr[idx].CountNodeWeight();
 
                                 int used = matchIndexes.Where(x => x == idx).Count();
-                                if (used > 0) {
+                                if (used > 0)
+                                {
                                     idx++;
                                     continue;
                                 }
 
-                                if ( minWeight > w
+                                if (minWeight > w
 
-                                     || ( CountOfMaxRanged > 1 
+                                     || (CountOfMaxRanged > 1
                                      && templweight > minWeight && w > minWeight && w <= templweight)
-                                  ) {
+                                  )
+                                {
                                     minWeight = w;
                                     pos = idx;
                                 }
@@ -2135,9 +2146,9 @@ namespace basicClasses
                             }
                         }
 
-                    if (pos >= 0 )
+                    if (pos >= 0)
                     {
-                       
+
                         arr[pos].Difference(templ, false, true, deepIsPrior, range_body, deepIsPrior ? koef * koefStep : koef / koefStep,
                             koefStep);
 
@@ -2145,29 +2156,30 @@ namespace basicClasses
                             matchIndexes[k] = pos;
 
                         string inf = "";
-                       
-                        if (arr[pos].body != templ.body)                      
-                            inf = "different body";                       
-                       
-                        if (arr[pos].listCou != templ.listCou)                        
-                            inf += " different listCou";                           
-                                           
+
+                        if (arr[pos].body != templ.body)
+                            inf = "different body";
+
+                        if (arr[pos].listCou != templ.listCou)
+                            inf += " different listCou";
+
                         templ.PartitionKind = templ.PartitionName != "_path_" ? inf.Trim() : "";
 
-                    } else
+                    }
+                    else
                         templ.PartitionKind = "node not found";
 
                 }
             }
 
-         
-            matchedLvl = koef * match.Where(x => x > 0).Count()+  match.Sum() 
-                - Math.Abs(strucTmpl.listCou - paramCou);        
 
-          
+            matchedLvl = koef * match.Where(x => x > 0).Count() + match.Sum()
+                - Math.Abs(strucTmpl.listCou - paramCou);
+
+
             UnlockThisForDuplication();
 
-            return matchedLvl ;
+            return matchedLvl;
 
         }
 
@@ -2180,7 +2192,7 @@ namespace basicClasses
             }
             isDuplicated = true;
 
-        
+
             for (int i = 0; i < paramCou; i++)
             {
 
@@ -2192,7 +2204,7 @@ namespace basicClasses
                 }
 
                 if (arr[i].PartitionName == "array")
-                {                  
+                {
                     arr[i].PartitionName = "#array";
                     //arr[i].TransformLoadedRaw();
                     for (int k = 0; k < arr[i].listCou; k++)
@@ -2232,13 +2244,13 @@ namespace basicClasses
         /// <param name="type">1 - as text; 2 - by text length; 3 - by int value  </param>
         public void SortThisArrayBy_items_pname(int type, bool asc = true)
         {
-            if(type == 1)
+            if (type == 1)
                 arr = SortArray(x => x.PartitionName, asc).ToArray();
 
             if (type == 2)
                 arr = SortArray(x => x.PartitionName.Length, asc).ToArray();
-                      
-            paramCou = paramCou >= arr.Length ? arr.Length : paramCou; 
+
+            paramCou = paramCou >= arr.Length ? arr.Length : paramCou;
         }
 
         /// <summary>
@@ -2267,7 +2279,7 @@ namespace basicClasses
         /// <param name="partname"></param>
         /// <param name="type">1 - as text; 2 - by text length; 3 - by int value </param>
         /// <param name="asc"></param>
-        public void SortArrayBy_items_body( int type, bool asc = true)
+        public void SortArrayBy_items_body(int type, bool asc = true)
         {
             if (type == 1)
                 arr = SortArray(x => x.body, asc).ToArray();
@@ -2277,11 +2289,11 @@ namespace basicClasses
 
             if (type == 3)
                 arr = SortArray(x => x.intVal, asc).ToArray();
-           
+
             paramCou = arr.Length;
         }
 
-        public List<opis> SortArray( Func<opis, int> key, bool asc = true)
+        public List<opis> SortArray(Func<opis, int> key, bool asc = true)
         {
             var l = arr.ToList();
 
@@ -2291,7 +2303,7 @@ namespace basicClasses
                 return l.Where(x => x != null).OrderByDescending(key).ToList();
         }
 
-        public List<opis> SortArray( Func<opis, string> key, bool asc = true)
+        public List<opis> SortArray(Func<opis, string> key, bool asc = true)
         {
             var l = arr.ToList();
 
