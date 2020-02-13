@@ -27,13 +27,9 @@ namespace basicClasses.models.SharedDataContextDrivers
         {
             opis itemsToInit = modelSpec;
             opis svc = sharedVal;
-
-            opis modelsPart = thisins["packages"];
-            Dictionary<string, int> cash= (Dictionary<string, int>)thisins["packages"].bodyObject;
+           
             bool asPackage = modelSpec.isHere(put_as_package);
-
-            // не використовуємо ExecActionModelsList(modelSpec) бо моделі повині мати доступ
-            // до даних отриманих попередніми моделями
+           
             for (int i = 0; i < itemsToInit.listCou; i++)
             {
                 bool isModel = false;
@@ -50,9 +46,7 @@ namespace basicClasses.models.SharedDataContextDrivers
                 else if (asPackage)
                 {
                     isModel = true;
-                    int poz = modelsPart.AddArr(itm);
-                    if (!cash.ContainsKey(itm.PartitionName))
-                        cash.Add(itm.PartitionName, poz);                  
+                    thisins[SysInstance.pkgIdx].AddArr(itm);  //TODO: Duplicate item when indexing optimization inmplemented                                
                 }
                 else
                 {

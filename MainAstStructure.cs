@@ -18,8 +18,10 @@ namespace basicClasses
     {
         public static bool do_not_build_debug;
         public static opis listOfVisualisedCircularRefs;
-        public const int InitialArrSize = 7;
-        public const int AccommSize = 3;
+        public const int InitialArrSize = 8;
+        public const int AccommSize = 4;
+
+        public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(2000);
 
         public bool raiseEvents;
         public TreeNode treeElem;
@@ -28,48 +30,41 @@ namespace basicClasses
 
         public static ObjectsFactory OF;
 
-        string PartitionName_Lower;
-        string PartitionName_;
-
-        public string PartitionName
+        string PartitionName_Lower_;
+        public string PartitionName_Lower 
         {
             get
             {
-                return PartitionName_;
-            }
-            set
-            {
-                if (raiseEvents && !string.IsNullOrEmpty(PartitionName_))
+                if (PartitionName_Lower_ == null && PartitionName != null)
                 {
-                    ActionDone(new opis("подія", "вид змінено імя", "імя " + PartitionName, "тип " + PartitionKind,
-                       "нове " + value, "старе " + PartitionName_));
+                    if (LowerMap.TryGetValue(PartitionName, out PartitionName_Lower_))
+                        return PartitionName_Lower_;
+                    else
+                    {
+                        PartitionName_Lower_ = PartitionName.ToLower();
+                        LowerMap.Add(PartitionName, PartitionName_Lower_);
+                    }
+                    //PartitionName_Lower_ = PartitionName == null ? null : PartitionName.ToLower();
                 }
-
-                PartitionName_ = value;
-                PartitionName_Lower = value == null ? null : value.ToLower();
-            }
-        }
-
-
-        string PartitionKind_;
-        public string PartitionKind
-        {
-            get
-            {
-                return PartitionKind_;
+                return PartitionName_Lower_;
             }
 
             set
             {
-                if (raiseEvents) ActionDone(new opis("подія", "попередній " + PartitionKind_, "новий " + value, "вид змінено тип частини", "імя " + PartitionName, "тіло " + body, ""));
-                PartitionKind_ = value;
-
+                PartitionName_Lower_ = value;
             }
         }
 
+        //  public virtual string PartitionName { get; set; }
+        public string PartitionName;
 
-        opis[] arr;
-        int paramCou;
+        public string PartitionKind;
+
+        public virtual string body { get; set; }
+
+
+        public opis[] arr;
+        public int paramCou;
         bool isDuplicated;
         public bool isDuplicated_
         {
@@ -108,44 +103,21 @@ namespace basicClasses
                     PartitionKind = "value";
                 }
                 body = value.ToString();
-                if (raiseEvents) ActionDone("числове значення присвоєно", PartitionName, PartitionKind);
+                //if (raiseEvents) ActionDone("числове значення присвоєно", PartitionName, PartitionKind);
             }
         }
 
-        string body_;
-        public string body
-        {
-            get
-            {
-                return body_;
-            }
-
-            set
-            {
-                if (raiseEvents)
-                {
-                    ActionDone(new opis("подія", "вид змінено тіло", "імя " + PartitionName, "тип " + PartitionKind,
-   "нове " + value, "старе " + body, "позиція " + paramCou.ToString()));
-                }
-
-                body_ = value;
-            }
-
-        }
-
+    
         public object bodyObject;
         public object FuncObj;
-
-        public bool UseNameIndexHash;
-        Dictionary<string, int> NamesIndexHash;
-
+  
         #endregion
 
         //=======================================
 
         #region partitioning word indexer
 
-        public opis this[string index]
+        public virtual opis this[string index]
         {
             get
             {
@@ -163,12 +135,7 @@ namespace basicClasses
                 if ((idx = getPartitionIdx(index)) != -1)
                 {
                     arr[idx] = value;
-                    //ActionDone("замінено", index, value.PartitionKind);
-                    if (raiseEvents)
-                    {
-                        ActionDone(new opis("подія", "вид замінено", "імя " + index,
-                            "тип " + value.PartitionKind, "тіло " + value.body, "позиція " + idx.ToString()));
-                    }
+                  
                 }
                 else
                 {
@@ -177,30 +144,31 @@ namespace basicClasses
                         Array.Resize(ref arr, paramCou + AccommSize);
                     }
                     arr[paramCou] = value;
-
-                    if (UseNameIndexHash)
-                        NamesIndexHash.Add(index, paramCou);
-
-                    paramCou++;
-
-                    if (raiseEvents)
-                    {
-                        ActionDone(new opis("подія", "вид додано", "імя " + index,
-                            "тип " + value.PartitionKind, "тіло " + value.body, "позиція " + (paramCou - 1).ToString()));
-                    }
+                  
+                    paramCou++;                   
                 }
             }
         }
 
+        /// <summary>
+        /// use only to access by direct index, setter is just for optimization
+        /// </summary>
+        /// <param name="index"></param>
+        /// <returns></returns>
         public opis this[int index]
         {
             get
             {
                 return arr[index];
             }
+
+            set              
+            {
+                arr[index] = value;
+            }
         }
 
-        opis getPartition(string part)
+        public virtual opis getPartition(string part)
         {
             opis rez = null;
             int idx = -1;
@@ -219,39 +187,39 @@ namespace basicClasses
                     Array.Resize(ref arr, paramCou + AccommSize);
                 }
                 arr[paramCou] = rez;
-
-                if (UseNameIndexHash)
-                    NamesIndexHash.Add(part, paramCou);
-
-                paramCou++;
-                //throw new ArgumentOutOfRangeException(PartitionName +" не знайдено сегмент опису " + part);
+              
+                paramCou++;                
             }
 
             return rez;
         }
 
-        public int getPartitionIdx(string part)
+        public virtual int getPartitionIdx(string part)
         {
             if (part == null)
                 return -1;
 
+            //if (arr == null)
+            //    arr = new opis[InitialArrSize];
+
             int rez = -1;
 
-            if (UseNameIndexHash)
-
-                rez = NamesIndexHash.TryGetValue(part, out rez) ? rez : -1;
-
-            else
-                for (int i = 0; i < arr.Length; i++)
+            for (int i = 0; i < arr.Length; i++) //TODO: somehow iterating to paramCou is not finding what is found using arr.Length -- bug in keeping paramCou in sync 
+            {
+                if (arr[i] != null 
+                    && (( arr[i].PartitionName == part) 
+                   || (arr[i].PartitionName != null  && arr[i].PartitionName_Lower == part))
+                 )
                 {
-                    if (arr[i] != null &&
-                        (arr[i].PartitionName == part ||
-                     arr[i].PartitionName_Lower == part))
-                    {
-                        rez = i;
-                        break;
-                    }
+                    rez = i;
+                    break;
                 }
+            }
+
+            //if (rez >= paramCou)
+            //{
+            //    global_log.log.AddArr(null);
+            //}
 
             return rez;
         }
@@ -325,16 +293,19 @@ namespace basicClasses
 
         public opis(int capacity)
         {
-            bool prev = raiseEvents;
-            raiseEvents = false;
+            if (capacity > 0)
+            {
+                bool prev = raiseEvents;
+                raiseEvents = false;
 
-            PartitionKind = "";
-            body = "";
-            paramCou = 0;
+                PartitionKind = "";
+                body = "";
+                paramCou = 0;
 
-            arr = new opis[capacity];
+                arr = new opis[capacity];
 
-            raiseEvents = prev;
+                raiseEvents = prev;
+            } 
         }
 
 
@@ -437,23 +408,23 @@ namespace basicClasses
 
         public void Vset(string index, string data)
         {
-            if (raiseEvents) ActionDone(new opis("подія", "вид змінено тіло", "імя " + index, "тип " + getPartition(index).PartitionKind,
-                "нове " + data, "старе " + getPartition(index).body));
+            //if (raiseEvents) ActionDone(new opis("подія", "вид змінено тіло", "імя " + index, "тип " + getPartition(index).PartitionKind,
+            //    "нове " + data, "старе " + getPartition(index).body));
             getPartition(index).body = data;
         }
 
         public void Vadd(string index, string data)
         {
-            if (raiseEvents) ActionDone(new opis("подія", "вид змінено тіло", "імя " + index, "тип " + getPartition(index).PartitionKind,
-                "нове " + data, "старе " + getPartition(index).body));
+            //if (raiseEvents) ActionDone(new opis("подія", "вид змінено тіло", "імя " + index, "тип " + getPartition(index).PartitionKind,
+            //    "нове " + data, "старе " + getPartition(index).body));
             getPartition(index).body += "," + data;
         }
 
-        public void InitNameIndexHash()
-        {
-            UseNameIndexHash = true;
-            NamesIndexHash = new Dictionary<string, int>(4000);
-        }
+        //public void InitNameIndexHash()
+        //{
+        //    UseNameIndexHash = true;
+        //    NamesIndexHash = new Dictionary<string, int>(4000);
+        //}
 
         public void CopyArr(opis elem, bool turnOffUniqControl = true)
         {
@@ -569,11 +540,12 @@ namespace basicClasses
 
         public void AddArrRange(opis elem, bool turnOffUniqControl = true)
         {
-            //if (raiseEvents) ActionDone(new opis("подія", "вид додано масив", "імя " + elem.PartitionName,
-            //    "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + paramCou.ToString()));
-            //PartitionKind_ = (string.IsNullOrEmpty(PartitionKind_) ? "" : PartitionKind_);
 
-            Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
+            //if (arr == null)
+            //    arr = new opis[paramCou + elem.listCou + AccommSize];
+            //else
+            if (arr.Length < paramCou + elem.listCou + AccommSize)
+                Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
 
             for (int i = 0; i < elem.listCou; i++)
             {
@@ -588,7 +560,11 @@ namespace basicClasses
 
         public void AddArrMissing(opis elem)
         {
-            Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
+            //if (arr == null)
+            //    arr = new opis[paramCou + elem.listCou + AccommSize];
+            //else
+            if(arr.Length < paramCou + elem.listCou + AccommSize)
+                Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
 
             for (int i = 0; i < elem.listCou; i++)
             {
@@ -600,30 +576,24 @@ namespace basicClasses
             }
         }
 
-        public int AddArr(opis elem)
+        public virtual int AddArr(opis elem)
         {
-            PartitionKind_ = (string.IsNullOrEmpty(PartitionKind_) ? "" : PartitionKind_);
+            PartitionKind = (string.IsNullOrEmpty(PartitionKind) ? "" : PartitionKind);
+
+            //if (arr == null)
+            //    arr = new opis[InitialArrSize];
+
             if (arr.Length <= paramCou)
             {
                 Array.Resize(ref arr, paramCou + AccommSize);
             }
 
             int rez = paramCou;
-
-            if (UseNameIndexHash)
-            {
-                if (!NamesIndexHash.ContainsKey(elem.PartitionName))
-                    NamesIndexHash.Add(elem.PartitionName, paramCou);
-                else
-                    global_log.log?.AddArr(new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name " });
-            }
-
+           
             arr[paramCou] = elem;
             paramCou++;
 
-            if (raiseEvents) ActionDone(new opis("подія", "вид додано", "імя " + elem.PartitionName,
-               "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + (paramCou - 1).ToString()));
-
+       
             return rez;
 
         }
@@ -642,8 +612,8 @@ namespace basicClasses
 
         public void RemoveArrElem(opis elem)
         {
-            if (raiseEvents) ActionDone(new opis("подія", "вид видалено", "імя " + elem.PartitionName,
-                "тип " + elem.PartitionKind, "тіло " + elem.body));
+            //if (raiseEvents) ActionDone(new opis("подія", "вид видалено", "імя " + elem.PartitionName,
+            //    "тип " + elem.PartitionKind, "тіло " + elem.body));
 
             int idxLess = 0;
             for (int i = 0; i < paramCou; i++)
@@ -663,7 +633,6 @@ namespace basicClasses
 
         public void InsertArrElem(opis elem, int pos)
         {
-
             if (arr.Length <= paramCou)
             {
                 Array.Resize(ref arr, paramCou + AccommSize);
@@ -681,13 +650,10 @@ namespace basicClasses
                 }
 
                 newArr[i + idxShift] = arr[i];
-
             }
 
             arr = newArr;
-
             paramCou++;
-
         }
 
         public string[] ParamsNames()
@@ -755,10 +721,10 @@ namespace basicClasses
 
         public void Wrap(opis o)
         {
-            this.PartitionKind_ = "wrapper";
-            this.body_ = o.PartitionName;
+            this.PartitionKind = "wrapper";
+            this.body = o.PartitionName;
 
-            this[this.body_] = o;
+            this[this.body] = o;
         }
 
         public void WrapByName(opis o, string name, string renameO)
@@ -772,7 +738,7 @@ namespace basicClasses
             if (o == null)
                 return;
             opis ol = this[name];
-            ol.PartitionKind_ = "wrapper";
+            ol.PartitionKind = "wrapper";
             ol.body = string.IsNullOrEmpty(o.PartitionName) ? name : o.PartitionName;
             ol[ol.body] = o;
         }
@@ -790,7 +756,7 @@ namespace basicClasses
 
         public opis W()
         {
-            if (this.PartitionKind_ == "wrapper")
+            if (this.PartitionKind == "wrapper")
                 return this[this.body];
             else
                 return this;
@@ -844,38 +810,17 @@ namespace basicClasses
 
         #endregion
 
-        public void InitFuncObj()
-        {
-            if (!string.IsNullOrEmpty(PartitionName_))
-            {
-                FuncObj = ObjectsFactory.GetInstance(string.IsNullOrEmpty(V(ModelNotion.InitFuncObj)) ? PartitionName_ : V(ModelNotion.InitFuncObj));
-
-                if (V(ModelNotion.InitFuncObj) == "root")
-                {
-                    root r = (root)FuncObj;
-                    r.nameSpec = PartitionName_;
-                }
-
-            }
-        }
-
+     
         public void InitFuncObj2()
         {
-            if (!string.IsNullOrEmpty(PartitionName_))
+            if (!string.IsNullOrEmpty(PartitionName))
             {
                 root r = new root();
-                r.nameSpec = PartitionName_;
+                r.nameSpec = PartitionName;
                 FuncObj = r;
             }
         }
 
-        public void PrepareFuncObj()
-        {
-            //if (FuncObj == null)
-            //{
-            //    InitFuncObj();                
-            //}
-        }
 
         #region Action registering and set handlers
 
@@ -1816,23 +1761,26 @@ namespace basicClasses
                 return copy;
             }
 
-            if (PartitionKind == "dataref" && this.paramCou > 0)
-            {
-                return this;
-            }
+            /// TODO: optimization undo if needed
+            //if (PartitionKind == "dataref" && this.paramCou > 0)
+            //{
+            //    return this;
+            //}
 
-            opis rez = new opis();
+            opis rez = new opis(-1);
             copy = rez;
 
             rez.body = this.body;
             rez.PartitionKind = this.PartitionKind;
-            rez.PartitionName_Lower = this.PartitionName_Lower;
-            rez.PartitionName_ = this.PartitionName;
+            rez.PartitionName_Lower_ = this.PartitionName_Lower_;
+            rez.PartitionName = this.PartitionName;
             rez.paramCou = this.paramCou;
             isDuplicated = true;
 
-            rez.arr = new opis[this.paramCou];
-
+            if (this.paramCou > 0)
+                rez.arr = new opis[this.paramCou];
+            else
+                rez.arr = new opis[0];
 
             for (int i = 0; i < this.paramCou; i++)
             {
@@ -1842,6 +1790,20 @@ namespace basicClasses
 
             isDuplicated = false;
             copy = null;
+
+            return rez;
+        }
+
+        public T DuplicateAs<T>() where T : opis, new()
+        {
+            T rez = new T();
+            var tmp = Duplicate();
+            rez.body = tmp.body;
+            rez.PartitionKind = tmp.PartitionKind;
+            rez.PartitionName_Lower_ = tmp.PartitionName_Lower_;
+            rez.PartitionName = tmp.PartitionName;
+            rez.paramCou = tmp.paramCou;
+            rez.arr = tmp.arr;
 
             return rez;
         }
@@ -2339,6 +2301,233 @@ namespace basicClasses
 
             return l.Select(x => { int.TryParse(x, out int v); return v; }).ToList();
         }
+
+
+    }
+
+    public class opisDictOptimized : opis
+    {
+        public bool UseNameIndexHash = true;
+        Dictionary<string, int> NamesIndexHash = new Dictionary<string, int>(4000);
+
+       // arr can not be null in this type
+
+        public override opis this[string index]
+        {
+            get
+            {
+                return getPartition(index);
+            }
+
+            set
+            {
+                if (value == null)
+                    return;
+
+                int idx = -1;
+                value.PartitionName = index;
+
+                if ((idx = getPartitionIdx(index)) != -1)
+                {
+                    arr[idx] = value;                  
+                }
+                else
+                {
+                    if (arr.Length <= paramCou)
+                    {
+                        Array.Resize(ref arr, paramCou + 1000);
+                    }
+                    arr[paramCou] = value;
+                   
+                    NamesIndexHash.Add(index, paramCou);
+
+                    paramCou++;
+                   
+                }
+            }
+        }
+       
+
+        public override opis getPartition(string part)
+        {
+            opis rez = null;
+            int idx = -1;
+
+            if ((idx = getPartitionIdx(part)) != -1)
+            {
+                rez = arr[idx];
+            }
+            else
+            {
+                rez = new opis();
+                rez.PartitionName = part;
+
+                if (arr.Length <= paramCou)
+                {
+                    Array.Resize(ref arr, paramCou + 1000);
+                }
+                arr[paramCou] = rez;
+                
+                NamesIndexHash.Add(part, paramCou);
+
+                paramCou++;                
+            }
+
+            return rez;
+        }
+
+        public override int getPartitionIdx(string part)
+        {
+            if (part == null)
+                return -1;          
+
+            int rez = -1;
+
+            if (UseNameIndexHash)
+                rez = NamesIndexHash.TryGetValue(part, out rez) ? rez : -1;
+
+            else
+                rez = base.getPartitionIdx(part);
+
+            return rez;
+        }
+
+        public override int AddArr(opis elem)
+        {
+            var rez = base.AddArr(elem);
+
+            if (!NamesIndexHash.ContainsKey(elem.PartitionName))
+                NamesIndexHash.Add(elem.PartitionName, rez);
+            else
+                global_log.log?.AddArr(new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name " });
+
+            return rez;
+
+        }
+
+    }
+
+    public class opisEventsSubscription : opis
+    {
+        //public object bodyObject;
+        //public object FuncObj;
+
+        //string PartitionName_;
+
+        //public override string PartitionName
+        //{
+        //    get
+        //    {
+        //        return PartitionName_;
+        //    }
+        //    set
+        //    {
+        //        if (raiseEvents && !string.IsNullOrEmpty(PartitionName_))
+        //        {
+        //            ActionDone(new opis("подія", "вид змінено імя", "імя " + PartitionName, "тип " + PartitionKind,
+        //               "нове " + value, "старе " + PartitionName_));
+        //        }
+
+        //        PartitionName_ = value;
+        //        //PartitionName_Lower = value == null ? null : value.ToLower();
+        //    }
+        //}
+
+        //string PartitionKind_;
+        //public override string PartitionKind
+        //{
+        //    get
+        //    {
+        //        return PartitionKind_;
+        //    }
+
+        //    set
+        //    {
+        //        if (raiseEvents) ActionDone(new opis("подія", "попередній " + PartitionKind_, "новий " + value, "вид змінено тип частини", "імя " + PartitionName, "тіло " + body, ""));
+        //        PartitionKind_ = value;
+
+        //    }
+        //}
+
+        string body_;
+        public override string body
+        {
+            get
+            {
+                return body_;
+            }
+
+            set
+            {
+                if (raiseEvents)
+                {
+                    ActionDone(new opis("подія", "вид змінено тіло", "імя " + PartitionName, "тип " + PartitionKind,
+   "нове " + value, "старе " + body, "позиція " + paramCou.ToString()));
+                }
+
+                body_ = value;
+            }
+
+        }
+
+        public override opis this[string index]
+        {
+            get
+            {
+                return getPartition(index);
+            }
+
+            set
+            {
+                if (value == null)
+                    return;
+
+                int idx = -1;
+                value.PartitionName = index;
+
+                if ((idx = getPartitionIdx(index)) != -1)
+                {
+                    arr[idx] = value;
+
+                    if (raiseEvents)
+                    {
+                        ActionDone(new opis("подія", "вид замінено", "імя " + index,
+                            "тип " + value.PartitionKind, "тіло " + value.body, "позиція " + idx.ToString()));
+                    }
+                }
+                else
+                {
+                    if (arr.Length <= paramCou)
+                    {
+                        Array.Resize(ref arr, paramCou + AccommSize);
+                    }
+                    arr[paramCou] = value;
+                  
+
+                    paramCou++;
+
+                    if (raiseEvents)
+                    {
+                        ActionDone(new opis("подія", "вид додано", "імя " + index,
+                            "тип " + value.PartitionKind, "тіло " + value.body, "позиція " + (paramCou - 1).ToString()));
+                    }
+                }
+            }
+        }
+
+        public override int AddArr(opis elem)
+        {
+            var rez = base.AddArr(elem);
+
+            if (raiseEvents) ActionDone(new opis("подія", "вид додано", "імя " + elem.PartitionName,
+               "тип " + elem.PartitionKind, "тіло " + elem.body, "позиція " + (paramCou - 1).ToString()));
+
+            return rez;
+
+        }
+
+        //public object bodyObject;
+        //public object FuncObj;
 
 
     }

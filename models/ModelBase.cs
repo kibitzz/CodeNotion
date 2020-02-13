@@ -109,11 +109,7 @@ namespace basicClasses.models
         {
             opis rez = new opis("MessageModel"+ name);
             rez.Vset("", "");
-            rez.Vset("", "");
-            rez.Vset("", "");
-            rez.Vset("", "");
-            rez.Vset("", "");
-            rez.Vset("", "");
+          
 
             return rez;
         }

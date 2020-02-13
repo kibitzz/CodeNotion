@@ -1096,7 +1096,7 @@ namespace basicClasses
                 currContext.ClearNodesRef();
             }
 
-            currContext["globalcomm"] = new opis();
+            currContext["globalcomm"] = new opisEventsSubscription();
             OntologyTreeBuilder tpb = new OntologyTreeBuilder();
             tpb.context = Parser.ContextGlobal["words"];           
 
@@ -1119,11 +1119,14 @@ namespace basicClasses
             listBox2.Visible = true;
             listBox2.Items.Clear();
 
-            MsgLogItem[] lll = new MsgLogItem[SysInstance.Log.Count];
-            SysInstance.Log.CopyTo(lll);
-            foreach (MsgLogItem m in lll)
+            if (SysInstance.Log != null)
             {
-                listBox2.Items.Add(m);
+                MsgLogItem[] lll = new MsgLogItem[SysInstance.Log.Count];
+                SysInstance.Log.CopyTo(lll);
+                foreach (MsgLogItem m in lll)
+                {
+                    listBox2.Items.Add(m);
+                }
             }
         }
 

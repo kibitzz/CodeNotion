@@ -105,7 +105,29 @@ namespace basicClasses
         public static guiGelegate updateform;
         public static string messageBannertext;
 
-      
+        /// <summary>
+        /// sharedVariablesContext
+        /// </summary>
+        public const int svcIdx = 2;
+        /// <summary>
+        /// packages
+        /// </summary>
+        public const int pkgIdx = 3;
+        public const int envIdx = 4;
+
+        /// <summary>
+        /// SUBJ
+        /// </summary>
+        public const int subjIdx = 0;
+        /// <summary>
+        /// modelSpec
+        /// </summary>
+        public const int modelSpecIdx = 1;
+        /// <summary>
+        ///  SYS_use_container_do_not_owerlap
+        /// </summary>
+        public const int ldcIdx = 2;
+
         protected opis thisins;
         protected opis spec;
         protected opis o;
@@ -348,23 +370,25 @@ namespace basicClasses
 
         public opis GetEnvirinmentForModel()
         {
-            opis rez = null;
-            if (thisins.isHere("environment"))
+            opis rez = thisins[envIdx];
+            if (rez.listCou == 0)
             {
-                rez = thisins["environment"];
+                rez = ContEnvironment(); //TODO: call in initInstanceSpec environment produce not valid setting
+                thisins[envIdx] = rez;
             }
-            else
-            {
-                rez = new opis("EnvirinmentForModel");
-                rez.WrapByName(thisins, "thisins");
-                rez.WrapByName(spec, "spec");
-                //rez.WrapByName(communicator, "communicator");
-                rez.WrapByName(o, "currCont");
-                rez.WrapByName(waiter, "waiter");
-                rez.WrapByName(contexts, "contexts");
+           
+            return rez;
+        }
 
-                thisins["environment"] = rez;
-            }      
+        opis ContEnvironment()
+        {
+            opis rez = new opis("EnvirinmentForModel");
+            rez.WrapByName(thisins, "thisins");
+            rez.WrapByName(spec, "spec");
+            //rez.WrapByName(communicator, "communicator");
+            rez.WrapByName(o, "currCont");
+            rez.WrapByName(waiter, "waiter");
+            rez.WrapByName(contexts, "contexts");
 
             return rez;
         }
@@ -544,6 +568,40 @@ namespace basicClasses
             
         }
 
+        opis SetupConstantIndexes(opis thisinsP)
+        {
+            opis tmp = new opis();
+            tmp.CopyArr(thisinsP);
+
+            thisinsP.CopyArr(new opis());
+            thisinsP.ArrResize(30);
+
+            opis ee = new opis();
+
+            if (tmp["sharedVariablesContext"].paramCou > 0)
+            {
+               throw  new IndexOutOfRangeException();
+            }
+            tmp["sharedVariablesContext"].AddArr( ee["SUBJ"]);
+            tmp["sharedVariablesContext"].AddArr ( ee["modelSpec"]);
+            tmp["sharedVariablesContext"].AddArr (ee["SYS_use_container_do_not_owerlap"]);
+            //tmp["sharedVariablesContext"].paramCou = 3;
+
+
+
+            thisinsP[0] = tmp["spec"];
+            thisinsP[1] = tmp["waiter"];
+            thisinsP[svcIdx] = tmp["sharedVariablesContext"];
+            thisinsP[pkgIdx] = tmp["packages"];
+            //thisinsP[pkgIdx].bodyObject = tmp["packages"].bodyObject;
+            thisinsP[envIdx] = tmp["environment"];
+            thisinsP.paramCou = 5;
+
+            thisinsP.AddArrMissing(tmp);
+
+            return thisinsP;
+        }
+
         public void initInstanceSpec(opis msg)
         {        
             if (CTX.organizer.Contains(name))
@@ -579,13 +637,18 @@ namespace basicClasses
             rez["spec_name"].body = rez.PartitionName;
             thisins.WrapByName(waiter, "waiter");
 
-            // optimize - at start set enough size for this big and very active array
-            thisins["sharedVariablesContext"].InitNameIndexHash(); //TODO: check for bugs caused by this optimization
+           
+            //thisins["sharedVariablesContext"] = new opis(); //TODO: not working with basic implementation of opis
+            thisins["sharedVariablesContext"] = new opisDictOptimized();
             thisins["sharedVariablesContext"].ArrResize(4000);
-       
-            thisins["packages"].ArrResize(4000);
-            thisins["packages"].bodyObject = new Dictionary<string, int>(4000);
 
+            thisins["packages"] = new opisDictOptimized();
+            thisins["packages"].ArrResize(4000);
+            //thisins["packages"].bodyObject = new Dictionary<string, int>(4000);
+           
+
+            SetupConstantIndexes(thisins);
+          //  thisins["environment"] = ContEnvironment();
             spec = thisins.W(ModelG.spec);
 
             ExecActionResponceModelsList(waiter[ModelNotion.Build], rez);
@@ -644,7 +707,7 @@ namespace basicClasses
 
         opis InitMsgStackDatCon(opis msg)
         {
-            var SVC = thisins["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"];
+            var SVC = thisins[svcIdx][ldcIdx];
             var prev = SVC.W();
 
             var contl = new opis() { PartitionName = "msgCont" };
@@ -667,7 +730,7 @@ namespace basicClasses
 
         void SetStackDatCon(opis data)
         {
-            var SVC = thisins["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"];
+            var SVC = thisins[svcIdx][ldcIdx];
    
             SVC.Wrap(data);
         }
@@ -977,7 +1040,7 @@ namespace basicClasses
         {
             for (int i = 0; i < requests.listCou; i++)
             {
-                var req = requests[i].Duplicate();
+                opisEventsSubscription req = requests[i].DuplicateAs<opisEventsSubscription>();
                 FillMessagePartsAndSend(req);
             }
         }
@@ -1017,7 +1080,7 @@ namespace basicClasses
 
         public void ExecGivenParamModel(opis req)
         {
-            opis ms = thisins["sharedVariablesContext"]["modelSpec"];//.Duplicate();
+            opis ms = thisins[svcIdx][modelSpecIdx];//.Duplicate();
 
             opis elemToChange = req;
             req = GetLocalDataModel(req); // local models
@@ -1034,7 +1097,7 @@ namespace basicClasses
                 processor.log.body = req.PartitionName;
             }
 
-            thisins["sharedVariablesContext"]["modelSpec"] = ms;
+            thisins[svcIdx][modelSpecIdx] = ms;
         }
 
         #endregion
@@ -1042,11 +1105,11 @@ namespace basicClasses
 
         public void ExecActionModelsList(opis req, bool parallel = false)
         {
-           opis marg = thisins["sharedVariablesContext"][exec.SUBJ];
+           opis marg = thisins[svcIdx][exec.SUBJ];
           
                 opis wr = new opis();
                 wr.Wrap(req);
-                thisins["sharedVariablesContext"][exec.SUBJ] = wr;
+                thisins[svcIdx][exec.SUBJ] = wr;
 
 
             if (!parallel)
@@ -1076,17 +1139,17 @@ namespace basicClasses
                 Task.WaitAll(tasks);
             }
 
-            thisins["sharedVariablesContext"][exec.SUBJ] = marg;
+            thisins[svcIdx][exec.SUBJ] = marg;
         }
 
 
         public void ExecActionResponceModelsList(opis req, opis message)
         {
-            opis marg = thisins["sharedVariablesContext"][exec.SUBJ];
+            opis marg = thisins[svcIdx][exec.SUBJ];
            
                 opis wr = new opis();
                 wr.Wrap(message);
-                thisins["sharedVariablesContext"][exec.SUBJ] = wr;
+                thisins[svcIdx][exec.SUBJ] = wr;
 
             //на випадок коли інстанс може отримувати повідомлення
             // чи відповіді в процесі виконання попереднього циклу
@@ -1102,7 +1165,7 @@ namespace basicClasses
                     break;
             }                 
 
-            thisins["sharedVariablesContext"][exec.SUBJ] = marg;
+            thisins[svcIdx][exec.SUBJ] = marg;
         }     
 
         public void ExecActionModel(opis req, opis processParameter)
@@ -1129,20 +1192,19 @@ namespace basicClasses
         {
             bool rezb = false;
             opis rez = req;
-            opis SVC = thisins["sharedVariablesContext"];
-            bool inSvc =false;
+            opis SVC = thisins[svcIdx];
+            int inSvc =-1;
 
-            Dictionary<string, int> cash = (Dictionary<string, int>)thisins["packages"].bodyObject;
+            //Dictionary<string, int> cash = (Dictionary<string, int>)thisins[pkgIdx].bodyObject;
             int poz = -1;
-          
-            inSvc = (SVC.isHere(req.PartitionKind)
-                && SVC[req.PartitionKind].PartitionKind == "Action");
 
+            inSvc = SVC.getPartitionIdx(req.PartitionKind);
+            inSvc = inSvc >=0 && SVC[inSvc].PartitionKind == "Action" ? inSvc : -1;
 
             // ---------  only for dev time in repl
-            int tmppos = -1;
-            if (showOverrideWarnings && inSvc &&
-              cash.TryGetValue(req.PartitionKind, out tmppos))
+            
+            if (showOverrideWarnings && inSvc != -1 &&
+              thisins[pkgIdx].isHere(req.PartitionKind))
                 {
                     opis err = new opis();
                     err.PartitionName = "WARN: local model override package func: " + req.PartitionKind;
@@ -1151,18 +1213,18 @@ namespace basicClasses
                 }
             // --------- 
 
+            opis packages = thisins[pkgIdx];
 
-            if (inSvc ||
-                cash.TryGetValue(req.PartitionKind, out poz) )
+            if (inSvc >= 0 || // local models should override package funcs
+               (poz = packages.getPartitionIdx(req.PartitionKind)) >=0)  // if inSvc -- poz never evaluated, and stay -1
             {
-
+                rezb = true;
                 List<string> tempNames = new List<string>();
 
-                opis ms = SVC["modelSpec"];
-                rezb = true;
-                opis mod = inSvc ? SVC[req.PartitionKind] : thisins["packages"][poz];
-
-                mod = poz >=0 ? thisins["packages"][poz] : mod;
+                opis ms = SVC[modelSpecIdx];
+                
+                opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz];
+              //  mod = poz >= 0 ? packages[poz] : mod; 
 
                 opis modelSpec = new opis();
                 bool modelIsProducer = (mod.body != null && mod.body.Contains("@"));
@@ -1191,7 +1253,7 @@ namespace basicClasses
                     if (mod.body.Contains("$"))// duplicate all input data 
                         modelSpec = modelSpec.Duplicate();
 
-                    SVC["modelSpec"] = modelSpec;
+                    SVC[modelSpecIdx] = modelSpec;
                 }
                 else
                 {
@@ -1244,13 +1306,13 @@ namespace basicClasses
                         pn = pn.Trim('>', '<');
                         if (pn.Length > 0)
                         {                          
-                            SVC["modelSpec"] = ms;
+                            SVC[modelSpecIdx] = ms;
                           
                             paramRez.PartitionKind = pn;
                             ExecActionModel(paramRez, paramRez);
                             processObj = paramRez.W();
                          
-                            SVC["modelSpec"] = modelSpec;
+                            SVC[modelSpecIdx] = modelSpec;
                         }
                     }
 
@@ -1309,7 +1371,7 @@ namespace basicClasses
                     if (pn.Length > 0)
                     {
                         subscribeProduce = modelIsProducer 
-                                       && (SVC["SYS_use_container_do_not_owerlap"].W().isHere(pn + "_sys_subscript")
+                                       && (SVC[ldcIdx].W().isHere(pn + "_sys_subscript")
                                        || modelSpec.isHere(pn + "_sys_subscript"));
                         //prodLocalContext = modelIsProducer;
 
@@ -1340,23 +1402,18 @@ namespace basicClasses
                 //context switch []*
                 if (b == "*" && req.PartitionKind != "func")
                 {
-                    SVC["SYS_use_container_do_not_owerlap"].ArrResize(0);
-                    SVC["SYS_use_container_do_not_owerlap"].Wrap(SVC[nameOfSubj].W());
+                    SVC[ldcIdx].ArrResize(0);
+                    SVC[ldcIdx].Wrap(SVC[nameOfSubj].W());
                 }
-
-                //if (prodLocalContext)
-                //{
-                //    string pn = b.Trim('>', '<', ' ', '*');
-                //    SVC["SYS_use_container_do_not_owerlap"].W()[pn] = SVC[nameOfSubj].W();                   
-                //}
+             
 
                 if (subscribeProduce)
                 {
                     string pn = b.Trim('>', '<', ' ', '*') + "_sys_subscript";
 
-                    if (SVC["SYS_use_container_do_not_owerlap"].W().isHere(pn))
+                    if (SVC[ldcIdx].W().isHere(pn))
                     {
-                        var subscription = SVC["SYS_use_container_do_not_owerlap"].W()[pn].Duplicate();
+                        var subscription = SVC[ldcIdx].W()[pn].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
                     }else
                     if (modelSpec.isHere(pn))
@@ -1370,7 +1427,7 @@ namespace basicClasses
                 foreach (string tn in tempNames)
                 tempSDCstack.Push(tn);
 
-                SVC["modelSpec"] = ms;
+                SVC[modelSpecIdx] = ms;
             }
 
             return rezb;
@@ -1411,14 +1468,14 @@ namespace basicClasses
 
         public opis GetLocalDataContextVal(string pn, bool create = false)
         {
-            opis SVC = thisins["sharedVariablesContext"];
+            opis SVC = thisins[svcIdx];
             return getSYSContainetP(SVC, pn, create, false);
         }
 
         opis getSYSContainetP(opis SVC, string pn, bool create, bool logerror = true)
         {
             opis rez = new opis();
-            opis t = SVC["SYS_use_container_do_not_owerlap"].W();
+            opis t = SVC[ldcIdx].W();
 
             string pnl = pn.Contains("~")? pn.Replace("~", "") : pn;
 
@@ -1441,7 +1498,7 @@ namespace basicClasses
                         opis err = new opis();
                         err.PartitionName = "ERR no such patrition: " + pn;
                         err.AddArr(t.Duplicate());
-                        err.AddArr(SVC["modelSpec"].Duplicate());
+                        err.AddArr(SVC[modelSpecIdx].Duplicate());
                         global_log.log.AddArr(err);
                     }
                 }
@@ -1455,31 +1512,31 @@ namespace basicClasses
            
             opis rez = req;
 
-            opis SVC = thisins["sharedVariablesContext"];
+            opis SVC = thisins[svcIdx];
             bool inSvc = (SVC.isHere(req.PartitionKind)
                && SVC[req.PartitionKind].PartitionKind == "Action");
 
-            Dictionary<string, int> cash = (Dictionary<string, int>)thisins["packages"].bodyObject;
+            Dictionary<string, int> cash = (Dictionary<string, int>)thisins[pkgIdx].bodyObject;
             int poz = -1;
            
             if (inSvc ||
-                (cash.TryGetValue(req.PartitionKind, out poz)))
+                (poz = thisins[pkgIdx].getPartitionIdx(req.PartitionKind)) >=0)
             {
 
-                opis mod = inSvc ? SVC[req.PartitionKind] : thisins["packages"][poz];
+                opis mod = inSvc ? SVC[req.PartitionKind] : thisins[pkgIdx][poz];
                 rez = new opis();
                 rez.PartitionKind = "exec";
 
                 rez[exec.message_as_parameter_for_instructions].body = "y";
                 rez[exec.instructions].CopyArr(mod);
 
-                if (thisins["sharedVariablesContext"][req.PartitionKind].body != "!")
+                if (thisins[svcIdx][req.PartitionKind].body != "!")
                 {
                     //копируем на случай если модель должна выступать в роли филлера
                     //ведь тогда мы изменим processParameter который будет являться и modelSpec
-                    SVC["modelSpec"].CopyArr(req.Duplicate());
-                    SVC["modelSpec"].Vset("v", req.body);
-                    SVC["modelSpec"].Vset("a", req.PartitionName);
+                    SVC[modelSpecIdx].CopyArr(req.Duplicate());
+                    SVC[modelSpecIdx].Vset("v", req.body);
+                    SVC[modelSpecIdx].Vset("a", req.PartitionName);
                 }
 
             }
@@ -1494,10 +1551,10 @@ namespace basicClasses
 
            
             if (req!= null && req.PartitionKind != null 
-                && thisins["sharedVariablesContext"].isHere(req.PartitionKind)
-                && thisins["sharedVariablesContext"][req.PartitionKind].PartitionKind == "Action")
+                && thisins[svcIdx].isHere(req.PartitionKind)
+                && thisins[svcIdx][req.PartitionKind].PartitionKind == "Action")
             {
-                opis mod = thisins["sharedVariablesContext"][req.PartitionKind];
+                opis mod = thisins[svcIdx][req.PartitionKind];
 
                 if (mod.body == "%")
                 {
@@ -1716,7 +1773,7 @@ namespace basicClasses
 
         public void SendRequest(string receiver, string request, opis context)
         {
-            opis message = new opis();
+            opis message = new opisEventsSubscription();
             message.body = request;
             message["context"] = contex.GetHierarchyStub( context);
 
@@ -1741,7 +1798,7 @@ namespace basicClasses
 
         public void ThisRequest(string receiver, string request, params string[] values)
         {
-            opis message =  new opis("", values);
+            opisEventsSubscription message = (opisEventsSubscription) new opis("", values);
             ThisRequest(receiver, request, message);
         }
 

@@ -28,13 +28,14 @@ namespace basicClasses.models.SharedDataContextDrivers
         
         [info("")]
         [ignore]
-        public static readonly string SUBJ = "SUBJ";
+        public static readonly int SUBJ = 0;
+        //public static readonly string SUBJ = "SUBJ";
 
 
         public override void Process(opis message)
         {
             opis instLoc = thisins;
-            opis datacontext = instLoc["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"].W();
+            opis datacontext = instLoc[SysInstance.svcIdx][SysInstance.ldcIdx].W();
 
             if (modelSpec.getPartitionIdx(instructions) != -1)
             {
@@ -91,7 +92,7 @@ namespace basicClasses.models.SharedDataContextDrivers
                 instanse.ExecActionModelsList(instr);
             }
 
-            instLoc["sharedVariablesContext"]["SYS_use_container_do_not_owerlap"].Wrap(datacontext);
+            instLoc[SysInstance.svcIdx][SysInstance.ldcIdx].Wrap(datacontext);
 
         }
 

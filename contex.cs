@@ -169,6 +169,7 @@ namespace basicClasses
             CTX.AddRootElem(context.Find("sentence_context"));
             SysInstance.Words = context;
 
+            o["globalcomm"] = new opisEventsSubscription();
             o["globalcomm"].PartitionKind = "communicator";
 
             for (int i = 0; i < o["sys"].listCou; i++)
@@ -257,7 +258,7 @@ namespace basicClasses
                     tpb.buildTree(tpb.context.Find(specName), o);
 
                     opis currContext = o;
-                    currContext["globalcomm"] = new opis();
+                    currContext["globalcomm"] = new opisEventsSubscription();
 
                     var vmsg = CreateMethodMessage(sysName, "version");
 

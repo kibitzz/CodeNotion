@@ -10,9 +10,7 @@ namespace basicClasses.models.Extractors
     public  class Fill_current_context:ModelBase
     {
         public override void Process(opis message)
-        {
-            //TODO: put lighter version
-            //   message.CopyArr(CTX.curr);     
+        {           
             message.CopyArr(contex.GetHierarchyStub(CTX.curr));
         }
     }
@@ -22,9 +20,7 @@ namespace basicClasses.models.Extractors
     public class Fill_upper_context : ModelBase
     {
         public override void Process(opis message)
-        {            
-           // message.CopyArr( CTX.GoUp());
-
+        {                      
             message.CopyArr(contex.GetHierarchyStub(CTX.GoUp()));
         }
     }

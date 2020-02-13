@@ -29,7 +29,7 @@ namespace basicClasses.models.Actions
         {
             if (!string.IsNullOrWhiteSpace(msg.V(MsgTemplate.msg)))
             {
-                opis newmsg = msg.Duplicate();
+                opisEventsSubscription newmsg =  msg.DuplicateAs<opisEventsSubscription>();
 
                 thisins["Models_log"]["instance_msg_aggr"] = (new opis("fill message params", "body ___"));
 
