@@ -131,7 +131,7 @@ namespace basicClasses.models.String_proc
 
         public static string GetEnclosed(string srs, string st, string fin, ref int pos, bool lastSt, bool lastFin = false)
         {
-            if (string.IsNullOrEmpty(srs))
+            if (string.IsNullOrEmpty(srs) || pos > srs.Length)
                 return "";
 
             st = st == "_" ? " " : st;

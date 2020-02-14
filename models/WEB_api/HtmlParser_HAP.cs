@@ -81,13 +81,21 @@ namespace basicClasses.models.WEB_api
 
         void Trace(HtmlNode node, opis rn, bool ignoreattr = false)
         {
+
+            rn.ReinitArr(node.ChildNodes.Count + 2);
+          //  rn.ArrResize(node.ChildNodes.Count + 2);
+
+            rn[0] = new opis(node.Attributes.Count + 3)
+            {
+                PartitionName = "Attributes"
+            };
+
             foreach (var a in node.Attributes)
-                rn["Attributes"].Vset(a.Name, a.Value);          
-            
+                rn[0].Vset(a.Name, a.Value);
 
             if (!ignoreattr && (namesAtrIgnore == null || !namesAtrIgnore.Contains(node.Name)))
             {
-                var htmobj = rn["Attributes"]["InnerHtml"];
+                var htmobj = rn[0]["InnerHtml"];
 
                 if (maxHtmlShow != 0)
                 {                  
@@ -108,18 +116,22 @@ namespace basicClasses.models.WEB_api
                                                         .Replace('\t', ' ');
                 }
 
-                rn["Attributes"].Vset("InnerText", node.InnerText.Trim().Replace("\n", " ")
+                rn[0].Vset("InnerText", node.InnerText.Trim().Replace("\n", " ")
                                                     .Replace("\t", " ").Replace("                ", " ").Replace("     ", " "));
             } else
                 ignoreattr = !ignoreattr;
+          
 
             foreach (var n in node.ChildNodes)
             {
                 if (n.Name != "#text")
                 {
-                    opis cn = new opis();
+                    opis cn = new opis(-1);
                     cn.PartitionName = n.Name;
-                   
+                    cn.PartitionKind = "";
+                    cn.body = "";
+
+
                     rn.AddArr(cn);
                     Trace(n, cn, ignoreattr);
                 }

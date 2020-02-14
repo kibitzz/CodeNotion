@@ -23,7 +23,7 @@ namespace basicClasses
 
         public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(2000);
 
-        public bool raiseEvents;
+        //public bool raiseEvents;
         public TreeNode treeElem;
 
         #region  variables  properties
@@ -37,13 +37,13 @@ namespace basicClasses
             {
                 if (PartitionName_Lower_ == null && PartitionName != null)
                 {
-                    if (LowerMap.TryGetValue(PartitionName, out PartitionName_Lower_))
-                        return PartitionName_Lower_;
-                    else
-                    {
+                    //if (LowerMap.TryGetValue(PartitionName, out PartitionName_Lower_))
+                    //    return PartitionName_Lower_;
+                    //else
+                    //{
                         PartitionName_Lower_ = PartitionName.ToLower();
                         LowerMap.Add(PartitionName, PartitionName_Lower_);
-                    }
+                    //}
                     //PartitionName_Lower_ = PartitionName == null ? null : PartitionName.ToLower();
                 }
                 return PartitionName_Lower_;
@@ -165,6 +165,8 @@ namespace basicClasses
             set              
             {
                 arr[index] = value;
+                if (index >= paramCou)
+                    paramCou = index + 1;
             }
         }
 
@@ -220,11 +222,14 @@ namespace basicClasses
             //{
             //    global_log.log.AddArr(null);
             //}
-
             return rez;
         }
 
-        public opis getForm(string part)
+        public virtual void RaiseEvents(bool v)
+        {
+        }
+
+       public opis getForm(string part)
         {
             opis rez;
             int p = getPartitionIdx(part);
@@ -282,21 +287,21 @@ namespace basicClasses
 
         public opis()
         {
-            bool prev = raiseEvents;
-            raiseEvents = false;
+            //bool prev = raiseEvents;
+            //raiseEvents = false;
 
             PartitionKind = "";
             init();
 
-            raiseEvents = prev;
+            //raiseEvents = prev;
         }
 
         public opis(int capacity)
         {
             if (capacity > 0)
             {
-                bool prev = raiseEvents;
-                raiseEvents = false;
+                //bool prev = raiseEvents;
+                //raiseEvents = false;
 
                 PartitionKind = "";
                 body = "";
@@ -304,15 +309,15 @@ namespace basicClasses
 
                 arr = new opis[capacity];
 
-                raiseEvents = prev;
+                //raiseEvents = prev;
             } 
         }
 
 
         public opis(string PartKind, params string[] values)
         {
-            bool prev = raiseEvents;
-            raiseEvents = false;
+            //bool prev = raiseEvents;
+            //raiseEvents = false;
             PartitionKind = PartKind;
             init();
 
@@ -336,32 +341,32 @@ namespace basicClasses
 
             }
 
-            raiseEvents = prev;
+            //raiseEvents = prev;
         }
 
 
         public opis(string PartKind)
         {
-            bool prev = raiseEvents;
-            raiseEvents = false;
+            //bool prev = raiseEvents;
+            //raiseEvents = false;
 
 
             PartitionKind = PartKind;
             init();
 
-            raiseEvents = prev;
+            //raiseEvents = prev;
         }
 
         public opis(string PartKind, object bodyp)
         {
-            bool prev = raiseEvents;
-            raiseEvents = false;
+            //bool prev = raiseEvents;
+            //raiseEvents = false;
 
             PartitionKind = PartKind;
             bodyObject = bodyp;
             init();
 
-            raiseEvents = prev;
+            //raiseEvents = prev;
         }
 
         #endregion
@@ -440,6 +445,18 @@ namespace basicClasses
         {
             arr = narr;
             paramCou = narr.Length;
+        }
+
+        public void ReinitArr(int size)
+        {
+            opis[] narr = new opis[size];
+            ReinitArr(narr);
+        }
+
+        public void ReinitArr(opis[] narr)
+        {
+            arr = narr;
+            paramCou = 0;
         }
 
         public void CopyParams(opis elem)
@@ -606,7 +623,7 @@ namespace basicClasses
             }
             else
                 if (paramCou > len)
-                paramCou = len;
+                paramCou = len; 
         }
 
 
@@ -900,7 +917,7 @@ namespace basicClasses
                 return;
             }
 
-            raiseEvents = autoRaise;
+            RaiseEvents(autoRaise);
             this["waiters"].body = "present";
             this["waiters"].AddArr(waiter);
         }
@@ -2449,6 +2466,8 @@ namespace basicClasses
         //    }
         //}
 
+        bool raiseEvents;
+
         string body_;
         public override string body
         {
@@ -2468,6 +2487,11 @@ namespace basicClasses
                 body_ = value;
             }
 
+        }
+
+        public override void RaiseEvents(bool v)
+        {
+            raiseEvents = v;
         }
 
         public override opis this[string index]

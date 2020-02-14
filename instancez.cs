@@ -1846,7 +1846,7 @@ namespace basicClasses
             // retrieve all additional parameters from this instance          
             ExecActionResponceModelsList(message[MsgTemplate.validate], answer);
 
-            message.raiseEvents = true;
+            message.RaiseEvents(true);
 
             if (answer.V(ModelAnswer.cancel).Length > 0)
             {
