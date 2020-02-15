@@ -128,8 +128,8 @@ namespace basicClasses.models.WEB_api
                 {
                     opis cn = new opis(-1);
                     cn.PartitionName = n.Name;
-                    cn.PartitionKind = "";
-                    cn.body = "";
+                    //cn.PartitionKind = "";
+                    //cn.body = "";
 
 
                     rn.AddArr(cn);

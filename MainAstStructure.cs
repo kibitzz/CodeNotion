@@ -21,7 +21,7 @@ namespace basicClasses
         public const int InitialArrSize = 8;
         public const int AccommSize = 4;
 
-        public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(2000);
+        public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(70000);
 
         //public bool raiseEvents;
         public TreeNode treeElem;
@@ -37,13 +37,14 @@ namespace basicClasses
             {
                 if (PartitionName_Lower_ == null && PartitionName != null)
                 {
-                    //if (LowerMap.TryGetValue(PartitionName, out PartitionName_Lower_))
-                    //    return PartitionName_Lower_;
-                    //else
-                    //{
+                    if (LowerMap.TryGetValue(PartitionName, out PartitionName_Lower_))
+                        return PartitionName_Lower_;
+                    else
+                    {
                         PartitionName_Lower_ = PartitionName.ToLower();
                         LowerMap.Add(PartitionName, PartitionName_Lower_);
-                    //}
+                    }
+
                     //PartitionName_Lower_ = PartitionName == null ? null : PartitionName.ToLower();
                 }
                 return PartitionName_Lower_;
@@ -60,7 +61,9 @@ namespace basicClasses
 
         public string PartitionKind;
 
-        public virtual string body { get; set; }
+        string body_;
+        public virtual string body { get { return body_ ?? ""; } set { body_ = value; } }
+        //public virtual string body { get ;  set ; }
 
 
         public opis[] arr;
@@ -279,45 +282,34 @@ namespace basicClasses
 
         void init()
         {
-            body = "";
-            paramCou = 0;
+            //body = "";
+          //  paramCou = 0;
 
             arr = new opis[InitialArrSize];
         }
 
         public opis()
         {
-            //bool prev = raiseEvents;
-            //raiseEvents = false;
-
-            PartitionKind = "";
-            init();
-
-            //raiseEvents = prev;
+        
+            //PartitionKind = "";
+            init();        
         }
 
         public opis(int capacity)
         {
             if (capacity > 0)
             {
-                //bool prev = raiseEvents;
-                //raiseEvents = false;
+                //PartitionKind = "";
+                //body = "";
+             //   paramCou = 0;
 
-                PartitionKind = "";
-                body = "";
-                paramCou = 0;
-
-                arr = new opis[capacity];
-
-                //raiseEvents = prev;
+                arr = new opis[capacity];            
             } 
         }
 
 
         public opis(string PartKind, params string[] values)
-        {
-            //bool prev = raiseEvents;
-            //raiseEvents = false;
+        {           
             PartitionKind = PartKind;
             init();
 
@@ -340,8 +332,7 @@ namespace basicClasses
                 }
 
             }
-
-            //raiseEvents = prev;
+         
         }
 
 
@@ -1697,7 +1688,9 @@ namespace basicClasses
                     if (elem_opis.body != template[i].body)
                         info += "   ~prev  " + elem_opis.body + "";
 
-                    if (elem_opis.PartitionKind != template[i].PartitionKind)
+                    if (elem_opis.PartitionKind != template[i].PartitionKind 
+                        && string.IsNullOrEmpty(elem_opis.PartitionKind) != string.IsNullOrEmpty(template[i].PartitionKind)
+                        )
                         info += " / " + elem_opis.PartitionKind + " | " + template[i].PartitionKind + " /";
 
                     if (!string.IsNullOrEmpty(info) && elem_opis.PartitionKind != "modified" && elem_opis.PartitionKind != "moved")

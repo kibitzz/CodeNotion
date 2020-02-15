@@ -140,12 +140,12 @@ namespace basicClasses.models.StructureProcessing
             if (bp.PartitionName.StartsWith("&p"))
                 bp.PartitionName = valContainer.PartitionName;
 
-            if (bp.PartitionKind == "&b")
+            if (bp.PartitionKind !=null && bp.PartitionKind == "&b")
                 bp.PartitionKind = valContainer.body;
-            if (bp.PartitionKind == "&p")
+            if (bp.PartitionKind != null && bp.PartitionKind == "&p")
                 bp.PartitionKind = valContainer.PartitionName;
 
-            if (bp.PartitionKind.StartsWith("$"))
+            if (bp.PartitionKind != null && bp.PartitionKind.StartsWith("$"))
                 bp.PartitionKind = valContainer[bp.PartitionKind.Replace("$", "")].body;
 
             if (!funcSymbIgnore)
@@ -238,7 +238,7 @@ namespace basicClasses.models.StructureProcessing
             }
 
 
-            bp.body = bp.body.Replace("{star}", "*");
+            bp.body = bp.body?.Replace("{star}", "*");
             //if (bp.PartitionName.StartsWith("$"))           
             //    bp.PartitionName = sharedVal[bp.PartitionName.Replace("$", "")].body;
 
