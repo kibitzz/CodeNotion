@@ -92,6 +92,8 @@ namespace basicClasses
     {
 #if NETFRAMEWORK
         public static List<MsgLogItem> Log;
+        public static Form1 callbackFrm;
+        public static guiGelegate updateform;
 #endif
 
         public static opis Words;
@@ -109,8 +111,7 @@ namespace basicClasses
             }
         }
 
-        public static Form1 callbackFrm;
-        public static guiGelegate updateform;
+
         public static string messageBannertext;
 
         /// <summary>
@@ -249,6 +250,14 @@ namespace basicClasses
             }
         }
 
+        public void updateGui()
+        {
+            if (updateform != null)
+            {
+                callbackFrm.Invoke(updateform);
+            }
+        }
+
 #endif
 
         public static void IterateLockThread()
@@ -305,14 +314,7 @@ namespace basicClasses
             }
 
         }
-
-        public void updateGui()
-        {
-            if (updateform != null)
-            {
-                callbackFrm.Invoke(updateform);
-            }
-        }
+      
 
         #region stuff
 
