@@ -15,6 +15,9 @@ using System.Threading.Tasks;
 
 namespace basicClasses
 {
+#if NETFRAMEWORK
+        
+       
     public struct MsgLogItem
     {
        public string info;
@@ -78,6 +81,8 @@ namespace basicClasses
         }
     }
 
+#endif
+
     public delegate void ProcessContextDelegate(opis param);
     public delegate void ProcessContextDelegateParam(opis context, opis param);
 
@@ -85,7 +90,10 @@ namespace basicClasses
 
     public  class SysInstance : IOpisFunctionalInstance
     {
+#if NETFRAMEWORK
         public static List<MsgLogItem> Log;
+#endif
+
         public static opis Words;
          ModelFactory _mf;
         public  ModelFactory MF
@@ -159,6 +167,7 @@ namespace basicClasses
         Stack<string> tempSDCstack;   
         Random rnd;
 
+#if NETFRAMEWORK
         public static void AddLog(MsgLogItem item)
         {
             if (Log == null)
@@ -168,6 +177,7 @@ namespace basicClasses
 
             Log.Add(item);
         }
+
 
         public void AddInstLog(string method, string message, opis p)
         {
@@ -238,6 +248,8 @@ namespace basicClasses
                 }               
             }
         }
+
+#endif
 
         public static void IterateLockThread()
         {
@@ -756,9 +768,12 @@ namespace basicClasses
                             thisins.WrapByName(msg, "active_message");
                             curr_msgProc = msg;
 
-                            if(!msg.isHere("hide"))
+
+#if NETFRAMEWORK
+                            if (!msg.isHere("hide"))
                             AddInstLog("in", msg.V("msg"), msg);
-                           
+#endif
+
                             ProcessResponcesPartition(msg);                         
                           
                             SetStackDatCon(prevDat);
@@ -773,8 +788,10 @@ namespace basicClasses
                     thisins.WrapByName(msg, "active_message");
                     curr_msgProc = msg;
 
+#if NETFRAMEWORK
                     if (!msg.isHere("hide"))
                         AddInstLog("in", msg.V("msg"), msg);
+#endif
 
                     ProcessResponcesPartition(msg);
 
@@ -1090,8 +1107,9 @@ namespace basicClasses
             {
                 IActionProcessor processor = (IActionProcessor)obj;
                 processor.InitAct(this, req);
-                //processor.CpecifyActionModel(req);
+                
                 processor.Process(elemToChange);
+
                 if (req.PartitionName != MsgTemplate.context)
                     processor.log.AddArr(req);
                 processor.log.body = req.PartitionName;
@@ -1118,9 +1136,11 @@ namespace basicClasses
                 for (int i = 0; i < req.listCou; i++)
                 {
                     ExecActionModel(req[i], req[i]);
-                    Handle(activeCont);
 
-                    if (req[i].PartitionKind == "Breaker" && req[i].isHere(Breaker.flag))
+                    if (activeCont != o)
+                        Handle(activeCont);
+
+                    if (req[i].PartitionKind == "Breaker" && req[i].isHere(Breaker.flag))  //TODO: optimize comparison and flag by index
                         break;
                 }
             }else
@@ -1159,7 +1179,9 @@ namespace basicClasses
             for (int i = 0; i < req.listCou; i++)
             {               
                 ExecActionModel(req[i], message);
-                Handle(activeCont);
+
+                if (activeCont != o)
+                    Handle(activeCont);
 
                 if (req[i].PartitionKind == "Breaker" && message.isHere(Breaker.flag))
                     break;
@@ -1179,8 +1201,7 @@ namespace basicClasses
                     {
                        
                         IActionProcessor processor = (IActionProcessor)obj;
-                        processor.InitAct(this, req);
-                        //processor.CpecifyActionModel(req);
+                        processor.InitAct(this, req);                       
 
                         processor.Process(processParameter);
                     }
@@ -1683,18 +1704,22 @@ namespace basicClasses
 
                 if (CanHandle(sender["context"]))
                 {
+#if NETFRAMEWORK
                     AddInstLog("gotAnswer", "", answer);
+#endif
                     ExecActionResponceModelsList(sender[MsgTemplate.responce], answer);
                     //AddInstLog("After gotAnswer", "", answer);
                 }
                 else
                 {
+                    #if NETFRAMEWORK
                     AddInstLog("gotAnswer but not handled", "", answer);
+                    #endif
                 }
                
             }
 
-            #endregion
+#endregion
             return rez;
 
         }
@@ -1720,7 +1745,7 @@ namespace basicClasses
 
         // ==========================================================================
 
-        #region messaging {
+#region messaging {
 
         public void ResendToUpper()
         {
@@ -1769,7 +1794,7 @@ namespace basicClasses
             }       
         }
 
-        #region  SendRequest 
+#region  SendRequest 
 
         public void SendRequest(string receiver, string request, opis context)
         {
@@ -1794,7 +1819,7 @@ namespace basicClasses
             SendRequest(receiver, request, context, message);
         }
 
-        #endregion  SendRequest
+#endregion  SendRequest
 
         public void ThisRequest(string receiver, string request, params string[] values)
         {
@@ -1851,8 +1876,13 @@ namespace basicClasses
             if (answer.V(ModelAnswer.cancel).Length > 0)
             {
                 return false;
-            }  else
+            }
+            else
+            {
+#if NETFRAMEWORK
                 AddInstLog("ans", message.V("msg"), ppp);
+#endif
+            }
 
             // if this is cascade resended message and original sender is not the instance who create ...
             if (message[Msg.initiator].isInitlze)
@@ -1902,7 +1932,9 @@ namespace basicClasses
         {
             message["rec"].body = thisins.W("spec").PartitionName;
 
+ #if NETFRAMEWORK
             AddInstLog("msg", "", message);
+#endif
 
             message.PartitionKind = "message";
 
@@ -1913,7 +1945,7 @@ namespace basicClasses
             communicator.AddArr(message);
         }
 
-        #endregion  messaging }
+#endregion  messaging }
 
     }
 

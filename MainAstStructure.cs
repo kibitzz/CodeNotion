@@ -23,8 +23,11 @@ namespace basicClasses
 
         public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(70000);
 
-        //public bool raiseEvents;
+#if NETFRAMEWORK
+        
         public TreeNode treeElem;
+
+#endif
 
         #region  variables  properties
 
@@ -61,10 +64,12 @@ namespace basicClasses
 
         public string PartitionKind;
 
+#if bodyNullOptimization
         string body_;
         public virtual string body { get { return body_ ?? ""; } set { body_ = value; } }
-        //public virtual string body { get ;  set ; }
-
+#else
+        public virtual string body { get; set; }
+#endif
 
         public opis[] arr;
         public int paramCou;
@@ -105,8 +110,7 @@ namespace basicClasses
                 {
                     PartitionKind = "value";
                 }
-                body = value.ToString();
-                //if (raiseEvents) ActionDone("числове значення присвоєно", PartitionName, PartitionKind);
+                body = value.ToString();                
             }
         }
 
@@ -114,11 +118,11 @@ namespace basicClasses
         public object bodyObject;
         public object FuncObj;
   
-        #endregion
+#endregion
 
         //=======================================
 
-        #region partitioning word indexer
+#region partitioning word indexer
 
         public virtual opis this[string index]
         {
@@ -282,16 +286,18 @@ namespace basicClasses
 
         void init()
         {
-            //body = "";
-          //  paramCou = 0;
+
+#if !bodyNullOptimization
+
+            body = "";
+#endif
 
             arr = new opis[InitialArrSize];
         }
 
         public opis()
         {
-        
-            //PartitionKind = "";
+                    
             init();        
         }
 
@@ -299,9 +305,10 @@ namespace basicClasses
         {
             if (capacity > 0)
             {
-                //PartitionKind = "";
-                //body = "";
-             //   paramCou = 0;
+#if !bodyNullOptimization
+
+            body = "";
+#endif
 
                 arr = new opis[capacity];            
             } 
@@ -360,9 +367,9 @@ namespace basicClasses
             //raiseEvents = prev;
         }
 
-        #endregion
+#endregion
 
-        #region get values and ARR +/- elements
+#region get values and ARR +/- elements
 
         /// <summary>
         /// do not create absent object as access by index
@@ -722,10 +729,10 @@ namespace basicClasses
         }
 
 
-        #endregion
+#endregion
 
 
-        #region Wraps
+#region Wraps
 
         public void Wrap(opis o)
         {
@@ -783,9 +790,9 @@ namespace basicClasses
             return rez;
         }
 
-        #endregion
+#endregion
 
-        #region LinkMethods
+#region LinkMethods
 
         /// <summary>
         /// get word or its form, useful in contexts
@@ -816,7 +823,7 @@ namespace basicClasses
             return wordo;
         }
 
-        #endregion
+#endregion
 
      
         public void InitFuncObj2()
@@ -830,7 +837,7 @@ namespace basicClasses
         }
 
 
-        #region Action registering and set handlers
+#region Action registering and set handlers
 
         /// <summary>
         /// викликати всюди при зміні
@@ -981,7 +988,7 @@ namespace basicClasses
             }
         }
 
-        #endregion
+#endregion
 
 
         /// <summary>
@@ -1002,7 +1009,7 @@ namespace basicClasses
         }
 
 
-        #region etc
+#region etc
 
         /// <summary>
         /// check presence partition with such name (it can be not initialized, just presence is enough)
@@ -1015,10 +1022,10 @@ namespace basicClasses
             return getPartitionIdx(part) != -1;
         }
 
-        #endregion
+#endregion
 
 
-        #region hierarchy algorithms
+#region hierarchy algorithms
 
         public string serialize()
         {
@@ -1401,6 +1408,18 @@ namespace basicClasses
             return rez;
         }
 
+        public void lockThisForDuplication()
+        {
+            isDuplicated = true;
+        }
+
+        public void UnlockThisForDuplication()
+        {
+            isDuplicated = false;
+        }
+
+#if NETFRAMEWORK
+
         public TreeNode GetDebugTree()
         {
             listOfVisualisedCircularRefs.AddArr(this);
@@ -1428,16 +1447,7 @@ namespace basicClasses
             return rez;
         }
 
-        public void lockThisForDuplication()
-        {
-            isDuplicated = true;
-        }
-
-        public void UnlockThisForDuplication()
-        {
-            isDuplicated = false;
-        }
-
+      
         void BuildTree(TreeNode tn, int depth, int maxDepth, opis maxItems)
         {
             if (!isDuplicated && depth < maxDepth
@@ -1481,6 +1491,37 @@ namespace basicClasses
             }
 
         }
+
+
+        public void CleanNodeRef()
+        {
+            if (isDuplicated)
+            {
+                return;
+            }
+            isDuplicated = true;
+
+            if (treeElem != null)
+            {
+                treeElem.Tag = null;
+                treeElem = null;
+                for (int i = 0; i < paramCou; i++)
+                {
+                    arr[i].CleanNodeRef();
+                }
+            }
+
+            isDuplicated = false;
+        }
+
+        public void ClearNodesRef()
+        {
+            listOfVisualisedCircularRefs.treeElem = new TreeNode();
+            listOfVisualisedCircularRefs.CleanNodeRef();
+            listOfVisualisedCircularRefs.CopyArr(new opis());
+        }
+
+#endif
 
         private Color getColorOfModel(string partKind)
         {
@@ -1600,33 +1641,7 @@ namespace basicClasses
         }
 
 
-        public void CleanNodeRef()
-        {
-            if (isDuplicated)
-            {
-                return;
-            }
-            isDuplicated = true;
-
-            if (treeElem != null)
-            {
-                treeElem.Tag = null;
-                treeElem = null;
-                for (int i = 0; i < paramCou; i++)
-                {
-                    arr[i].CleanNodeRef();
-                }
-            }
-
-            isDuplicated = false;
-        }
-
-        public void ClearNodesRef()
-        {
-            listOfVisualisedCircularRefs.treeElem = new TreeNode();
-            listOfVisualisedCircularRefs.CleanNodeRef();
-            listOfVisualisedCircularRefs.CopyArr(new opis());
-        }
+       
 
         public int CheckConformity(opis partition, opis template)
         {
@@ -2207,7 +2222,7 @@ namespace basicClasses
             isDuplicated = false;
         }
 
-        #endregion hierarchy algorithms
+#endregion hierarchy algorithms
 
         /// <summary>
         /// 

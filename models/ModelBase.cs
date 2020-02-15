@@ -21,7 +21,11 @@ namespace basicClasses.models
         /// <summary>
         /// current context
         /// </summary>
-        protected opis o;
+        protected opis o
+        {
+            get { return env.W("currCont"); }
+        }
+
         protected opis communicator;
         protected opis contexts
         {
@@ -50,7 +54,7 @@ namespace basicClasses.models
 
         protected opis sharedVal
         {
-            get { return thisins["sharedVariablesContext"]; }
+            get { return thisins[SysInstance.svcIdx]; }
         }
 
         protected opis logopis;
@@ -74,11 +78,12 @@ namespace basicClasses.models
             //modelSpec = new opis();
             instanse = ins;          
             env = ins.GetEnvirinmentForModel();
-          
+
             //thisins = env.W("thisins");
             //spec = env.W("spec");
-            o = env.W("currCont");
-         
+
+            //o = env.W("currCont");
+
             //sharedVal = thisins["sharedVariablesContext"];
             modelSpec = specification;
 

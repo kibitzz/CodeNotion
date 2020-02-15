@@ -20,7 +20,7 @@ namespace basicClasses.models.sys_ext
         public static readonly string setLdcExitOnCondition = "setLdcExitOnCondition";
 
         [ignore]
-        public static readonly string flag = "break further code exec";
+        public static readonly string flag = "break further code exec";  //TODO: optimize by index
 
         public override void Process(opis message)
         {

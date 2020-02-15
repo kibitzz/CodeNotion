@@ -267,8 +267,10 @@ namespace basicClasses
 
                     tpb.initInstances(currContext);
 
+                    #if NETFRAMEWORK
                     if (SysInstance.Log != null)
                         SysInstance.Log.Clear();
+                    #endif
 
                     tpb.contextToIgnite = currContext;
                     tpb.igniteTree();
@@ -306,7 +308,7 @@ namespace basicClasses
             return nameSpec;
         }
 
-        #region IOpisFunctionalInstance
+#region IOpisFunctionalInstance
 
         public override opis Process(string internl, opis environment)
         {
@@ -323,7 +325,7 @@ namespace basicClasses
             return rez;
         }
 
-        #endregion
+#endregion
 
   
    
