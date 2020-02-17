@@ -18,7 +18,7 @@ namespace basicClasses
     {
         public static bool do_not_build_debug;
         public static opis listOfVisualisedCircularRefs;
-        public const int InitialArrSize = 8;
+        public const int InitialArrSize = 9;
         public const int AccommSize = 4;
 
         public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(70000);
@@ -216,8 +216,13 @@ namespace basicClasses
             for (int i = 0; i < arr.Length; i++) //TODO: somehow iterating to paramCou is not finding what is found using arr.Length -- bug in keeping paramCou in sync 
             {
                 if (arr[i] != null 
-                    && (( arr[i].PartitionName == part) 
-                   || (arr[i].PartitionName != null  && arr[i].PartitionName_Lower == part))
+                    && (( arr[i].PartitionName == part)
+
+#if !pidx_second_loop_opt                    
+                     || (arr[i].PartitionName != null  && arr[i].PartitionName_Lower == part))
+#else
+                 )
+#endif
                  )
                 {
                     rez = i;
@@ -225,10 +230,25 @@ namespace basicClasses
                 }
             }
 
-            //if (rez >= paramCou)
-            //{
-            //    global_log.log.AddArr(null);
-            //}
+#if pidx_second_loop_opt
+            if (rez == -1)
+            {
+                for (int i = 0; i < paramCou; i++) 
+                {
+                    if (( arr[i]?.PartitionName_Lower == part))
+                     
+                    {
+                        rez = i;
+                        break;
+                    }
+                }
+            }
+#endif
+
+            if (rez >= paramCou)
+            {
+                global_log.log.AddArr(new opis() { PartitionName = "fail to keep param coou in sync -> "+ this.PartitionName, body = part});
+            }
             return rez;
         }
 
@@ -434,7 +454,7 @@ namespace basicClasses
             //arr = elem.arr;
             //paramCou = elem.paramCou;
 
-            arr = new opis[0];
+            arr = new opis[elem.listCou + AccommSize];
             paramCou = 0;
             AddArrRange(elem, turnOffUniqControl);
         }
@@ -513,6 +533,11 @@ namespace basicClasses
                 }
             }
 
+        }
+
+        public IEnumerable<opis> Where(Func<opis, bool> p)
+        {
+            return arr.Where(x => x != null).Where(p);
         }
 
         public bool FindArr(opis instance)
@@ -1779,42 +1804,81 @@ namespace basicClasses
 
         }
 
-        public opis Duplicate()
+        public virtual opis Duplicate(int deep = 1000)
+        {
+            //if (isDuplicated && copy != null)
+            //{
+            //    return copy;
+            //}         
+
+            //opis rez = new opis(-1);
+            //copy = rez;
+
+            //rez.body = this.body;
+            //rez.PartitionKind = this.PartitionKind;
+            //rez.PartitionName_Lower_ = this.PartitionName_Lower_;
+            //rez.PartitionName = this.PartitionName;
+            //rez.paramCou = this.paramCou;
+            //isDuplicated = true;
+
+            //if (this.paramCou > 0)
+            //    rez.arr = new opis[this.paramCou];
+            //else
+            //    rez.arr = new opis[0];
+
+            //for (int i = 0; i < this.paramCou; i++)
+            //{
+            //    rez.arr[i] = this.arr[i].Duplicate();
+            //    //rez.arr[i].bodyObject = this.arr[i].bodyObject;
+            //}
+
+            //isDuplicated = false;
+            //copy = null;
+
+            //return rez;
+
+            return DuplicateLlv(deep);
+        }
+
+     //   public virtual T DuplicateLlv<T>(int deep) where T : opis
+
+        public virtual opis DuplicateLlv(int deep) 
         {
             if (isDuplicated && copy != null)
             {
                 return copy;
             }
 
-            /// TODO: optimization undo if needed
-            //if (PartitionKind == "dataref" && this.paramCou > 0)
-            //{
-            //    return this;
-            //}
+            opis rez = null;
 
-            opis rez = new opis(-1);
-            copy = rez;
-
-            rez.body = this.body;
-            rez.PartitionKind = this.PartitionKind;
-            rez.PartitionName_Lower_ = this.PartitionName_Lower_;
-            rez.PartitionName = this.PartitionName;
-            rez.paramCou = this.paramCou;
-            isDuplicated = true;
-
-            if (this.paramCou > 0)
-                rez.arr = new opis[this.paramCou];
-            else
-                rez.arr = new opis[0];
-
-            for (int i = 0; i < this.paramCou; i++)
+            if (deep > 0)
             {
-                rez.arr[i] = this.arr[i].Duplicate();
-                //rez.arr[i].bodyObject = this.arr[i].bodyObject;
-            }
+                rez = new opis(-1);
+                copy = rez;
 
-            isDuplicated = false;
-            copy = null;
+                rez.body = this.body;
+                rez.PartitionKind = this.PartitionKind;
+                rez.PartitionName_Lower_ = this.PartitionName_Lower_;
+                rez.PartitionName = this.PartitionName;
+                rez.paramCou = this.paramCou;
+                isDuplicated = true;
+
+                if (this.paramCou > 0)
+                    rez.arr = new opis[this.paramCou];
+                else
+                    rez.arr = new opis[0];
+
+                for (int i = 0; i < this.paramCou; i++)
+                {
+                    rez.arr[i] = this.arr[i].DuplicateLlv(deep - 1);
+                }
+
+                isDuplicated = false;
+                copy = null;
+
+            }
+            else
+                rez = this;
 
             return rez;
         }
@@ -2424,12 +2488,22 @@ namespace basicClasses
             if (!NamesIndexHash.ContainsKey(elem.PartitionName))
                 NamesIndexHash.Add(elem.PartitionName, rez);
             else
-                global_log.log?.AddArr(new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name " });
+                global_log.log?.AddArr(new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name -" + elem.PartitionName });
 
             return rez;
 
         }
 
+    }
+
+    public class opisDuplicationOptimized : opis
+    {
+        public int CopyDepth;
+
+        public override opis Duplicate(int deep = 0)
+        {
+            return DuplicateLlv(CopyDepth);
+        }
     }
 
     public class opisEventsSubscription : opis

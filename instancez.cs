@@ -1246,7 +1246,7 @@ namespace basicClasses
 
                 opis ms = SVC[modelSpecIdx];
                 
-                opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz];
+                opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body
               //  mod = poz >= 0 ? packages[poz] : mod; 
 
                 opis modelSpec = new opis();
@@ -1255,13 +1255,13 @@ namespace basicClasses
 
                 #region create modelSpec
 
-                if (!mod.body.Contains("!"))
+                if (!mod.body.Contains("!"))//TODO: optimize exec
                 {
                     //копируем на случай если модель должна выступать в роли филлера
                     //ведь тогда мы изменим processParameter который будет являться и modelSpec
                     modelSpec.CopyArr(req.Duplicate());
 
-                    if (!modelSpec.isHere("v"))
+                    if (!modelSpec.isHere("v"))//TODO: optimize exec
                         modelSpec.Vset("v", req.body);
                     if (!modelSpec.isHere("a"))
                         modelSpec.Vset("a", req.PartitionName);
