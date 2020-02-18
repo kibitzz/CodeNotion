@@ -114,7 +114,11 @@ namespace basicClasses
             }
         }
 
-    
+        /// <summary>
+        /// copy of this branch is valid to reuse every time duplication is requested
+        /// </summary>
+        public bool permaCopy;
+
         public object bodyObject;
         public object FuncObj;
   
@@ -1804,8 +1808,8 @@ namespace basicClasses
             if (rez)
             {
                 rez = original.body == usedcopy.body
-               &&  usedcopy.PartitionKind == original.PartitionKind                
-               && usedcopy.PartitionName == original.PartitionName;
+                    && usedcopy.PartitionName == original.PartitionName
+               && usedcopy.PartitionKind == original.PartitionKind;                        
 
                 for (int i = 0; i < original.paramCou; i++)
                 {
@@ -1820,9 +1824,9 @@ namespace basicClasses
             return rez;
         }
 
-        public virtual opis Duplicate()
+        public opis Duplicate()
         {
-            if (isDuplicated && copy != null)
+            if ((permaCopy || isDuplicated) && copy != null)
             {
                 return copy;
             }
@@ -1860,38 +1864,7 @@ namespace basicClasses
         }
 
         public virtual opis Duplicate_old(int deep = 10000)
-        {
-            //if (isDuplicated && copy != null)
-            //{
-            //    return copy;
-            //}         
-
-            //opis rez = new opis(-1);
-            //copy = rez;
-
-            //rez.body = this.body;
-            //rez.PartitionKind = this.PartitionKind;
-            //rez.PartitionName_Lower_ = this.PartitionName_Lower_;
-            //rez.PartitionName = this.PartitionName;
-            //rez.paramCou = this.paramCou;
-            //isDuplicated = true;
-
-            //if (this.paramCou > 0)
-            //    rez.arr = new opis[this.paramCou];
-            //else
-            //    rez.arr = new opis[0];
-
-            //for (int i = 0; i < this.paramCou; i++)
-            //{
-            //    rez.arr[i] = this.arr[i].Duplicate();
-            //    //rez.arr[i].bodyObject = this.arr[i].bodyObject;
-            //}
-
-            //isDuplicated = false;
-            //copy = null;
-
-            //return rez;
-
+        {                     
             return DuplicateLlv(deep);
         }
 
