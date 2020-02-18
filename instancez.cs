@@ -1217,8 +1217,7 @@ namespace basicClasses
             opis rez = req;
             opis SVC = thisins[svcIdx];
             int inSvc =-1;
-
-            //Dictionary<string, int> cash = (Dictionary<string, int>)thisins[pkgIdx].bodyObject;
+          
             int poz = -1;
 
             inSvc = SVC.getPartitionIdx(req.PartitionKind);
@@ -1246,8 +1245,7 @@ namespace basicClasses
 
                 opis ms = SVC[modelSpecIdx];
                 
-                opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body
-              //  mod = poz >= 0 ? packages[poz] : mod; 
+                opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body              
 
                 opis modelSpec = new opis(-1);
                 bool modelIsProducer = (mod.body != null && mod.body.Contains("@"));

@@ -23,8 +23,17 @@ namespace basicClasses
 
         public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(70000);
 
+#if DEBUG
+         
+        public static ulong copyCacheHit;
+        public static ulong copyCacheIntact;
+        public static ulong copyExecTotal;
+        public static ulong copyCacheModified;
+#endif
+
+
 #if NETFRAMEWORK
-        
+
         public TreeNode treeElem;
 
 #endif
@@ -59,7 +68,7 @@ namespace basicClasses
             }
         }
 
-        //  public virtual string PartitionName { get; set; }
+      
         public string PartitionName;
 
         public string PartitionKind;
@@ -117,7 +126,7 @@ namespace basicClasses
         /// <summary>
         /// copy of this branch is valid to reuse every time duplication is requested
         /// </summary>
-        public bool permaCopy;
+        public byte permaCopy;
 
         public object bodyObject;
         public object FuncObj;
@@ -1805,11 +1814,13 @@ namespace basicClasses
         {
             bool rez = original.paramCou == usedcopy.paramCou;
 
+           
             if (rez)
             {
                 rez = original.body == usedcopy.body
                     && usedcopy.PartitionName == original.PartitionName
-               && usedcopy.PartitionKind == original.PartitionKind;                        
+               && usedcopy.PartitionKind == original.PartitionKind;
+      
 
                 for (int i = 0; i < original.paramCou; i++)
                 {
@@ -1818,23 +1829,58 @@ namespace basicClasses
                         rez = false;
                         break;
                     }
-                }
+                }           
             }
-
+          
             return rez;
         }
 
         public opis Duplicate()
         {
-            if ((permaCopy || isDuplicated) && copy != null)
+
+#if DEBUG
+            copyExecTotal++;
+#endif
+
+
+#if intact_copy_opt
+
+           
+            if ((permaCopy == 1 || isDuplicated) && copy != null)
             {
+#if DEBUG
+                copyCacheHit++;
+#endif             
                 return copy;
             }
 
-            if (copy != null && CopyIntact(this, copy))
+            if (permaCopy != 2 && copy != null
+#if !DEBUG
+               && CopyIntact(this, copy)
+#endif
+                )
+            {
+#if DEBUG
+
+                if (CopyIntact(this, copy))
+                {
+                    copyCacheIntact++;
+                    return copy;
+                }
+                else
+                    copyCacheModified++;
+#else
+                return copy;
+#endif
+
+            }
+
+#else
+            if (isDuplicated && copy != null)
             {
                 return copy;
             }
+#endif
 
             opis rez = new opis(-1);
             copy = rez;
@@ -1857,61 +1903,18 @@ namespace basicClasses
             }
 
             isDuplicated = false;
-            //copy = null;
+
+#if !intact_copy_opt
+            copy = null;
+#else
+            //copy.copy = 
+#endif
 
             return rez;
 
         }
 
-        public virtual opis Duplicate_old(int deep = 10000)
-        {                     
-            return DuplicateLlv(deep);
-        }
-
-     //   public virtual T DuplicateLlv<T>(int deep) where T : opis
-
-        public virtual opis DuplicateLlv(int deep) 
-        {
-            if (isDuplicated && copy != null)
-            {
-                return copy;
-            }
-
-            opis rez = null;
-
-            if (deep > 0)
-            {
-                rez = new opis(-1);
-                copy = rez;
-
-                rez.body = this.body;
-                rez.PartitionKind = this.PartitionKind;
-                rez.PartitionName_Lower_ = this.PartitionName_Lower_;
-                rez.PartitionName = this.PartitionName;
-                rez.paramCou = this.paramCou;
-                isDuplicated = true;
-
-                if (this.paramCou > 0)
-                    rez.arr = new opis[this.paramCou];
-                else
-                    rez.arr = new opis[0];
-
-                for (int i = 0; i < this.paramCou; i++)
-                {
-                    rez.arr[i] = this.arr[i].DuplicateLlv(deep - 1);
-                }
-
-                isDuplicated = false;
-                copy = null;
-
-            }
-            else
-                rez = this;
-
-            return rez;
-        }
-
-
+      
         public T DuplicateAs<T>() where T : opis, new()
         {
             T rez = new T();
@@ -2538,45 +2541,7 @@ namespace basicClasses
 
     public class opisEventsSubscription : opis
     {
-        //public object bodyObject;
-        //public object FuncObj;
-
-        //string PartitionName_;
-
-        //public override string PartitionName
-        //{
-        //    get
-        //    {
-        //        return PartitionName_;
-        //    }
-        //    set
-        //    {
-        //        if (raiseEvents && !string.IsNullOrEmpty(PartitionName_))
-        //        {
-        //            ActionDone(new opis("подія", "вид змінено імя", "імя " + PartitionName, "тип " + PartitionKind,
-        //               "нове " + value, "старе " + PartitionName_));
-        //        }
-
-        //        PartitionName_ = value;
-        //        //PartitionName_Lower = value == null ? null : value.ToLower();
-        //    }
-        //}
-
-        //string PartitionKind_;
-        //public override string PartitionKind
-        //{
-        //    get
-        //    {
-        //        return PartitionKind_;
-        //    }
-
-        //    set
-        //    {
-        //        if (raiseEvents) ActionDone(new opis("подія", "попередній " + PartitionKind_, "новий " + value, "вид змінено тип частини", "імя " + PartitionName, "тіло " + body, ""));
-        //        PartitionKind_ = value;
-
-        //    }
-        //}
+     
 
         bool raiseEvents;
 
