@@ -187,8 +187,11 @@ namespace basicClasses.Factory
             models.Add("PeriodIterator", new PeriodIterator());
             models.Add("GlobalParamsProvider", new GlobalParamsProvider());
 
-           
+            models.Add("IntactCopyChecker", new IntactCopyChecker());
             
+
+
+
 
 
             if (ExternalModels != null)

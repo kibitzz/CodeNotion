@@ -1249,7 +1249,7 @@ namespace basicClasses
                 opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body
               //  mod = poz >= 0 ? packages[poz] : mod; 
 
-                opis modelSpec = new opis();
+                opis modelSpec = new opis(-1);
                 bool modelIsProducer = (mod.body != null && mod.body.Contains("@"));
                 rez = GenExecInstr(mod);             
 

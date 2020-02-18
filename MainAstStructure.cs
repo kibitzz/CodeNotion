@@ -81,7 +81,7 @@ namespace basicClasses
                 return isDuplicated;
             }
         }
-        opis copy;
+        public opis copy;
         public int listCou
         {
             get
@@ -245,10 +245,12 @@ namespace basicClasses
             }
 #endif
 
-            if (rez >= paramCou)
-            {
-                global_log.log.AddArr(new opis() { PartitionName = "fail to keep param coou in sync -> "+ this.PartitionName, body = part});
-            }
+            //if (rez >= paramCou)
+            //{
+            //    global_log.log.AddArr(new opis() { PartitionName = "fail to keep param coou in sync -> "+ this.PartitionName, body = part});
+            //}
+
+
             return rez;
         }
 
@@ -364,15 +366,9 @@ namespace basicClasses
 
 
         public opis(string PartKind)
-        {
-            //bool prev = raiseEvents;
-            //raiseEvents = false;
-
-
+        {        
             PartitionKind = PartKind;
-            init();
-
-            //raiseEvents = prev;
+            init();         
         }
 
         public opis(string PartKind, object bodyp)
@@ -450,10 +446,7 @@ namespace basicClasses
         //}
 
         public void CopyArr(opis elem, bool turnOffUniqControl = true)
-        {
-            //arr = elem.arr;
-            //paramCou = elem.paramCou;
-
+        {         
             arr = new opis[elem.listCou + AccommSize];
             paramCou = 0;
             AddArrRange(elem, turnOffUniqControl);
@@ -1804,7 +1797,69 @@ namespace basicClasses
 
         }
 
-        public virtual opis Duplicate(int deep = 1000)
+        public static bool CopyIntact(opis original, opis usedcopy)
+        {
+            bool rez = original.paramCou == usedcopy.paramCou;
+
+            if (rez)
+            {
+                rez = original.body == usedcopy.body
+               &&  usedcopy.PartitionKind == original.PartitionKind                
+               && usedcopy.PartitionName == original.PartitionName;
+
+                for (int i = 0; i < original.paramCou; i++)
+                {
+                    if (!CopyIntact(original[i], usedcopy[i]))
+                    {
+                        rez = false;
+                        break;
+                    }
+                }
+            }
+
+            return rez;
+        }
+
+        public virtual opis Duplicate()
+        {
+            if (isDuplicated && copy != null)
+            {
+                return copy;
+            }
+
+            if (copy != null && CopyIntact(this, copy))
+            {
+                return copy;
+            }
+
+            opis rez = new opis(-1);
+            copy = rez;
+
+            rez.body = this.body;
+            rez.PartitionKind = this.PartitionKind;
+            rez.PartitionName_Lower_ = this.PartitionName_Lower_;
+            rez.PartitionName = this.PartitionName;
+            rez.paramCou = this.paramCou;
+            isDuplicated = true;
+
+            if (this.paramCou > 0)
+                rez.arr = new opis[this.paramCou];
+            else
+                rez.arr = new opis[0];
+
+            for (int i = 0; i < this.paramCou; i++)
+            {
+                rez.arr[i] = this.arr[i].Duplicate();             
+            }
+
+            isDuplicated = false;
+            //copy = null;
+
+            return rez;
+
+        }
+
+        public virtual opis Duplicate_old(int deep = 10000)
         {
             //if (isDuplicated && copy != null)
             //{
@@ -1883,6 +1938,7 @@ namespace basicClasses
             return rez;
         }
 
+
         public T DuplicateAs<T>() where T : opis, new()
         {
             T rez = new T();
@@ -1896,6 +1952,7 @@ namespace basicClasses
 
             return rez;
         }
+      
 
         public void FindTreePartitions(string modelName, string path, opis referers)
         {
@@ -2500,10 +2557,10 @@ namespace basicClasses
     {
         public int CopyDepth;
 
-        public override opis Duplicate(int deep = 0)
-        {
-            return DuplicateLlv(CopyDepth);
-        }
+        //public override opis Duplicate(int deep = 0)
+        //{
+        //    return DuplicateLlv(CopyDepth);
+        //}
     }
 
     public class opisEventsSubscription : opis

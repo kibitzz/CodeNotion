@@ -70,7 +70,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>NETFRAMEWORK bodyNullOptimization</DefineConstants>
+    <DefineConstants>NETFRAMEWORK bodyNullOptimization pidx_second_loop_opt</DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -161,6 +161,7 @@
     <Compile Include="models\String proc\PeriodIterator.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
     <Compile Include="models\sys_ext\GlobalParamsProvider.cs" />
+    <Compile Include="models\sys_ext\IntactCopyChecker.cs" />
     <Compile Include="models\sys_ext\Pause_To_debug.cs" />
     <Compile Include="models\ModelAnswer.cs" />
     <Compile Include="Atributes\modelAttribute.cs" />
