@@ -1855,23 +1855,34 @@ namespace basicClasses
             }
 
             if (permaCopy != 2 && copy != null
-#if !DEBUG
-               && CopyIntact(this, copy)
-#endif
+//#if !DEBUG
+//               && CopyIntact(this, copy)
+//#endif
                 )
             {
-#if DEBUG
+                //#if DEBUG
 
                 if (CopyIntact(this, copy))
                 {
+                    #if DEBUG
                     copyCacheIntact++;
+                    #endif
+
                     return copy;
                 }
                 else
+                {
+                    permaCopy = 3; // in case copy not always constant, intactCopyChecker applied on final copies, 
+                                   // but some copies in the middle loops can be modified, 
+                                   // making it constant for optimazation lead to bug when in the middle of cycle copy been modified
+
+#if DEBUG
                     copyCacheModified++;
-#else
-                return copy;
 #endif
+                }
+                //#else
+                //                return copy;
+                //#endif
 
             }
 
@@ -1882,14 +1893,22 @@ namespace basicClasses
             }
 #endif
 
-            opis rez = new opis(-1);
+            opis rez = new opis(-1)
+            {
+                body = this.body,
+                PartitionKind = this.PartitionKind,
+                PartitionName_Lower_ = this.PartitionName_Lower_,
+                PartitionName = this.PartitionName,
+                paramCou = this.paramCou,
+            };
+
             copy = rez;
 
-            rez.body = this.body;
-            rez.PartitionKind = this.PartitionKind;
-            rez.PartitionName_Lower_ = this.PartitionName_Lower_;
-            rez.PartitionName = this.PartitionName;
-            rez.paramCou = this.paramCou;
+            //rez.body = this.body;
+            //rez.PartitionKind = this.PartitionKind;
+            //rez.PartitionName_Lower_ = this.PartitionName_Lower_;
+            //rez.PartitionName = this.PartitionName;
+            //rez.paramCou = this.paramCou;
             isDuplicated = true;
 
             if (this.paramCou > 0)
@@ -1907,7 +1926,7 @@ namespace basicClasses
 #if !intact_copy_opt
             copy = null;
 #else
-            //copy.copy = 
+           
 #endif
 
             return rez;
