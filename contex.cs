@@ -28,6 +28,7 @@ namespace basicClasses
         /// global context, contain words descriptions to build contexts, process, and understanding
         /// </summary>
         public opis context;
+        private opis StartPreparationMessages;
 
         public OntologyTreeBuilder()
         {
@@ -166,7 +167,10 @@ namespace basicClasses
         {
             global_log.log.CopyArr(new opis());
             CTX.Handle(o);
-            CTX.AddRootElem(context.Find("sentence_context"));
+
+            var sentence = context.Find("sentence_context");
+            StartPreparationMessages = sentence["preparation messages"].DuplicateA();
+            CTX.AddRootElem(sentence);
             SysInstance.Words = context;
 
             o["globalcomm"] = new opisEventsSubscription();
@@ -176,7 +180,7 @@ namespace basicClasses
             {
                 opis curr = o["sys"][i];
                 
-                opis p = context.Find(curr.PartitionName.Trim()).Duplicate();
+                opis p = context.Find(curr.PartitionName.Trim()).DuplicateA();
                 if (!p.isInitlze)
                 {
                     continue;
@@ -191,8 +195,12 @@ namespace basicClasses
         
         public void igniteTree()
         {
-            contextToIgnite["globalcomm"]["контекстречення"] = new opis("message", "body GenerateTags");
-            contextToIgnite["globalcomm"]["all"] = new opis("message", "body GenerateTags");
+            for (int i = 0; i < StartPreparationMessages.paramCou; i++)
+                contextToIgnite["globalcomm"][StartPreparationMessages[i].PartitionName] = StartPreparationMessages[i].DuplicateA();
+
+
+            //contextToIgnite["globalcomm"]["контекстречення"] = new opis("message", "body GenerateTags");
+            //contextToIgnite["globalcomm"]["all"] = new opis("message", "body GenerateTags");
 
             if (contextParameterizeMessages != null)
                 for (int i = 0; i < contextParameterizeMessages.listCou; i++)
@@ -424,7 +432,7 @@ namespace basicClasses
                     !o.V(context.Owner).EndsWith(p.PartitionName) )
             {
                 // same termin in different context is presented by separate copy
-                p = p.Duplicate();
+                p = p.DuplicateA();
                 p.Vset("itemContextID", itemContextID);
                 o["items"].AddArr(p);
             

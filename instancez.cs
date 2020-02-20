@@ -1430,7 +1430,7 @@ namespace basicClasses
 
                 if (subscribeProduce)
                 {
-                    string pn = b.Trim('>', '<', ' ', '*') + "_sys_subscript";
+                    string pn = b.Trim('>', '<', ' ', '*', '~') + "_sys_subscript";
 
                     if (SVC[ldcIdx].W().isHere(pn))
                     {

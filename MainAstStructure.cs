@@ -1835,6 +1835,43 @@ namespace basicClasses
             return rez;
         }
 
+        /// <summary>
+        /// make absolute copy - no copies from cache, no optimizations
+        /// </summary>
+        /// <returns></returns>
+        public opis DuplicateA()
+        {
+            if (isDuplicated)
+                return new opis(1);
+            
+            opis rez = new opis(-1)
+            {
+                body = this.body,
+                PartitionKind = this.PartitionKind,
+                PartitionName_Lower_ = this.PartitionName_Lower_,
+                PartitionName = this.PartitionName,
+                paramCou = this.paramCou,
+            };
+           
+         
+            isDuplicated = true;
+
+            if (this.paramCou > 0)
+                rez.arr = new opis[this.paramCou];
+            else
+                rez.arr = new opis[0];
+
+            for (int i = 0; i < this.paramCou; i++)
+            {
+                rez.arr[i] = this.arr[i].DuplicateA();
+            }
+
+            isDuplicated = false;
+
+            return rez;
+        }
+
+
         public opis Duplicate()
         {
 
