@@ -1391,9 +1391,9 @@ namespace basicClasses
                   string pn = b.Trim('>', '<',' ', '*');
                     if (pn.Length > 0)
                     {
-                        subscribeProduce = modelIsProducer 
-                                       && (SVC[ldcIdx].W().isHere(pn + "_sys_subscript")
-                                       || modelSpec.isHere(pn + "_sys_subscript"));
+                        subscribeProduce = modelIsProducer
+                                    && (SVC[ldcIdx].W().isHere(pn.Trim('~') + "_sys_subscript")
+                                       || modelSpec.isHere(pn.Trim('~') + "_sys_subscript"));
                         //prodLocalContext = modelIsProducer;
 
                         nameOfSubj = GetTempValName(SVC, tempNames);                       
