@@ -61,7 +61,7 @@ namespace basicClasses.models.WEB_api
                 AcceptAllCertificate = true;
             }
 
-            message.Vset("AcceptAllCertificate", AcceptAllCertificate ? "true" : "false");
+            message.Vset("AcceptAllCertificate", AcceptAllCertificate ? "true" : "");
 
             if (modelSpec.isHere(use_mix))
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12 | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls;

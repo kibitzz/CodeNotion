@@ -26,7 +26,7 @@ namespace basicClasses.models.sys_ext
             {
                 if (x.copy != null)
                 {
-                    if (x.permaCopy != 3 && opis.CopyIntact(x, x.copy))
+                    if (x.permaCopy != 3 && opis.CopyIntact(x, x.copy) && (x.source == null || opis.CopyIntact(x.source, x.copy)))
                     {
                         x.permaCopy = 1;
                         mark(x.copy);

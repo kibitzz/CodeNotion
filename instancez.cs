@@ -1127,7 +1127,7 @@ namespace basicClasses
         {
            opis marg = thisins[svcIdx][exec.SUBJ];
           
-                opis wr = new opis();
+                opis wr = new opis(1);
                 wr.Wrap(req);
                 thisins[svcIdx][exec.SUBJ] = wr;
 
@@ -1169,7 +1169,7 @@ namespace basicClasses
         {
             opis marg = thisins[svcIdx][exec.SUBJ];
            
-                opis wr = new opis();
+                opis wr = new opis(1);
                 wr.Wrap(message);
                 thisins[svcIdx][exec.SUBJ] = wr;
 
@@ -1456,7 +1456,7 @@ namespace basicClasses
 
         opis GenExecInstr(opis code)
         {
-            var rez = new opis();
+            var rez = new opis(3);
             rez.PartitionKind = "exec";
 
             rez[exec.message_as_parameter_for_instructions].body = "y";
@@ -1495,7 +1495,7 @@ namespace basicClasses
 
         opis getSYSContainetP(opis SVC, string pn, bool create, bool logerror = true)
         {
-            opis rez = new opis();
+            opis rez = new opis(1);
             opis t = SVC[ldcIdx].W();
 
             string pnl = pn.Contains("~")? pn.Replace("~", "") : pn;

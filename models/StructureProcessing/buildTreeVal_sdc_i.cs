@@ -39,6 +39,10 @@ namespace basicClasses.models.StructureProcessing
         public static readonly string only_value_body = "only_value_body";
 
         [model("spec_tag")]
+        [info("")]
+        public static readonly string only_body_template_optimization = "only_body_template_optimization";
+
+        [model("spec_tag")]
         [info("заповнювати при bp.PartitionKind == buildTreeVal_sdc_i")]
         public static readonly string recurce_all = "recurce_all";
 
@@ -76,7 +80,7 @@ namespace basicClasses.models.StructureProcessing
                     vk = t.W();
                 }
 
-                build(bp, null, vk, modelSpec.isHere(func_symbols_ignore));
+                build(bp, null, vk, modelSpec.isHere(func_symbols_ignore), modelSpec.isHere(only_body_template_optimization));
               
               
                 if (bp.listCou == 1 && message.PartitionKind != "template")
@@ -120,131 +124,144 @@ namespace basicClasses.models.StructureProcessing
 
         }
 
-        public void build(opis bp, opis holder, opis valContainer, bool funcSymbIgnore)
+        public void build(opis bp, opis holder, opis valContainer, bool funcSymbIgnore, bool onlyBody)
         {
             bool donotrecurce = !modelSpec.isHere(recurce_all) && bp.PartitionKind == "buildTreeVal_sdc_i";
 
             if (bp.body.StartsWith("$"))
                 bp.body = valContainer[bp.body.Replace("$", "")].body;
-
-            if (bp.PartitionName.StartsWith("$"))
-                bp.PartitionName = valContainer[bp.PartitionName.Replace("$", "")].body;
-
-            if (bp.body.StartsWith("&b"))
-                bp.body = valContainer.body;
-            if (bp.body.StartsWith("&p"))
-                bp.body = valContainer.PartitionName;
-
-            if (bp.PartitionName.StartsWith("&b"))
-                bp.PartitionName = valContainer.body;
-            if (bp.PartitionName.StartsWith("&p"))
-                bp.PartitionName = valContainer.PartitionName;
-
-            if (bp.PartitionKind !=null && bp.PartitionKind == "&b")
-                bp.PartitionKind = valContainer.body;
-            if (bp.PartitionKind != null && bp.PartitionKind == "&p")
-                bp.PartitionKind = valContainer.PartitionName;
-
-            if (bp.PartitionKind != null && bp.PartitionKind.StartsWith("$"))
-                bp.PartitionKind = valContainer[bp.PartitionKind.Replace("$", "")].body;
-
-            if (!funcSymbIgnore)
+            else
             {
-                if (bp.body.StartsWith("*"))
+                if (!onlyBody && bp.body.StartsWith("&"))
                 {
-                    donotrecurce = true;
-
-                    if (bp.body.Length > 1)
-                        bp.CopyArr(valContainer[bp.body.Replace("*", "")].W());
-                    else
-                        bp.CopyArr(valContainer);
-
-                    bp.body = "";
+                    if (bp.body.StartsWith("&b"))
+                        bp.body = valContainer.body;
+                    else if (bp.body.StartsWith("&p"))
+                        bp.body = valContainer.PartitionName;
                 }
-
-                if (bp.body.StartsWith("+"))
-                {
-                    donotrecurce = true;
-
-                    if (bp.body.Length > 1)
-                        bp.AddArrRange(valContainer[bp.body.Replace("+", "")].W());
-                    else
-                        bp.AddArrRange(valContainer);
-
-                    bp.body = "";
-                }
-
-
-                if (bp.body.StartsWith("@"))
-                {
-                    donotrecurce = true;
-
-                    if (bp.body.Length > 1)
-                        bp.Wrap(valContainer[bp.body.Replace("@", "")].W());
-                    else
-                        bp.Wrap(valContainer.W());
-                }
-
-                if (bp.body.StartsWith("%"))
-                {
-                    bp.body = "random body " + rnd.Next().ToString() + rnd.Next().ToString(); ;
-                }
-
-              
             }
 
-            // # in PartitionName means that whole tree must be assigned
-            if (bp.PartitionName.StartsWith("#"))
+            if (!onlyBody)
             {
-                donotrecurce = true;
 
-                opis branchVal = valContainer[bp.PartitionName.Replace("#", "")].W();
-                if (!modelSpec.isHere(do_not_duplicate_branch)
-                    || bp.PartitionName.StartsWith("##"))
+                if (bp.PartitionName.StartsWith("$"))
+                    bp.PartitionName = valContainer[bp.PartitionName.Replace("$", "")].body;
+
+
+                if (bp.PartitionName.StartsWith("&"))
                 {
-                    branchVal = branchVal.Duplicate();
-
-                    bp.PartitionName = branchVal.PartitionName;
-                    bp.body = branchVal.body;
-                    if (string.IsNullOrEmpty(bp.PartitionKind))
-                        bp.PartitionKind = branchVal.PartitionKind;
-                    bp.CopyArr(branchVal);
+                    if (bp.PartitionName.StartsWith("&b"))
+                        bp.PartitionName = valContainer.body;
+                    else if (bp.PartitionName.StartsWith("&p"))
+                        bp.PartitionName = valContainer.PartitionName;
                 }
-                else
+
+                if (!string.IsNullOrEmpty(bp.PartitionKind))
                 {
-                    if (holder != null)
+                    if (bp.PartitionKind.StartsWith("$"))
+                        bp.PartitionKind = valContainer[bp.PartitionKind.Replace("$", "")].body;
+                    else if (bp.PartitionKind == "&b")
+                        bp.PartitionKind = valContainer.body;
+                    else if (bp.PartitionKind == "&p")
+                        bp.PartitionKind = valContainer.PartitionName;
+                 
+                }
+
+                if (!funcSymbIgnore)
+                {
+                    if (bp.body.StartsWith("*"))
                     {
-                        if (modelSpec.isHere(if_not_duplicate_only_Copy_array))
-                        {
-                            bp.PartitionName = branchVal.PartitionName;
-                            bp.body = branchVal.body;
-                            if (string.IsNullOrEmpty(bp.PartitionKind))
-                                bp.PartitionKind = branchVal.PartitionKind;
-                            bp.CopyArr(branchVal);
-                        }
+                        donotrecurce = true;
+
+                        if (bp.body.Length > 1)
+                            bp.CopyArr(valContainer[bp.body.Replace("*", "")].W());
                         else
-                        {
-                            bp.PartitionName = branchVal.PartitionName;
-                            holder[bp.PartitionName] = branchVal;
+                            bp.CopyArr(valContainer);
 
-                            if (!string.IsNullOrEmpty(bp.PartitionKind))
-                                branchVal.PartitionKind = bp.PartitionKind;
-                            //holder.RemoveArrElem(bp);
-                            //holder.AddArr(branchVal);
-                        }
+                        bp.body = "";
                     }
-                    //bp.Wrap(branchVal);
+
+                    if (bp.body.StartsWith("+"))
+                    {
+                        donotrecurce = true;
+
+                        if (bp.body.Length > 1)
+                            bp.AddArrRange(valContainer[bp.body.Replace("+", "")].W());
+                        else
+                            bp.AddArrRange(valContainer);
+
+                        bp.body = "";
+                    }
+
+
+                    if (bp.body.StartsWith("@"))
+                    {
+                        donotrecurce = true;
+
+                        if (bp.body.Length > 1)
+                            bp.Wrap(valContainer[bp.body.Replace("@", "")].W());
+                        else
+                            bp.Wrap(valContainer.W());
+                    }
+
+                    if (bp.body.StartsWith("%"))
+                    {
+                        bp.body = "random body " + rnd.Next().ToString() + rnd.Next().ToString(); ;
+                    }
+
+
                 }
+
+                // # in PartitionName means that whole tree must be assigned
+                if (bp.PartitionName.StartsWith("#"))
+                {
+                    donotrecurce = true;
+
+                    opis branchVal = valContainer[bp.PartitionName.Replace("#", "")].W();
+                    if (!modelSpec.isHere(do_not_duplicate_branch)
+                        || bp.PartitionName.StartsWith("##"))
+                    {
+                        branchVal = branchVal.DuplicateA();
+
+                        bp.PartitionName = branchVal.PartitionName;
+                        bp.body = branchVal.body;
+                        if (string.IsNullOrEmpty(bp.PartitionKind))
+                            bp.PartitionKind = branchVal.PartitionKind;
+                        bp.CopyArr(branchVal);
+                    }
+                    else
+                    {
+                        if (holder != null)
+                        {
+                            if (modelSpec.isHere(if_not_duplicate_only_Copy_array))
+                            {
+                                bp.PartitionName = branchVal.PartitionName;
+                                bp.body = branchVal.body;
+                                if (string.IsNullOrEmpty(bp.PartitionKind))
+                                    bp.PartitionKind = branchVal.PartitionKind;
+                                bp.CopyArr(branchVal);
+                            }
+                            else
+                            {
+                                bp.PartitionName = branchVal.PartitionName;
+                                holder[bp.PartitionName] = branchVal;
+
+                                if (!string.IsNullOrEmpty(bp.PartitionKind))
+                                    branchVal.PartitionKind = bp.PartitionKind;
+                               
+                            }
+                        }                      
+                    }
+                }
+
+
+                bp.body = bp.body?.Replace("{star}", "*");
+
             }
-
-
-            bp.body = bp.body?.Replace("{star}", "*");
-            //if (bp.PartitionName.StartsWith("$"))           
-            //    bp.PartitionName = sharedVal[bp.PartitionName.Replace("$", "")].body;
 
             if (!donotrecurce)
-            for (int i = 0; i < bp.listCou; i++)
-                build(bp[i], bp, valContainer, funcSymbIgnore);
+                for (int i = 0; i < bp.listCou; i++)
+                    build(bp[i], bp, valContainer, funcSymbIgnore, onlyBody);
 
         }
     }

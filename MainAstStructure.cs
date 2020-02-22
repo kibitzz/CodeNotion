@@ -5,7 +5,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+#if NETFRAMEWORK
 using System.Windows.Forms;
+#endif
 using System.Drawing;
 using basicClasses.models.sys_ext;
 using basicClasses.models.WEB_api;
@@ -29,6 +31,7 @@ namespace basicClasses
         public static ulong copyCacheIntact;
         public static ulong copyExecTotal;
         public static ulong copyCacheModified;
+        public static ulong copyBranchModified;
 #endif
 
 
@@ -91,6 +94,10 @@ namespace basicClasses
             }
         }
         public opis copy;
+#if intact_copy_opt
+        public opis source;
+#endif
+
         public int listCou
         {
             get
@@ -1772,8 +1779,9 @@ namespace basicClasses
         {
             if (p == null) return;
 
-
+#if NETFRAMEWORK
             numArrNames.do_num(p);
+#endif
 
             for (int i = 0; i < p.listCou; i++)
             {
@@ -1881,7 +1889,6 @@ namespace basicClasses
 
 
 #if intact_copy_opt
-
            
             if ((permaCopy == 1 || isDuplicated) && copy != null)
             {
@@ -1891,36 +1898,33 @@ namespace basicClasses
                 return copy;
             }
 
-            if (permaCopy != 2 && copy != null
-//#if !DEBUG
-//               && CopyIntact(this, copy)
-//#endif
-                )
+            if (permaCopy != 2 && permaCopy != 3 && copy != null) // gathering data about modifications
             {
-                //#if DEBUG
-
-                if (CopyIntact(this, copy))
+                // cases do not use cached copy 
+                // if copy modified or this instance itself is a copy (source != null) and is modified
+                // we could return a copy if its same as source,
+                // but when there is request to duplicate this particular instance - it is assumed 
+                //                                that exact copy of it modified state is expected by caller of this method
+                if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
                 {
-                    #if DEBUG
+           #if DEBUG
+                  
                     copyCacheIntact++;
-                    #endif
+           #endif
 
-                    return copy;
+                    //   return copy;  // avoid connecting two separate copies with uncnown modification behaviour to single one -
+                                       // that can lead to side effects of modification of copy in one point and using it in another
                 }
                 else
                 {
                     permaCopy = 3; // in case copy not always constant, intactCopyChecker applied on final copies, 
                                    // but some copies in the middle loops can be modified, 
-                                   // making it constant for optimazation lead to bug when in the middle of cycle copy been modified
+                                   // making it constant lead to bug when in the middle of cycle copy been modified
 
 #if DEBUG
                     copyCacheModified++;
 #endif
-                }
-                //#else
-                //                return copy;
-                //#endif
-
+                }               
             }
 
 #else
@@ -1929,6 +1933,7 @@ namespace basicClasses
                 return copy;
             }
 #endif
+         
 
             opis rez = new opis(-1)
             {
@@ -1941,11 +1946,14 @@ namespace basicClasses
 
             copy = rez;
 
-            //rez.body = this.body;
-            //rez.PartitionKind = this.PartitionKind;
-            //rez.PartitionName_Lower_ = this.PartitionName_Lower_;
-            //rez.PartitionName = this.PartitionName;
-            //rez.paramCou = this.paramCou;
+#if intact_copy_opt
+
+            if (source == null)
+                copy.source = this;
+            else
+                copy.source = source;
+#endif
+
             isDuplicated = true;
 
             if (this.paramCou > 0)
