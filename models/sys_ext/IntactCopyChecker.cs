@@ -32,15 +32,8 @@ namespace basicClasses.models.sys_ext
 #if intact_copy_opt
             void mark(opis x)
             {
-                //if (x.copy != null)
-                //{
-                //    if (x.permaCopy != 3 && opis.CopyIntact(x, x.copy) && (x.source == null || opis.CopyIntact(x.source, x.copy)))
-                //    {
-                //        x.permaCopy = 1;
-                //        mark(x.copy);
-                //    }
-                //    else x.permaCopy = 2;
-                //}
+                if (x == null) return;
+              
 
                 if (x.copy != null)
                 {
@@ -50,7 +43,8 @@ namespace basicClasses.models.sys_ext
 
                         foreach (var c in x.allCopies)
                         {
-                            if (!opis.CopyIntact(x, c))
+                            opis copy = c.Target as opis;
+                            if (copy!= null && !opis.CopyIntact(x, copy))
                             {
                                 x.permaCopy = 2;
                                 break;
@@ -58,7 +52,7 @@ namespace basicClasses.models.sys_ext
                         }
                        
                         foreach (var c in x.allCopies)
-                            mark(c);
+                            mark(c.Target as opis);
 
                     }
                     else

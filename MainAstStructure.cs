@@ -113,7 +113,7 @@ namespace basicClasses
         public opis copy;
 
 #if intact_copy_opt
-        public List<opis> allCopies;
+        public List<WeakReference> allCopies;
         public opis source;
 #endif
 
@@ -1968,58 +1968,7 @@ namespace basicClasses
                     copyCacheHitCopyChanged++;
 #endif
                 return copy;
-            }
-
-//            if (permaCopy != 2 
-//               // && permaCopy != 3
-//                && copy != null) // gathering data about modifications
-//            {
-//                // cases do not use cached copy 
-//                // if copy modified or this instance itself is a copy (source != null) and is modified
-//                // we could return a copy if its same as source,
-//                // but when there is request to duplicate this particular instance - it is assumed 
-//                //                                that exact copy of it modified state is expected by caller of this method
-//                if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
-//                {
-//#if DEBUG
-
-//                    copyCacheIntact++;
-//#endif
-
-//                 //   return copy;  // avoid connecting two separate copies with uncnown modification behaviour to single one -
-//                                  // that can lead to side effects of modification of copy in one point and using it in another
-//                }
-//                else
-//                {
-//                    permaCopy = 3; // in case copy not always constant, intactCopyChecker applied on final copies, 
-//                                   // but some copies in the middle loops can be modified, 
-//                                   // making it constant lead to bug when in the middle of cycle copy been modified
-
-//#if DEBUG
-//                    copyCacheModified++;
-//#endif
-//                }               
-//            }
-
-            if (false && permaCopy != 2
-               && permaCopy != 3
-              && copy != null) // gathering data about modifications
-            {
-               
-                if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
-                {
-#if DEBUG
-                    copyCacheIntact++;
-#endif                  
-                }
-                else
-                {
-                    permaCopy = 3; 
-#if DEBUG
-                    copyCacheModified++;
-#endif
-                }
-            }
+            } 
 
 
 #else
@@ -2087,9 +2036,9 @@ namespace basicClasses
                 if (source == null || source.permaCopy == 13) // if tracking is not finished
                 {
                     if (allCopies == null)
-                        allCopies = new List<opis>();
+                        allCopies = new List<WeakReference>();
 
-                    allCopies.Add(copy);
+                    allCopies.Add(new WeakReference(copy, false));
                 }
                 else
                     permaCopy = 3; // finish tracking according to source tracking state
