@@ -2082,9 +2082,9 @@ namespace basicClasses
                 else
                     copy.source = source;
 
-                copy.permaCopy = source.permaCopy;
+                copy.permaCopy = copy.source.permaCopy;
 
-                if (source.permaCopy == 13)
+                if (source == null || source.permaCopy == 13) // if tracking is not finished
                 {
                     if (allCopies == null)
                         allCopies = new List<opis>();
@@ -2092,7 +2092,7 @@ namespace basicClasses
                     allCopies.Add(copy);
                 }
                 else
-                    permaCopy = 3;
+                    permaCopy = 3; // finish tracking according to source tracking state
 
             }
 #endif
