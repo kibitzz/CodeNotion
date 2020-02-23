@@ -9,6 +9,9 @@ namespace basicClasses.models.sys_ext
     [info("Optimization of functions and constants reuse")]
     class IntactCopyChecker : ModelBase
     {
+        [model("spec_tag")]
+        [info("")]
+        public static readonly string activate_copy_tracking = "activate_copy_tracking";
 
         [model("spec_tag")]
         [info("")]
@@ -18,49 +21,127 @@ namespace basicClasses.models.sys_ext
         [info("")]
         public static readonly string stata = "stata";
 
+        [model("spec_tag")]
+        [info("")]
+        public static readonly string visualize = "visualize";
+
         public override void Process(opis message)
         {
             opis surc = message;
 
+#if intact_copy_opt
             void mark(opis x)
             {
+                //if (x.copy != null)
+                //{
+                //    if (x.permaCopy != 3 && opis.CopyIntact(x, x.copy) && (x.source == null || opis.CopyIntact(x.source, x.copy)))
+                //    {
+                //        x.permaCopy = 1;
+                //        mark(x.copy);
+                //    }
+                //    else x.permaCopy = 2;
+                //}
+
                 if (x.copy != null)
                 {
-                    if (x.permaCopy != 3 && opis.CopyIntact(x, x.copy) && (x.source == null || opis.CopyIntact(x.source, x.copy)))
+                    if (x.allCopies != null && opis.CopyIntact(x, x.copy) && (x.source == null || opis.CopyIntact(x.source, x.copy)))
                     {
-                        x.permaCopy = 1;
-                        mark(x.copy);
+                        x.permaCopy = (byte)(x.allCopies.Count > 1 ? 1 : 2);
+
+                        foreach (var c in x.allCopies)
+                        {
+                            if (!opis.CopyIntact(x, c))
+                            {
+                                x.permaCopy = 2;
+                                break;
+                            }
+                        }
+                       
+                        foreach (var c in x.allCopies)
+                            mark(c);
+
                     }
-                    else x.permaCopy = 2;
+                    else
+                    {
+                        x.permaCopy = 2;
+                    }
+
+                    x.allCopies = null;
+                }
+                else
+                {
+                    x.permaCopy = 2;
                 }
             }
+#endif
 
             if (modelSpec.isHere(permaCopy_mark))
             {
+#if intact_copy_opt
                 message.RunRecursively(mark);
-            }
-            else
-            {
-
-                if (modelSpec.isHere(stata))
-                {
-#if DEBUG                    
-                    message.Vset("copyExecTotal", opis.copyExecTotal.ToString());
-                    message.Vset("copyCacheHit", opis.copyCacheHit.ToString());
-                    message.Vset("copyCacheIntact", opis.copyCacheIntact.ToString());
-                    message.Vset("copyCacheModified", opis.copyCacheModified.ToString());
 #endif
-                }
-                else
-                    message.RunRecursively(x =>
+            }
+
+
+            if (modelSpec.isHere(stata))
+            {
+#if intact_copy_opt
+#if DEBUG
+                message.Vset("copyExecTotal", opis.copyExecTotal.ToString());
+                message.Vset("copyCacheHit", opis.copyCacheHit.ToString());
+                message.Vset("copyCacheIntact", opis.copyCacheIntact.ToString());
+                message.Vset("copyCacheModified", opis.copyCacheModified.ToString());
+                message.Vset("copySourcePresent", opis.copySourcePresent.ToString());
+                message.Vset("copyCacheHitSourcePresent", opis.copyCacheHitSourcePresent.ToString());
+                message.Vset("copyCacheHitSourceNotMatched", opis.copyCacheHitSourceNotMatched.ToString());
+                message.Vset("copyCacheHitSourceNotMatchedAndThisNotMatchedSource", opis.copyCacheHitSourceNotMatchedAndThisNotMatchedSource.ToString());
+
+
+                message.Vset("copyCacheHitCopyIntact", opis.copyCacheHitCopyIntact.ToString());
+                message.Vset("copyCacheHitCopyChanged", opis.copyCacheHitCopyChanged.ToString());
+
+                message.Vset("duplicatedFladWhileDuplacate", opis.duplicatedFladWhileDuplacate.ToString());
+                message.Vset("duplicatedFladCopyIntact", opis.duplicatedFladCopyIntact.ToString());
+                message.Vset("duplicatedFladCopyChanged", opis.duplicatedFladCopyChanged.ToString());
+
+                message.Vset("duplicateFlag13", opis.duplicateFlag13.ToString());
+                message.Vset("duplicateFlag1", opis.duplicateFlag1.ToString());
+                message.Vset("duplicateFlag2", opis.duplicateFlag2.ToString());
+
+                //          public static ulong copyCacheHitCopyIntact;
+                //public static ulong copyCacheHitCopyChanged;
+
+                //public static ulong duplicatedFladWhileDuplacate;
+                //public static ulong duplicatedFladCopyIntact;
+                //public static ulong duplicatedFladCopyChanged;
+
+                //      public static ulong duplicateFlag13;
+                //public static ulong duplicateFlag1;
+                //public static ulong duplicateFlag2;
+#endif
+#endif
+            }
+
+            if (modelSpec.isHere(visualize))
+            {
+                message.RunRecursively(x =>
                 {
-                    if (x.copy != null && opis.CopyIntact(x, x.copy))
+                    if (x.permaCopy == 1)
                     {
                         x["_CopyIntact_"].body = "y";
                     }
                 });
-
             }
+
+            if (modelSpec.isHere(activate_copy_tracking))
+            {
+                message.RunRecursively(x =>
+                {
+                    x.source = null;
+                    x.permaCopy = 13;                  
+                });
+            }
+            
 
         }
     }

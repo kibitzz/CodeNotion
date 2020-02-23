@@ -32,6 +32,23 @@ namespace basicClasses
         public static ulong copyExecTotal;
         public static ulong copyCacheModified;
         public static ulong copyBranchModified;
+     
+        public static ulong copySourcePresent;
+        public static ulong copyCacheHitSourcePresent;
+        public static ulong copyCacheHitSourceNotMatched;
+        public static ulong copyCacheHitSourceNotMatchedAndThisNotMatchedSource;
+
+        public static ulong copyCacheHitCopyIntact;
+        public static ulong copyCacheHitCopyChanged;
+
+        public static ulong duplicatedFladWhileDuplacate;
+        public static ulong duplicatedFladCopyIntact;
+        public static ulong duplicatedFladCopyChanged;
+
+        public static ulong duplicateFlag13;
+        public static ulong duplicateFlag1;
+        public static ulong duplicateFlag2;
+
 #endif
 
 
@@ -94,7 +111,9 @@ namespace basicClasses
             }
         }
         public opis copy;
+
 #if intact_copy_opt
+        public List<opis> allCopies;
         public opis source;
 #endif
 
@@ -1879,53 +1898,129 @@ namespace basicClasses
             return rez;
         }
 
+        void DoNotTrackCopies(opis p)
+        {
+            p.allCopies = null;
+            p.permaCopy = 3;
+        }
 
         public opis Duplicate()
         {
 
 #if DEBUG
             copyExecTotal++;
+
+            if ((source != null))
+            {
+                copySourcePresent++;
+            }
+          
+
+            if (permaCopy == 1)
+                duplicateFlag1++;
+            if (permaCopy == 13)
+                duplicateFlag13++;
+            if (permaCopy == 2)
+                duplicateFlag2++;
+
 #endif
 
 
 #if intact_copy_opt
-           
-            if ((permaCopy == 1 || isDuplicated) && copy != null)
+
+#if DEBUG
+            if (isDuplicated && copy != null)
+            {
+                duplicatedFladWhileDuplacate++;              
+
+                if (CopyIntact(this, copy))
+                {
+                    duplicatedFladCopyIntact++;
+                }
+                else
+                    duplicatedFladCopyChanged++;
+            }
+#endif
+
+
+            // actual optimization
+            if ((permaCopy == 1) && copy != null)
             {
 #if DEBUG
                 copyCacheHit++;
-#endif             
+                if (source != null)
+                {
+                    copyCacheHitSourcePresent++;                   
+                }
+
+                if (source != null && !CopyIntact(source, copy))
+                {
+                    copyCacheHitSourceNotMatched++;
+                    if(!CopyIntact(source, this))
+                        copyCacheHitSourceNotMatchedAndThisNotMatchedSource++;
+                }
+
+                if (CopyIntact(this, copy))
+                {
+                    copyCacheHitCopyIntact++;                  
+                }
+                else
+                    copyCacheHitCopyChanged++;
+#endif
                 return copy;
             }
 
-            if (permaCopy != 2 && permaCopy != 3 && copy != null) // gathering data about modifications
+//            if (permaCopy != 2 
+//               // && permaCopy != 3
+//                && copy != null) // gathering data about modifications
+//            {
+//                // cases do not use cached copy 
+//                // if copy modified or this instance itself is a copy (source != null) and is modified
+//                // we could return a copy if its same as source,
+//                // but when there is request to duplicate this particular instance - it is assumed 
+//                //                                that exact copy of it modified state is expected by caller of this method
+//                if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
+//                {
+//#if DEBUG
+
+//                    copyCacheIntact++;
+//#endif
+
+//                 //   return copy;  // avoid connecting two separate copies with uncnown modification behaviour to single one -
+//                                  // that can lead to side effects of modification of copy in one point and using it in another
+//                }
+//                else
+//                {
+//                    permaCopy = 3; // in case copy not always constant, intactCopyChecker applied on final copies, 
+//                                   // but some copies in the middle loops can be modified, 
+//                                   // making it constant lead to bug when in the middle of cycle copy been modified
+
+//#if DEBUG
+//                    copyCacheModified++;
+//#endif
+//                }               
+//            }
+
+            if (false && permaCopy != 2
+               && permaCopy != 3
+              && copy != null) // gathering data about modifications
             {
-                // cases do not use cached copy 
-                // if copy modified or this instance itself is a copy (source != null) and is modified
-                // we could return a copy if its same as source,
-                // but when there is request to duplicate this particular instance - it is assumed 
-                //                                that exact copy of it modified state is expected by caller of this method
+               
                 if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
                 {
-           #if DEBUG
-                  
+#if DEBUG
                     copyCacheIntact++;
-           #endif
-
-                    //   return copy;  // avoid connecting two separate copies with uncnown modification behaviour to single one -
-                                       // that can lead to side effects of modification of copy in one point and using it in another
+#endif                  
                 }
                 else
                 {
-                    permaCopy = 3; // in case copy not always constant, intactCopyChecker applied on final copies, 
-                                   // but some copies in the middle loops can be modified, 
-                                   // making it constant lead to bug when in the middle of cycle copy been modified
-
+                    permaCopy = 3; 
 #if DEBUG
                     copyCacheModified++;
 #endif
-                }               
+                }
             }
+
 
 #else
             if (isDuplicated && copy != null)
@@ -1933,7 +2028,38 @@ namespace basicClasses
                 return copy;
             }
 #endif
-         
+
+#if intact_copy_opt
+
+            if (permaCopy == 13) // memory optimization - do not collect all copies if one already been modified
+            {
+                if (copy != null) 
+                {
+
+                    if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
+                    {
+#if DEBUG
+                        copyCacheIntact++;
+#endif
+                    }
+                    else
+                    {
+                        permaCopy = 3;  // this instance copy should be recreated all the time
+                        //foreach (var c in allCopies)
+                        //{
+                        //    c.permaCopy = 9;
+                        //    c.allCopies = null;
+                        //}
+
+                        //allCopies = null;
+#if DEBUG
+                        copyCacheModified++;
+#endif
+                    }
+                }
+            }
+#endif
+
 
             opis rez = new opis(-1)
             {
@@ -1946,12 +2072,29 @@ namespace basicClasses
 
             copy = rez;
 
+
 #if intact_copy_opt
 
-            if (source == null)
-                copy.source = this;
-            else
-                copy.source = source;
+            if (permaCopy == 13)
+            {
+                if (source == null)
+                    copy.source = this;
+                else
+                    copy.source = source;
+
+                copy.permaCopy = source.permaCopy;
+
+                if (source.permaCopy == 13)
+                {
+                    if (allCopies == null)
+                        allCopies = new List<opis>();
+
+                    allCopies.Add(copy);
+                }
+                else
+                    permaCopy = 3;
+
+            }
 #endif
 
             isDuplicated = true;
