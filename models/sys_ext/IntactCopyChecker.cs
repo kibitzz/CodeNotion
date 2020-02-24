@@ -47,6 +47,7 @@ namespace basicClasses.models.sys_ext
                             if (copy!= null && !opis.CopyIntact(x, copy))
                             {
                                 x.permaCopy = 2;
+                                x.copy = null;
                                 break;
                             }
                         }
@@ -57,13 +58,14 @@ namespace basicClasses.models.sys_ext
                     }
                     else
                     {
+                        x.copy = null;
                         x.permaCopy = 2;
                     }
 
                     x.allCopies = null;
                 }
                 else
-                {
+                {                  
                     x.permaCopy = 2;
                 }
             }
@@ -116,6 +118,7 @@ namespace basicClasses.models.sys_ext
 #endif
             }
 
+             #if intact_copy_opt
             if (modelSpec.isHere(visualize))
             {
                 message.RunRecursively(x =>
@@ -135,6 +138,7 @@ namespace basicClasses.models.sys_ext
                     x.permaCopy = 13;                  
                 });
             }
+#endif
             
 
         }

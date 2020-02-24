@@ -113,6 +113,10 @@ namespace basicClasses
         public opis copy;
 
 #if intact_copy_opt
+        /// <summary>
+        /// copy of this branch is valid to reuse every time duplication is requested
+        /// </summary>
+        public byte permaCopy;
         public List<WeakReference> allCopies;
         public opis source;
 #endif
@@ -148,11 +152,7 @@ namespace basicClasses
                 body = value.ToString();                
             }
         }
-
-        /// <summary>
-        /// copy of this branch is valid to reuse every time duplication is requested
-        /// </summary>
-        public byte permaCopy;
+   
 
         public object bodyObject;
         public object FuncObj;
@@ -1898,14 +1898,18 @@ namespace basicClasses
             return rez;
         }
 
+       #if intact_copy_opt
         void DoNotTrackCopies(opis p)
         {
             p.allCopies = null;
             p.permaCopy = 3;
         }
+      #endif
 
         public opis Duplicate()
         {
+
+#if intact_copy_opt
 
 #if DEBUG
             copyExecTotal++;
@@ -1926,7 +1930,7 @@ namespace basicClasses
 #endif
 
 
-#if intact_copy_opt
+
 
 #if DEBUG
             if (isDuplicated && copy != null)
@@ -1993,14 +1997,7 @@ namespace basicClasses
                     }
                     else
                     {
-                        permaCopy = 3;  // this instance copy should be recreated all the time
-                        //foreach (var c in allCopies)
-                        //{
-                        //    c.permaCopy = 9;
-                        //    c.allCopies = null;
-                        //}
-
-                        //allCopies = null;
+                        permaCopy = 3;  // this instance copy should be recreated all the time                      
 #if DEBUG
                         copyCacheModified++;
 #endif
