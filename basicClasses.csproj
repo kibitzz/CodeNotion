@@ -218,6 +218,7 @@
     <Compile Include="models\sys_ext\SyntaxTreeMatchIdPattrns.cs" />
     <Compile Include="models\sys_ext\TagArrayItems.cs" />
     <Compile Include="models\sys_ext\targetWholeBranch.cs" />
+    <Compile Include="models\sys_ext\thread_lock.cs" />
     <Compile Include="models\sys_ext\UserNotifier.cs" />
     <Compile Include="models\WEB_api\BrowserWindowDatasetModel.cs" />
     <Compile Include="models\WEB_api\Compress.cs" />

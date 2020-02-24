@@ -188,6 +188,7 @@ namespace basicClasses.Factory
             models.Add("GlobalParamsProvider", new GlobalParamsProvider());
 
             models.Add("IntactCopyChecker", new IntactCopyChecker());
+            models.Add("thread_lock", new thread_lock());
             
 
 
