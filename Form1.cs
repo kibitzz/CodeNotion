@@ -214,7 +214,7 @@ namespace basicClasses
 
             treeView1.Nodes.Clear();
 
-            opis replica = conte["curr_object"].Duplicate();
+            opis replica = conte["curr_object"].DuplicateA();
 
 
             replica.CleanPartitions("currPart,currPartType,object_type");
@@ -596,7 +596,7 @@ namespace basicClasses
                         if (result1 == DialogResult.Yes)
                         {
                             SetStateEdited();
-                            copiedBranch = ((opis)e.Node.Tag).Duplicate();
+                            copiedBranch = ((opis)e.Node.Tag).DuplicateA();
                             paste_Click(null, null);
                         }
                         return;
@@ -1305,7 +1305,7 @@ namespace basicClasses
                 opis builtin = (opis)e.ClickedItem.Tag;
 
                 EditingOpis.PartitionKind = builtin.PartitionKind;
-                EditingOpis.CopyArr(builtin.Duplicate());
+                EditingOpis.CopyArr(builtin.DuplicateA());
 
                 TreeNode original = EditingOpis.treeElem;
                 var trel = EditingOpis.GetDebugTree().FirstNode;
@@ -1421,7 +1421,7 @@ namespace basicClasses
 
         private void copy_Click(object sender, EventArgs e)
         {
-            copiedBranch = EditingOpis.Duplicate();
+            copiedBranch = EditingOpis.DuplicateA();
         }
 
         private void paste_Click(object sender, EventArgs e)
@@ -1429,7 +1429,7 @@ namespace basicClasses
             if (copiedBranch != null)
             {
                 SetStateEdited();
-                opis tt = copiedBranch.Duplicate();
+                opis tt = copiedBranch.DuplicateA();
 
                 if (Control.ModifierKeys == Keys.Alt)
                 {
@@ -1457,7 +1457,7 @@ namespace basicClasses
             {
                 partInfo = mf.GetModelInfo(EditingOpis.PartitionKind);
                 label2.Text = EditingOpis.PartitionKind + " (aval)";
-                var modlist = mf.GetModel(EditingOpis.PartitionKind).Duplicate();
+                var modlist = mf.GetModel(EditingOpis.PartitionKind).DuplicateA();
                 toolStrip2.Items.Clear();
                 for (int i = 0; i < modlist.listCou; i++)
                 {
@@ -1641,7 +1641,7 @@ namespace basicClasses
         {
             opis templates = Parser.ContextGlobal["words"]["templates_of_models"];
             if (EditingOpis != null)
-                templates.AddArr(EditingOpis.Duplicate());
+                templates.AddArr(EditingOpis.DuplicateA());
             SetStateEdited();
         }
 
@@ -1743,18 +1743,18 @@ namespace basicClasses
 
             if (now_node.Tag != null && EditingOpis != null)
             {
-                opis now = ((opis)now_node.Tag).Duplicate();
+                opis now = ((opis)now_node.Tag).DuplicateA();
 
                 opis time = new opis();
                 opis then = null;
                 if (EditingOpis == now_node.Tag)
                 {
-                    then = Parser.ContextGlobal["words"]["version_control"][now.PartitionName].Duplicate();
+                    then = Parser.ContextGlobal["words"]["version_control"][now.PartitionName].DuplicateA();
                     time = then["time point"];
                     then.RemoveArrElem(time);
                 }
                 else
-                 then = EditingOpis.Duplicate();
+                 then = EditingOpis.DuplicateA();
 
                 opis comp = CompareFill.VerControlCompare(now, then);
                 comp.AddArr(time);
@@ -2142,7 +2142,7 @@ namespace basicClasses
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
                         path = reflisttmp[i].PartitionName;
-                        now = reflisttmp[i][0].Duplicate();
+                        now = reflisttmp[i][0].DuplicateA();
                         now["_path_"].body = path;
                         break;
                     }
@@ -2222,7 +2222,7 @@ namespace basicClasses
             opis templates = Parser.ContextGlobal["words"]["version_control"];
             if (EditingOpis != null)
             {
-                templates[EditingOpis.PartitionName] = EditingOpis.Duplicate();
+                templates[EditingOpis.PartitionName] = EditingOpis.DuplicateA();
                 templates[EditingOpis.PartitionName].Vset("time point", DateTime.Now.ToString());
                 SetStateEdited();
             }

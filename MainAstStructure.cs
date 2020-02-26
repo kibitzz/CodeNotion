@@ -1952,24 +1952,24 @@ namespace basicClasses
             {
 #if DEBUG
                 copyCacheHit++;
-                if (source != null)
-                {
-                    copyCacheHitSourcePresent++;                   
-                }
+                //if (source != null)
+                //{
+                //    copyCacheHitSourcePresent++;                   
+                //}
 
-                if (source != null && !CopyIntact(source, copy))
-                {
-                    copyCacheHitSourceNotMatched++;
-                    if(!CopyIntact(source, this))
-                        copyCacheHitSourceNotMatchedAndThisNotMatchedSource++;
-                }
+                //if (source != null && !CopyIntact(source, copy))
+                //{
+                //    copyCacheHitSourceNotMatched++;
+                //    if(!CopyIntact(source, this))
+                //        copyCacheHitSourceNotMatchedAndThisNotMatchedSource++;
+                //}
 
-                if (CopyIntact(this, copy))
-                {
-                    copyCacheHitCopyIntact++;                  
-                }
-                else
-                    copyCacheHitCopyChanged++;
+                //if (CopyIntact(this, copy))
+                //{
+                //    copyCacheHitCopyIntact++;                  
+                //}
+                //else
+                //    copyCacheHitCopyChanged++;
 #endif
                 return copy;
             } 

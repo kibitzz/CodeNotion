@@ -20,7 +20,7 @@ namespace basicClasses.models.sys_ext
 
 
         [model("")]
-        [info("1..7 separate locks")]
+        [info("1..7 separate locks. support fillef for this field  ")]
         public static readonly string lock_idx = "lock_idx";
 
         [model("Action")]
@@ -29,10 +29,14 @@ namespace basicClasses.models.sys_ext
 
         public override void Process(opis message)
         {
-            var instr = modelSpec[instructions].Duplicate();
+            opis spec = modelSpec.Duplicate();
+            instanse.ExecActionModelsList(spec);
 
+            var instr = spec[instructions];
+           
+            int ln = spec[lock_idx].intVal;
 
-            if (modelSpec[lock_idx].intVal == 1)
+            if (ln == 1)
             {
                 lock (lock1)
                 {
@@ -40,7 +44,7 @@ namespace basicClasses.models.sys_ext
                 }
             }
 
-            if (modelSpec[lock_idx].intVal == 2)
+            if (ln == 2)
             {
                 lock (lock2)
                 {
@@ -48,7 +52,7 @@ namespace basicClasses.models.sys_ext
                 }
             }
 
-            if (modelSpec[lock_idx].intVal == 3)
+            if (ln == 3)
             {
                 lock (lock3)
                 {
@@ -56,7 +60,7 @@ namespace basicClasses.models.sys_ext
                 }
             }
 
-            if (modelSpec[lock_idx].intVal == 4)
+            if (ln == 4)
             {
                 lock (lock4)
                 {
@@ -64,7 +68,7 @@ namespace basicClasses.models.sys_ext
                 }
             }
 
-            if (modelSpec[lock_idx].intVal == 5)
+            if (ln == 5)
             {
                 lock (lock5)
                 {
@@ -72,7 +76,7 @@ namespace basicClasses.models.sys_ext
                 }
             }
 
-            if (modelSpec[lock_idx].intVal == 6)
+            if (ln == 6)
             {
                 lock (lock6)
                 {
@@ -80,7 +84,7 @@ namespace basicClasses.models.sys_ext
                 }
             }
 
-            if (modelSpec[lock_idx].intVal == 7)
+            if (ln == 7)
             {
                 lock (lock7)
                 {
