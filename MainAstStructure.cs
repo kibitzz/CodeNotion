@@ -295,6 +295,9 @@ namespace basicClasses
 
         public virtual void RaiseEvents(bool v)
         {
+            var rez = new opis() { PartitionName = "RaiseEvents not implemented " };
+            rez.AddArr(this); ;
+            global_log.log.AddArr(rez);
         }
 
        public opis getForm(string part)
@@ -2674,7 +2677,11 @@ namespace basicClasses
             if (!NamesIndexHash.ContainsKey(elem.PartitionName))
                 NamesIndexHash.Add(elem.PartitionName, rez);
             else
-                global_log.log?.AddArr(new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name -" + elem.PartitionName });
+            {
+                var ei = new opis() { PartitionName = "ERROR: AddArr UseNameIndexHash not uniq name -" + elem.PartitionName };
+                ei.AddArr(elem.DuplicateA());
+                global_log.log?.AddArr(ei);
+            }
 
             return rez;
 

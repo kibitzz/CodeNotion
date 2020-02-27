@@ -43,7 +43,8 @@ namespace basicClasses.models.sys_ext
             {
                 if (modelSpec[message_to_answer].isInitlze)
                 {
-                    opis msg = modelSpec[message_to_answer].Duplicate();
+                     opis msg = modelSpec[message_to_answer].DuplicateAs<opisEventsSubscription>();
+                  // opis msg = modelSpec[message_to_answer].Duplicate();
                     instanse.ExecActionModel(msg, msg);
                     msg =  msg.W() ;
                     instanse.ModelAnswerMsg(msg, ans);

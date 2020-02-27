@@ -1861,6 +1861,19 @@ namespace basicClasses
                         reflist[typeOfSearch].AddArr(reflisttmp[i][0]);
                     }
 
+                    so = new opis();
+                    reflisttmp = new opis();
+                    typeOfSearch = "model as body";
+
+                    so.body = o.PartitionKind;
+
+                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+
+                    for (int i = 0; i < reflisttmp.listCou; i++)
+                    {
+                        reflist[typeOfSearch].AddArr(reflisttmp[i][0]);
+                    }
+
                 }
 
                 if (!string.IsNullOrEmpty(o.body))

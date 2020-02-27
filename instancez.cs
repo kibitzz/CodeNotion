@@ -577,9 +577,7 @@ namespace basicClasses
 
             Handle(contexts[0]);
            
-
-            ExecActionResponceModelsList(waiter[ModelNotion.Build], new opis());
-            
+            ExecActionResponceModelsList(waiter[ModelNotion.Build], new opis());            
         }
 
         opis SetupConstantIndexes(opis thisinsP)
@@ -1012,8 +1010,7 @@ namespace basicClasses
         {
             RunMethodAspectBeforeCode(msg, spec, waiter.PartitionName);
 
-            string organizer = GetContextOrganizerName();        
-          //  RunNotionReaction(spec, ModelNotion.Responces, organizer, msg);
+            string organizer = GetContextOrganizerName();                 
        
             if (spec.PartitionName != waiter.PartitionName)            
                 RunNotionReaction(waiter, ModelNotion.Responces, organizer, msg);
@@ -1769,7 +1766,7 @@ namespace basicClasses
             //AddInstLog("rsnd", "", message);
 
             opis upper = CTX.GoUp();
-            opis resendmsg = new opis();
+            opis resendmsg = new opisEventsSubscription();
             resendmsg.CopyParams(message);
 
             if (!message[Msg.initiator].isInitlze)
