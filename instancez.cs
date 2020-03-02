@@ -1495,10 +1495,13 @@ namespace basicClasses
             opis rez = new opis(1);
             opis t = SVC[ldcIdx].W();
 
-            string pnl = pn.Contains("~")? pn.Replace("~", "") : pn;
+            bool isref = pn.Contains("~");
 
-            if (t.isHere(pnl))
-                rez = pn.Contains("~") ? t[pnl] : t[pn].W();
+            string pnl = isref ? pn.Replace("~", "") : pn;
+            int pos = t.getPartitionIdx(pnl);
+
+            if (pos != -1)
+                rez = isref ? t[pos] : t[pos].W();
             else
             {
                 if (string.IsNullOrWhiteSpace(pn))
@@ -1506,17 +1509,18 @@ namespace basicClasses
                 else
                 {
                     if (create)
-                    {
-                        //rez = t[pn];
-                        rez = pn.Contains("~") ? t[pnl] : t[pn].W();
+                    {                       
+                        rez = isref ? t[pnl] : t[pn].W();
                     }
                     else
                     if(logerror)
                     {
                         opis err = new opis();
                         err.PartitionName = "ERR no such patrition: " + pn;
+#if NETFRAMEWORK
                         err.AddArr(t.Duplicate());
                         err.AddArr(SVC[modelSpecIdx].Duplicate());
+#endif
                         global_log.log.AddArr(err);
                     }
                 }
