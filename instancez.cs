@@ -1219,9 +1219,9 @@ namespace basicClasses
 
             inSvc = SVC.getPartitionIdx(req.PartitionKind);
             inSvc = inSvc >=0 && SVC[inSvc].PartitionKind == "Action" ? inSvc : -1;
+           
+#if NETFRAMEWORK
 
-            // ---------  only for dev time in repl
-            
             if (showOverrideWarnings && inSvc != -1 &&
               thisins[pkgIdx].isHere(req.PartitionKind))
                 {
@@ -1229,8 +1229,8 @@ namespace basicClasses
                     err.PartitionName = "WARN: local model override package func: " + req.PartitionKind;
                     err.AddArr(req.Duplicate());
                     global_log.log.AddArr(err);
-                }
-            // --------- 
+                }            
+#endif 
 
             opis packages = thisins[pkgIdx];
 

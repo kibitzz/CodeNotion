@@ -26,6 +26,8 @@ namespace basicClasses.Factory
     {
         Dictionary<string, ModelInfo> models;
 
+        public static opis hotkeys = new opis();
+
         public static Dictionary<string, ModelBase> ExternalModels;
 
         public ModelFactory()
@@ -228,18 +230,19 @@ namespace basicClasses.Factory
 
                 for (int i = 0; i < dm.listCou; i++)
                 {
-                    if (!string.IsNullOrEmpty(dm[i].PartitionKind) 
-                        && dm[i].PartitionKind!= name)// to avoid recursive infinite construction
+                    if (!string.IsNullOrEmpty(dm[i].PartitionKind)
+                        && dm[i].PartitionKind != name)// to avoid recursive infinite construction
                     {
                         opis pmdl = GetModel(dm[i].PartitionKind);
-                        if(pmdl.isInitlze)
-                        dm[dm[i].PartitionName] = pmdl;                                           
+                        if (pmdl.isInitlze)
+                            dm[dm[i].PartitionName] = pmdl;
                     }
                 }
 
                 return dm;
-            }else
-            return new opis();
+            }
+            else
+                return new opis();          
         }
 
         public object GetModelObject(string name)

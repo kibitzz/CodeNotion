@@ -1,5 +1,6 @@
 ﻿// Copyright (C) 2015 Igor Proskochilo
 
+using basicClasses.Factory;
 using basicClasses.models;
 using basicClasses.models.sys_ext;
 using System;
@@ -170,6 +171,9 @@ namespace basicClasses
 
             var sentence = context.Find("sentence_context");
             StartPreparationMessages = sentence["preparation messages"].DuplicateA();
+
+            ModelFactory.hotkeys = sentence["hotkeys"].DuplicateA();
+
             CTX.AddRootElem(sentence);
             SysInstance.Words = context;
 
