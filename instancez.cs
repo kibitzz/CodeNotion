@@ -1343,7 +1343,8 @@ namespace basicClasses
                                        
                 }
 
-                if (req.PartitionName.StartsWith("*"))
+             //   if (req.PartitionName.StartsWith("*"))
+                if (req.PartitionName[0] == '*')
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
 
@@ -1382,10 +1383,11 @@ namespace basicClasses
 
                 #region context variables []*name
                 bool subscribeProduce = false;
-                //bool prodLocalContext = false;
-                if (b.StartsWith("*") && req.PartitionKind !="func")
+               
+               if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")             
+               // if (b.StartsWith("*") && req.PartitionKind != "func")
                 {
-                  string pn = b.Trim('>', '<',' ', '*');
+                    string pn = b.Trim('>', '<', ' ', '*');
                     if (pn.Length > 0)
                     {
                         subscribeProduce = modelIsProducer
@@ -1393,15 +1395,15 @@ namespace basicClasses
                                        || modelSpec.isHere(pn.Trim('~') + "_sys_subscript"));
                         //prodLocalContext = modelIsProducer;
 
-                        nameOfSubj = GetTempValName(SVC, tempNames);                       
+                        nameOfSubj = GetTempValName(SVC, tempNames);
                         b = b.Replace("*", "");
                         SVC[nameOfSubj].Wrap(getSYSContainetP(SVC, pn, modelIsProducer));
                         modelSpec.Vset("v", nameOfSubj);
                     }
                     else
                     {
-                        nameOfSubj = GetTempValName(SVC, tempNames) ;
-                        modelSpec.Vset("v", nameOfSubj);                       
+                        nameOfSubj = GetTempValName(SVC, tempNames);
+                        modelSpec.Vset("v", nameOfSubj);
                     }
                 }
 

@@ -1459,7 +1459,7 @@ namespace basicClasses
                 label2.Text = EditingOpis.PartitionKind + " (aval)";
                 var modlist = mf.GetModel(EditingOpis.PartitionKind).DuplicateA();
 
-                if (!modlist.isInitlze)
+                if (!modlist.isInitlze && ModelFactory.hotkeys != null)
                     modlist = ModelFactory.hotkeys.DuplicateA();
 
                 toolStrip2.Items.Clear();

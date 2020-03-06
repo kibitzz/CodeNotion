@@ -191,9 +191,8 @@ namespace basicClasses.Factory
 
             models.Add("IntactCopyChecker", new IntactCopyChecker());
             models.Add("thread_lock", new thread_lock());
-            
-
-
+            models.Add("arr_chuncks", new arr_chuncks());
+               
 
 
 

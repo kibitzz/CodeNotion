@@ -744,7 +744,7 @@ namespace basicClasses
 
         public string info()
         {
-            string rez = PartitionKind.Length > 0 ? PartitionKind + "\n" : "";
+            string rez = PartitionKind != null && PartitionKind.Length > 0 ? PartitionKind + "\n" : "";
             for (int i = 0; i < paramCou; i++)
             {
                 string dat = arr[i].body.Trim();
