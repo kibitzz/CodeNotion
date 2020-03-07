@@ -160,6 +160,7 @@
     <Compile Include="models\FunctionalInstances\formula_exe.cs" />
     <Compile Include="models\SQL\ReplaceKeyByPresentation.cs" />
     <Compile Include="models\String proc\PeriodIterator.cs" />
+    <Compile Include="models\String proc\text_case_transform.cs" />
     <Compile Include="models\StructureProcessing\arr_chuncks.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
     <Compile Include="models\sys_ext\GlobalParamsProvider.cs" />

@@ -1344,7 +1344,7 @@ namespace basicClasses
                 }
 
              //   if (req.PartitionName.StartsWith("*"))
-                if (req.PartitionName[0] == '*')
+                if (req.PartitionName.Length > 0 && req.PartitionName[0] == '*')
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
 
