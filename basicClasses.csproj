@@ -199,7 +199,6 @@
     <Compile Include="models\StructureProcessing\Destructure.cs" />
     <Compile Include="models\StructureProcessing\FindCommonDatastructure.cs" />
     <Compile Include="models\StructureProcessing\ForEach.cs" />
-    <Compile Include="models\StructureProcessing\join.cs" />
     <Compile Include="models\StructureProcessing\NextArrItm.cs" />
     <Compile Include="models\StructureProcessing\RangeAndAssign.cs" />
     <Compile Include="models\StructureProcessing\TemplateSearch.cs" />

@@ -2224,9 +2224,9 @@ namespace basicClasses
                         (string.IsNullOrEmpty(templ.PartitionName) ||
                         arr[i].PartitionName == templ.PartitionName) &&
                         (string.IsNullOrEmpty(templ.body)
-                        || templ.body.StartsWith("???")
+                        || (templ.body[0] == '?' && templ.body.StartsWith("???"))
                        || arr[i].body == templ.body
-                       || (templ.body.StartsWith("###") && arr[i].body.Contains(templ.body.Substring(3)))
+                       || (templ.body[0] == '#' && templ.body.StartsWith("###") && arr[i].body.Contains(templ.body.Substring(3)))
                         )
                         )
                     {

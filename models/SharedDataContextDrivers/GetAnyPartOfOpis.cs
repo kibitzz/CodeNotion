@@ -79,7 +79,7 @@ namespace basicClasses.models.SharedDataContextDrivers
 
                 if (currSpec[create].isInitlze)
                     source = svc[p.body];
-            }
+            }else
 
             if (modelSpec.isHere(sdc_Role))
             {
@@ -98,10 +98,11 @@ namespace basicClasses.models.SharedDataContextDrivers
                     source =null;                   
                 }
             }
+            else
 
             if (modelSpec.getPartitionIdx(thisins_data) != -1)
                 source = thisins;
-
+            else
             if (modelSpec.getPartitionIdx(spec_data) != -1)
                 source = spec;
 
