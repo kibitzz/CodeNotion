@@ -27,19 +27,33 @@ namespace basicClasses.models.sys_ext
         [info("")]
         public static readonly string instructions = "instructions";
 
+        int currInstActiveLock = 0;
+
         public override void Process(opis message)
         {
-            opis spec = modelSpec.Duplicate();
-            instanse.ExecActionModelsList(spec);
+            opis specl = modelSpec.Duplicate();
+            instanse.ExecActionModelsList(specl);
 
-            var instr = spec[instructions];
+            var instr = specl[instructions];
            
-            int ln = spec[lock_idx].intVal;
+            int ln = specl[lock_idx].intVal;
+           
+            if (currInstActiveLock > 0)  // lock inside lock is ignored along single instance
+            {
+#if DEBUG
+                var ei = new opis() { PartitionName = "WARN: nested lock -- " + spec.PartitionName + " "+ ln };
+                ei.AddArr(instr);
+                global_log.log?.AddArr(ei);
+#endif
+                instanse.ExecActionModelsList(instr);
+                return;
+            }
 
             if (ln == 1)
             {
                 lock (lock1)
                 {
+                    currInstActiveLock = ln;
                     instanse.ExecActionModelsList(instr);
                 }
             }
@@ -48,6 +62,7 @@ namespace basicClasses.models.sys_ext
             {
                 lock (lock2)
                 {
+                    currInstActiveLock = ln;
                     instanse.ExecActionModelsList(instr);
                 }
             }
@@ -56,6 +71,7 @@ namespace basicClasses.models.sys_ext
             {
                 lock (lock3)
                 {
+                    currInstActiveLock = ln;
                     instanse.ExecActionModelsList(instr);
                 }
             }
@@ -64,6 +80,7 @@ namespace basicClasses.models.sys_ext
             {
                 lock (lock4)
                 {
+                    currInstActiveLock = ln;
                     instanse.ExecActionModelsList(instr);
                 }
             }
@@ -72,6 +89,7 @@ namespace basicClasses.models.sys_ext
             {
                 lock (lock5)
                 {
+                    currInstActiveLock = ln;
                     instanse.ExecActionModelsList(instr);
                 }
             }
@@ -80,6 +98,7 @@ namespace basicClasses.models.sys_ext
             {
                 lock (lock6)
                 {
+                    currInstActiveLock = ln;
                     instanse.ExecActionModelsList(instr);
                 }
             }
@@ -88,9 +107,12 @@ namespace basicClasses.models.sys_ext
             {
                 lock (lock7)
                 {
+                    currInstActiveLock = ln;
                     instanse.ExecActionModelsList(instr);
                 }
             }
+
+            currInstActiveLock = 0;
         }
     }
 }
