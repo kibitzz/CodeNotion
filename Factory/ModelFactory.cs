@@ -193,8 +193,10 @@ namespace basicClasses.Factory
             models.Add("thread_lock", new thread_lock());
             models.Add("arr_chuncks", new arr_chuncks());
             models.Add("text_case_transform", new text_case_transform());
-
+            models.Add("b_length", new b_length());
             
+
+
 
 
             if (ExternalModels != null)

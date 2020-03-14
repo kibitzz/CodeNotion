@@ -16,7 +16,7 @@ namespace basicClasses.models.Checkers
 
         [model("")]
         [info("")]
-        public static readonly string listOfVerification = "listOfVerification";
+        public static readonly string listOfVerification = "listOfVerification";      
 
         [model("spec_tag")]
         [info("")]
@@ -28,9 +28,7 @@ namespace basicClasses.models.Checkers
 
             opis ptt = modelSpec[template].Duplicate();
             instanse.ExecActionResponceModelsList(ptt, ptt);
-
-            //logopis["debug_template"] = ptt;
-            //logopis.WrapByName(arg, "arg");
+            
 
             opis processThis = arg;
             if (ptt.isInitlze)              
@@ -51,6 +49,7 @@ namespace basicClasses.models.Checkers
                     }
                 }else
                     pass = !string.IsNullOrEmpty(processThis.body);
+               
             }
           
 

@@ -22,7 +22,7 @@ namespace basicClasses.models.SharedDataContextDrivers
         [model("spec_tag")]
         public static readonly string OneCheckIsEnough = "OneCheckIsEnough";
 
-        [info("body hold one of these  >   <   =   !=   >=  <=   #(run Checks ower each argument)")]
+        [info("body hold one of these  >   <  <l  >l  =   !=   >=  <=   #(run Checks ower each argument)")]
         public static readonly string oprator = "oprator";
 
         [info("")]
