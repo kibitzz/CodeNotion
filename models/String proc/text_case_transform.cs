@@ -16,6 +16,10 @@ namespace basicClasses.models.String_proc
         [model("spec_tag")]
         public static readonly string to_lower = "to_lower";
 
+        [info("sentence")]
+        [model("spec_tag")]
+        public static readonly string sentence = "sentence";
+
         public override void Process(opis message)
         {
             opis spec = modelSpec.Duplicate();
@@ -23,26 +27,7 @@ namespace basicClasses.models.String_proc
 
             if (spec.isHere(first_higher))
             {
-                var arr = message.body.Trim().ToLower().ToCharArray();               
-
-                StringBuilder output = new StringBuilder();
-                bool prevsp = true;
-                foreach (var c in arr)
-                {
-
-                    if (!char.IsWhiteSpace(c) && prevsp)
-                    {
-                        output.Append(char.ToUpper(c));
-                    }
-                    else
-                    {
-                        output.Append(c);
-                    }
-
-                    prevsp = char.IsWhiteSpace(c);
-                }
-
-                message.body = output.ToString();
+                message.body = upper(message.body, (x, prev) => char.IsWhiteSpace(x));                            
             }
 
             if (spec.isHere(to_lower))
@@ -50,8 +35,37 @@ namespace basicClasses.models.String_proc
                 message.body = message.body.ToLower().Trim();
             }
 
+            if (spec.isHere(sentence))
+            {
+                message.body = upper(message.body, (x, prev) => (x == '.' || (char.IsWhiteSpace(x) && prev)));
+            }
 
 
+
+        }
+
+        string upper(string t, Func<char, bool, bool> f)
+        {
+            var arr = t.Trim().ToLower().ToCharArray();
+
+            StringBuilder output = new StringBuilder();
+            bool prevsp = true;
+            foreach (var c in arr)
+            {
+
+                if (!f(c, prevsp) && prevsp)
+                {
+                    output.Append(char.ToUpper(c));
+                }
+                else
+                {
+                    output.Append(c);
+                }
+
+                prevsp = f(c, prevsp);
+            }
+
+            return output.ToString();
         }
 
 
