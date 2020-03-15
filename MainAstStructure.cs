@@ -1764,7 +1764,8 @@ namespace basicClasses
                         info += "   ~prev  " + elem_opis.body + "";
 
                     if (elem_opis.PartitionKind != template[i].PartitionKind 
-                        && string.IsNullOrEmpty(elem_opis.PartitionKind) != string.IsNullOrEmpty(template[i].PartitionKind)
+                        && (!string.IsNullOrEmpty(elem_opis.PartitionKind) || !string.IsNullOrEmpty(template[i].PartitionKind))
+                     //   && string.IsNullOrEmpty(elem_opis.PartitionKind) != string.IsNullOrEmpty(template[i].PartitionKind)
                         )
                         info += " / " + elem_opis.PartitionKind + " | " + template[i].PartitionKind + " /";
 

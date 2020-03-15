@@ -10,9 +10,9 @@ using System.Windows.Forms;
 
 namespace basicClasses
 {
-    public partial class celluarPath : Form
+    public partial class diagram : Form
     {
-        public celluarPath()
+        public diagram()
         {
             InitializeComponent();
         }

@@ -1275,6 +1275,7 @@ namespace basicClasses
                 }
                 else
                 {
+                    modelSpec = new opis(4);
                     if (mod.body.Contains("|"))
                     {
                         SVC["VVV"].body = req.body;
@@ -1431,16 +1432,17 @@ namespace basicClasses
                 {
                     string pn = b.Trim('>', '<', ' ', '*', '~') + "_sys_subscript";
 
-                    if (SVC[ldcIdx].W().isHere(pn))
-                    {
-                        var subscription = SVC[ldcIdx].W()[pn].Duplicate();
-                        ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
-                    }else
                     if (modelSpec.isHere(pn))
                     {
                         var subscription = modelSpec[pn].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
-                    }                 
+                    }
+                    else
+                    if (SVC[ldcIdx].W().isHere(pn))
+                    {
+                        var subscription = SVC[ldcIdx].W()[pn].Duplicate();
+                        ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
+                    }         
                 }
 
 
