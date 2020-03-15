@@ -1432,7 +1432,7 @@ namespace basicClasses
                 {
                     string pn = b.Trim('>', '<', ' ', '*', '~') + "_sys_subscript";
 
-                    if (modelSpec.isHere(pn))
+                    if (modelSpec.isHere(pn)) // priority on explicit method extention in model spec
                     {
                         var subscription = modelSpec[pn].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
