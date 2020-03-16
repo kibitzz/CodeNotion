@@ -2053,11 +2053,7 @@ namespace basicClasses
             listBox2.Visible = false;
         }
 
-        private void button26_Click(object sender, EventArgs e)
-        {
-            //BrowserWindow.form.d
-            CreateBrowserW();
-        }
+    
 
         private void exportToolStripMenuItem_Click(object sender, EventArgs e)
         {

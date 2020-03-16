@@ -972,7 +972,7 @@
             this.button26.TabIndex = 0;
             this.button26.Text = "нове вікно браузера";
             this.button26.UseVisualStyleBackColor = true;
-            this.button26.Click += new System.EventHandler(this.button26_Click);
+        
             // 
             // toolTip1
             // 

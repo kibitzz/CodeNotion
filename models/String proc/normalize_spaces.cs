@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.String_proc
 {
+    [appliable("func")]
     [info("filler. modifies message body")]
     class normalize_spaces : ModelBase
     {
@@ -41,12 +42,7 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            return output.ToString()
-                .Replace("&#039;", "'")
-                .Trim()
-                .Replace("&quot;", "'")
-                .Replace("&#187;", "»")
-                .Replace("&#171;", "«");
+            return output.ToString();
         }
 
     }
