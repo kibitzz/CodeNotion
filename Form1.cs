@@ -18,6 +18,9 @@ using basicClasses.models.StructureProcessing;
 
 namespace basicClasses
 {
+
+    public delegate void guiFactoryGelegate(string name);
+
     public partial class Form1 : Form
     {
         Parser inputParser;
@@ -74,8 +77,7 @@ namespace basicClasses
             this.Height = Screen.PrimaryScreen.Bounds.Height - 32;
             this.Left = -7;
             this.Top = -6;
-
-            //   opis.raiseEvents = true;
+           
             Parser.ContextGlobal = new opis();
 
             inputParser = new Parser();
@@ -87,7 +89,6 @@ namespace basicClasses
 
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11;
             ServicePointManager.DefaultConnectionLimit = 20;
-
            
 
             treeView2.ShowNodeToolTips = false;
@@ -109,25 +110,22 @@ namespace basicClasses
 
             #endregion
 
-            //treeView3.ShowPlusMinus = false;
-            //// treeView3.ImageList
-            //TreeNode tn = new TreeNode();
-            //tn.b
+       
             treeView2.Nodes.Clear();
-            //treeView2.Nodes.Add(Parser.ContextGlobal.GetDebugTree(3));
+        
 
             string[] arr = DataFileUtils.LoadLines("code.txt");
             richTextBox1.Lines = arr;
 
             arr = DataFileUtils.LoadLines("codeInput.txt");
             richTextBox3.Lines = arr;
-            //richTextBox3.AppendText("   context parsed "+ts.ToString());
+           
 
             currParseText = "";
 
             opis.listOfVisualisedCircularRefs = new opis();
             mouPos = new Point(0, 0);
-         //   button6_Click(null, null);
+        
             colorInput();
 
             mf = new ModelFactory();
@@ -139,9 +137,10 @@ namespace basicClasses
             guiGelegate gui = new guiGelegate(popupBanner);
             SysInstance.updateform = gui;
 
-           
-            opis.do_not_build_debug = false;
-            CreateBrowserW();
+            GuiFomsFactory.callbackFrm = this;
+            GuiFomsFactory.deleg = new guiFactoryGelegate(CreateForm);
+
+            opis.do_not_build_debug = false;           
 
         }
 
@@ -156,10 +155,17 @@ namespace basicClasses
             textBox5.Text = msg;
             textBox5.Visible = true;
         }
+       
 
-        public void CreateBrowserW()
+        public void CreateForm(string name)
         {
-           
+            if (name == "linear_chart")
+            {
+                var f = new diagram();
+                f.Show();
+                linear_chart.form = f;
+                linear_chart.updateDelegate = new guiChartGelegate(linear_chart.form.setLines);
+            }
         }
 
         private void button1_Click(object sender, EventArgs e)

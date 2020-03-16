@@ -194,8 +194,10 @@ namespace basicClasses.Factory
             models.Add("arr_chuncks", new arr_chuncks());
             models.Add("text_case_transform", new text_case_transform());
             models.Add("b_length", new b_length());
+            models.Add("normalize_spaces", new normalize_spaces());
             
-
+            models.Add("linear_chart", new linear_chart());
+            
 
 
 

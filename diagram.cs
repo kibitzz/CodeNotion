@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LiveCharts;
+using LiveCharts.Wpf;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -10,12 +12,49 @@ using System.Windows.Forms;
 
 namespace basicClasses
 {
+    public delegate void guiChartGelegate(List<IEnumerable<double>> sc, List<IEnumerable<string>> axesx);
+
     public partial class diagram : Form
     {
+
         public diagram()
         {
             InitializeComponent();
         }
+
+        public void setLines(List<IEnumerable<double>> sc, List<IEnumerable<string>> axesx)
+        {
+
+            cartesianChart1.Series = new SeriesCollection();
+
+            foreach (var s in sc)
+                cartesianChart1.Series.Add(new LineSeries
+                {
+                    Values = new ChartValues<double>(s),
+                    PointGeometry = null,
+                    LineSmoothness = 0,
+                });
+
+
+            cartesianChart1.AxisY.Clear();
+            cartesianChart1.AxisY.Add(new Axis
+            {                
+                LabelFormatter = value => value.ToString("C")
+            });
+
+            cartesianChart1.AxisX.Clear();
+
+            foreach (var al in axesx)
+
+                cartesianChart1.AxisX.Add(new Axis
+                {
+                    Title = "",
+                    Labels = (IList<string>) al
+                });
+           
+        }
+
+      
     }
 
 
