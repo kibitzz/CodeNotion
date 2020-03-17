@@ -51,7 +51,12 @@ namespace basicClasses
                     Title = "",
                     Labels = (IList<string>) al
                 });
-           
+
+            cartesianChart1.Zoom = ZoomingOptions.X;
+            cartesianChart1.Pan = PanningOptions.X;
+            cartesianChart1.ScrollMode = ScrollMode.X;
+            cartesianChart1.DisableAnimations = true;
+
         }
 
       
