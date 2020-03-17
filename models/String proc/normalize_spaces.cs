@@ -12,7 +12,44 @@ namespace basicClasses.models.String_proc
     {
         public override void Process(opis message)
         {
-            message.body = NormalizeWhiteSpace(message.body);
+            message.body = NormalizeWhiteSpace2(message.body);
+        }
+
+        private static string NormalizeWhiteSpace2(string input)
+        {
+            if (string.IsNullOrEmpty(input))
+            {
+                return string.Empty;
+            }
+
+        //    StringBuilder output = new StringBuilder();
+            bool skipped = false;
+
+            char[] rez = new char[input.Length];
+            int pos = 0;
+
+            foreach (char c in input)
+            {
+                if (char.IsWhiteSpace(c))
+                {
+                    if (!skipped)
+                    {
+                        rez[pos] = ' ';
+                        pos++;
+                        // output.Append(' ');
+                        skipped = true;
+                    }
+                }
+                else
+                {
+                    skipped = false;
+                    rez[pos] = c;
+                    pos++;
+                    // output.Append(c);
+                }
+            }
+
+            return new string(rez);
         }
 
         private static string NormalizeWhiteSpace(string input)
