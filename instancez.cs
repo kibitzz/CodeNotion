@@ -1239,9 +1239,9 @@ namespace basicClasses
             {
                 rezb = true;
                 List<string> tempNames = new List<string>();
+              
+                opis ms = SVC[modelSpecIdx]; // caller function spec -- _sys_subscript can be specified there
 
-                opis ms = SVC[modelSpecIdx];
-                
                 opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body              
 
                 opis modelSpec = new opis(-1);
@@ -1393,7 +1393,7 @@ namespace basicClasses
                     {
                         subscribeProduce = modelIsProducer
                                     && (SVC[ldcIdx].W().isHere(pn.Trim('~') + "_sys_subscript")
-                                       || modelSpec.isHere(pn.Trim('~') + "_sys_subscript"));
+                                       || ms.isHere(pn.Trim('~') + "_sys_subscript"));
                         //prodLocalContext = modelIsProducer;
 
                         nameOfSubj = GetTempValName(SVC, tempNames);
@@ -1432,9 +1432,9 @@ namespace basicClasses
                 {
                     string pn = b.Trim('>', '<', ' ', '*', '~') + "_sys_subscript";
 
-                    if (modelSpec.isHere(pn)) // priority on explicit method extention in model spec
+                    if (ms.isHere(pn)) // priority on explicit method extention in model spec
                     {
-                        var subscription = modelSpec[pn].Duplicate();
+                        var subscription = ms[pn].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
                     }
                     else

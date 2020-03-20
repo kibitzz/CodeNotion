@@ -21,8 +21,7 @@ namespace basicClasses.models.String_proc
             {
                 return string.Empty;
             }
-
-        //    StringBuilder output = new StringBuilder();
+      
             bool skipped = false;
 
             char[] rez = new char[input.Length];
@@ -35,8 +34,7 @@ namespace basicClasses.models.String_proc
                     if (!skipped)
                     {
                         rez[pos] = ' ';
-                        pos++;
-                        // output.Append(' ');
+                        pos++;                        
                         skipped = true;
                     }
                 }
@@ -44,12 +42,11 @@ namespace basicClasses.models.String_proc
                 {
                     skipped = false;
                     rez[pos] = c;
-                    pos++;
-                    // output.Append(c);
+                    pos++;                  
                 }
             }
 
-            return new string(rez);
+            return new string(rez, 0, pos);
         }
 
         private static string NormalizeWhiteSpace(string input)
