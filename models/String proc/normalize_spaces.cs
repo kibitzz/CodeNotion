@@ -15,14 +15,14 @@ namespace basicClasses.models.String_proc
             message.body = NormalizeWhiteSpace2(message.body);
         }
 
-        private static string NormalizeWhiteSpace2(string input)
+        public static string NormalizeWhiteSpace2(string input)
         {
             if (string.IsNullOrEmpty(input))
             {
                 return string.Empty;
             }
       
-            bool skipped = false;
+            bool skipped = true;
 
             char[] rez = new char[input.Length];
             int pos = 0;
@@ -46,38 +46,56 @@ namespace basicClasses.models.String_proc
                 }
             }
 
+            if (pos > 0 && char.IsWhiteSpace(rez[pos - 1]))
+                pos--;
+
+            if (pos == input.Length)
+                return input;
+
             return new string(rez, 0, pos);
         }
 
-        private static string NormalizeWhiteSpace(string input)
+        public static string NormalizeSpRemoveControlsSeparators(string input)
         {
             if (string.IsNullOrEmpty(input))
             {
                 return string.Empty;
             }
 
-            StringBuilder output = new StringBuilder();
-            bool skipped = false;
+            bool skipped = true;
+
+            char[] rez = new char[input.Length];
+            int pos = 0;
 
             foreach (char c in input)
             {
-                if (char.IsWhiteSpace(c))
+                if (char.IsWhiteSpace(c) || char.IsControl(c) || char.IsSeparator(c))
                 {
                     if (!skipped)
                     {
-                        output.Append(' ');
+                        rez[pos] = ' ';
+                        pos++;
                         skipped = true;
                     }
                 }
                 else
                 {
                     skipped = false;
-                    output.Append(c);
+                    rez[pos] = c;
+                    pos++;
                 }
             }
 
-            return output.ToString();
+            if (pos > 0 && char.IsWhiteSpace(rez[pos - 1]))
+                pos--;
+
+            if (pos == input.Length)
+                return input;
+
+            return new string(rez, 0, pos);
         }
 
+
+       
     }
 }

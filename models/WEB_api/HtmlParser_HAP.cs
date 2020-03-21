@@ -1,4 +1,5 @@
-﻿using HtmlAgilityPack;
+﻿using basicClasses.models.String_proc;
+using HtmlAgilityPack;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -111,13 +112,17 @@ namespace basicClasses.models.WEB_api
                     }
 
                     if (html.Length < maxHtmlShow)
-                        htmobj.body = html.Trim()
-                                                        .Replace('\n', ' ')
-                                                        .Replace('\t', ' ');
+                        htmobj.body = normalize_spaces.NormalizeSpRemoveControlsSeparators(html);
+                                                      
+                    //htmobj.body = html.Trim()
+                    //                                .Replace('\n', ' ')
+                    //                                .Replace('\t', ' ');
                 }
 
-                rn[0].Vset("InnerText", node.InnerText.Trim().Replace("\n", " ")
-                                                    .Replace("\t", " ").Replace("                ", " ").Replace("     ", " "));
+                rn[0].Vset("InnerText", normalize_spaces.NormalizeSpRemoveControlsSeparators(node.InnerText));
+
+                //rn[0].Vset("InnerText", node.InnerText.Trim().Replace("\n", " ")
+                //                                    .Replace("\t", " ").Replace("                ", " ").Replace("     ", " "));
             } else
                 ignoreattr = !ignoreattr;
           

@@ -1447,7 +1447,10 @@ namespace basicClasses
 
 
                 foreach (string tn in tempNames)
-                tempSDCstack.Push(tn);
+                {
+                    //SVC[tn] = new opis(1);
+                    tempSDCstack.Push(tn);                    
+                }
 
                 SVC[modelSpecIdx] = ms;
             }
@@ -1468,16 +1471,17 @@ namespace basicClasses
 
         string GetTempValName(opis SVC, List<string> tempNames)
         {
-            string rez = "";
+            string rez = "tmp_val_do_not_override";
 
             if (tempSDCstack.Count > 0)
             {
                 rez = tempSDCstack.Pop();
-                SVC[rez] = new opis();
+
+                SVC[rez] = new opis(1);
             }
             else
                 rez = DateTime.Now.Ticks.ToString() + rnd.Next().ToString() + rnd.Next().ToString();
-           
+
             tempNames.Add(rez);
 
             return rez;
