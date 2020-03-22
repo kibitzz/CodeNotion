@@ -75,7 +75,7 @@ namespace basicClasses.models.WEB_api
             var docRoot = rez["DocumentNode"];
 
             Trace(doc.DocumentNode, docRoot);
-
+            
             message.CopyArr( docRoot);         
         }
 

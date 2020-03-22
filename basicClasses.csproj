@@ -179,6 +179,7 @@
     <Compile Include="models\String proc\text_case_transform.cs" />
     <Compile Include="models\StructureProcessing\arr_chuncks.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
+    <Compile Include="models\sys_ext\garbage_collection.cs" />
     <Compile Include="models\sys_ext\GlobalParamsProvider.cs" />
     <Compile Include="models\sys_ext\GuiFomsFactory.cs" />
     <Compile Include="models\sys_ext\IntactCopyChecker.cs" />

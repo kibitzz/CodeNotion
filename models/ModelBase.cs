@@ -131,6 +131,14 @@ namespace basicClasses.models
             sharedVal.SubscribeForNotification(modelData);
         }
 
+        public opis SpecLocalRunAll()
+        {
+            opis specl = modelSpec.Duplicate();
+            instanse.ExecActionModelsList(specl);
+
+            return specl;
+        }
+
         public virtual void ProcessWaiter(opis evento, opis sender)
         {
             // ModelOpisEvent.receiver це обєкт що підписаний на сповіщення 

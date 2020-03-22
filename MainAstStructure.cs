@@ -25,8 +25,10 @@ namespace basicClasses
 
         public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(70000);
 
+        public static ulong TotalObjectsCreated;
+
 #if DEBUG
-         
+
         public static ulong copyCacheHit;
         public static ulong copyCacheIntact;
         public static ulong copyExecTotal;
@@ -355,7 +357,7 @@ namespace basicClasses
 
             body = "";
 #endif
-
+            TotalObjectsCreated++;
             arr = new opis[InitialArrSize];
         }
 
@@ -373,7 +375,7 @@ namespace basicClasses
 
             body = "";
 #endif
-
+                TotalObjectsCreated++;
                 arr = new opis[capacity];            
             } 
         }
@@ -2064,7 +2066,10 @@ namespace basicClasses
 #if !intact_copy_opt
             copy = null;
 #else
-           
+            if (permaCopy == 0)
+                copy = null;
+            //else
+            //    copy = rez;
 #endif
 
             return rez;
