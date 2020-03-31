@@ -59,6 +59,7 @@ namespace basicClasses
         int prevSplitPos;
         TreeNode notionTree;
         bool doSplitterMove;
+        bool SplittersResized;
 
         public Form1()
         {
@@ -140,7 +141,8 @@ namespace basicClasses
             GuiFomsFactory.callbackFrm = this;
             GuiFomsFactory.deleg = new guiFactoryGelegate(CreateForm);
 
-            opis.do_not_build_debug = false;           
+            opis.do_not_build_debug = false;
+          
 
         }
 
@@ -387,11 +389,44 @@ namespace basicClasses
             if (modelLocherThread != null)
                 modelLocherThread.Abort();
 
+            SaveSplitterPositions();          
 
             Parser.SaveEnvironment();
 
             string[] arr = richTextBox3.Lines;
             DataFileUtils.savefile(arr, "codeInput.txt");
+        }
+
+        opis GuiSettings()
+        {
+           return Parser.ContextGlobal["words"].getForm("sentence_context")["gui settings"];
+        }
+
+        void SaveSplitterPositions()
+        {
+            opis sc = GuiSettings();
+            sc.Vset("vsplit", splitContainer1.SplitterDistance.ToString());
+            sc.Vset("hsplit", splitContainer2.SplitterDistance.ToString());
+        }
+
+        void SetupSplitterPositions()
+        {
+            if (!SplittersResized)
+            {
+                opis sc = GuiSettings();
+
+                if (sc.isHere("vsplit"))
+                {
+                    splitContainer1.SplitterDistance = sc["vsplit"].intVal;
+                }
+
+                if (sc.isHere("hsplit"))
+                {
+                    splitContainer2.SplitterDistance = sc["hsplit"].intVal;
+                }
+            }
+
+            SplittersResized = true;
         }
 
         private void button4_Click(object sender, EventArgs e)
@@ -1498,7 +1533,9 @@ namespace basicClasses
         {
             panel1.Visible = false;
 
-            if(doSplitterMove)
+            SetupSplitterPositions();
+
+            if (doSplitterMove)
             splitContainer1.SplitterDistance = prevSplitPos;
         }
 
@@ -1623,9 +1660,9 @@ namespace basicClasses
         private void treeView2_MouseEnter(object sender, EventArgs e)
         {
             if (!listBox2.Visible && splitContainer1.SplitterDistance > 530 && doSplitterMove)
-                prevSplitPos = splitContainer1.SplitterDistance;
+                prevSplitPos = splitContainer1.SplitterDistance;           
 
-            if(doSplitterMove)
+            if (doSplitterMove)
             splitContainer1.SplitterDistance = 530;
         }
 

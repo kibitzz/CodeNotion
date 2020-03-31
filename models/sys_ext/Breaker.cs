@@ -31,7 +31,7 @@ namespace basicClasses.models.sys_ext
 
                 surc = modelSpec[condition].Duplicate();
                 instanse.ExecActionModel(surc, surc);
-                if (surc.isHere("exit") || surc.body == "exit")
+                if (surc.body == "exit" || surc.isHere("exit") )
                 {
                     SetFlag(message);
 

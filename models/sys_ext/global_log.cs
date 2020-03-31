@@ -6,7 +6,7 @@ using System.Text;
 namespace basicClasses.models.sys_ext
 {
     [appliable("all")]
-    [info("shared log for all objects in context. no modification at Process( message).  sheme instanse.ExecActionModelsList(modelSpec); by default duplicate all values ")]
+    [info("shared log for all objects in context. no modification at Process( message).  by default duplicate all values ")]
    public class global_log:ModelBase
     {
         [ignore]
@@ -47,7 +47,7 @@ namespace basicClasses.models.sys_ext
 
 
     [appliable("all")]
-    [info("separate local log for current instance .  sheme instanse.ExecActionModelsList(modelSpec); by default duplicate all values ")]
+    [info("separate local log for current instance .   by default duplicate all values ")]
     public class local_log : ModelBase
     {
 

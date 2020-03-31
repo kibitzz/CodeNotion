@@ -55,11 +55,13 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            opis word_arr = new opis();
+            opis word_arr = new opis(arr.Length +1);
            
             for(int i =0; i < arr.Length; i++)
             {
-                word_arr.Vset(i.ToString(), arr[i].Trim());
+                opis itm = new opis(0) { PartitionName = i.ToString(),  body = arr[i].Trim() };
+                word_arr.AddArr(itm);
+               // word_arr.Vset(i.ToString(), arr[i].Trim());
             }
 
             var rez = "";
