@@ -7,7 +7,7 @@ using System.Text;
 namespace basicClasses.models.Extractors
 {   
 
-    [info("Put global variable name in BODY to put it in this partition (key) . filler type of function (those who replace its call by resulted value) ")]
+    [info("filler  ")]
     [appliable("  creation    ")]
     public class fill_shared_context_Role : ModelBase
     {
@@ -62,31 +62,31 @@ namespace basicClasses.models.Extractors
     }
 
 
-    [info("Put global variable name in BODY to put it in this partition (key).   filler type of function (those who replace its call by resulted value)")]
+    [info("Put global variable name in BODY to set value of instance global variable(role) to this partition (key).   filler type of function (those who replace its call by resulted value)")]
     [appliable("MsgTemplate all creation FillerList BodyValueModificator TreeDataExtractor ")]
     public class fill_Role : ModelBase
     {
-      
+
         public override void Process(opis message)
         {
             if (message.PartitionKind == name)
                 message.PartitionKind += "_done";
 
             string nm = message.body;
-            if (!string.IsNullOrEmpty(nm))
-            {
-                opis tmp = sharedVal.isHere(nm) ? sharedVal[nm].W() : new opis();// SharedContextRoles.GetRole(nm, sharedVal);
 
-                if (modelSpec.getPartitionIdx("W") != -1)
-                {
-                    message.Wrap(tmp);
-                }
-                else
-                {
-                    message.body = tmp.body;
-                    message.CopyArr(tmp);
-                }
+            int idx = sharedVal.getPartitionIdx(nm);
+            opis tmp = idx != -1 ? sharedVal[idx].W() : new opis();// SharedContextRoles.GetRole(nm, sharedVal);
+
+            if (modelSpec.getPartitionIdx("W") != -1)
+            {
+                message.Wrap(tmp);
             }
+            else
+            {
+                message.body = tmp.body;
+                message.CopyArr(tmp);
+            }
+
         }
 
     }

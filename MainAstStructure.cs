@@ -362,8 +362,7 @@ namespace basicClasses
         }
 
         public opis()
-        {
-                    
+        {                    
             init();        
         }
 
@@ -403,9 +402,7 @@ namespace basicClasses
                         this.body = val;
                     }
                 }
-
-            }
-         
+            }         
         }
 
 
@@ -1080,7 +1077,6 @@ namespace basicClasses
         /// <returns></returns>
         public bool isHere(string part)
         {
-
             return getPartitionIdx(part) != -1;
         }
 
@@ -1841,6 +1837,27 @@ namespace basicClasses
 
             return rez;
 
+        }
+
+        public opis Branch(opis templ, bool create, bool unwrap = true)
+        {
+            opis rez = null;
+            int idx = getPartitionIdx(templ.PartitionName);
+
+            if (idx == -1 && create)
+                idx = AddArr(new opis(templ.listCou > 0 ? templ.listCou : 1) { PartitionName = templ.PartitionName, body = templ.body });
+
+            if (idx != -1)
+            {
+                opis br = unwrap ? this[idx].W() : this[idx];
+                rez = br;
+                for (int i = 0; i < templ.listCou; i++)
+                {
+                    rez = br.Branch(templ[i], create, unwrap);                  
+                }
+            }
+
+            return rez;
         }
 
         public static bool CopyIntact(opis original, opis usedcopy)

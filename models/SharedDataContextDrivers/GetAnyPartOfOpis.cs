@@ -67,19 +67,22 @@ namespace basicClasses.models.SharedDataContextDrivers
         public override void Process(opis message)
         {
             opis source = null;
-          
+
             opis currSpec = modelSpec;
 
             if (modelSpec.isHere(sdc_item))
             {
                 opis svc = sharedVal;
                 opis p = modelSpec[sdc_item].Duplicate();
-                instanse.ExecActionModel(p, p);                
-                source = svc.isHere(p.body)? svc[p.body] : null;
+                instanse.ExecActionModel(p, p);
 
-                if (currSpec[create].isInitlze)
+                int pos = svc.getPartitionIdx(p.body);
+                source = pos != -1 ? svc[pos] : null;
+
+                if (source == null && currSpec[create].isInitlze)
                     source = svc[p.body];
-            }else
+            }
+            else
 
             if (modelSpec.isHere(sdc_Role))
             {
@@ -93,9 +96,9 @@ namespace basicClasses.models.SharedDataContextDrivers
                     SharedContextRoles.SetRole(source, p.body, sharedVal);
                 }
 
-                if (source.PartitionKind == "null" )
+                if (source.PartitionKind == "null")
                 {
-                    source =null;                   
+                    source = null;
                 }
             }
             else
@@ -108,10 +111,12 @@ namespace basicClasses.models.SharedDataContextDrivers
 
             modelSpec = currSpec;
 
-            if ( source!=null)
+            if (source != null)
             {
                 opis rez = source;
-                opis templ = new opis();
+#if DEBUG
+                //opis templ = new opis();
+#endif
 
                 if (modelSpec.isHere(template))
                 {
@@ -124,27 +129,29 @@ namespace basicClasses.models.SharedDataContextDrivers
                         instanse.ExecActionModelsList(ptt);
                         modelSpec = currSpec;
                         rez = GetLevelCheck(ptt[0], source.W());
-                        templ = ptt[0];
+#if DEBUG
+                        //templ = ptt[0];
+#endif
                     }
                 }
 
 #if DEBUG
-                if (currSpec.isHere(debug))
-                {
-                    var l = new opis();
-                    thisins["Models_log"].AddArr(l);
-                    l.AddArr(currSpec);
-                    l.AddArr(source);
-                    l.AddArr(templ);
-                    l.AddArr(rez);
-                }
+                //if (currSpec.isHere(debug))
+                //{
+                //    var l = new opis();
+                //    thisins["Models_log"].AddArr(l);
+                //    l.AddArr(currSpec);
+                //    l.AddArr(source);
+                //    l.AddArr(templ);
+                //    l.AddArr(rez);
+                //}
 #endif
 
                 modelSpec = currSpec;
 
                 if (rez != null)
                 {
-                    // на випадок коли modelSpec і message це одна ссилка
+                    // in case modelSpec and message referencing the same data
                     opis procSpec = modelSpec[process].Duplicate();
 
                     rez = rez.W();
@@ -153,8 +160,6 @@ namespace basicClasses.models.SharedDataContextDrivers
                         rez = rez.Duplicate();
 
 
-                    // якщо в якості параметру для заповнення передається якийсь обєкт
-                    // наприклад дана модель в списку validate повідомлення, то ми не змінюємо його
                     if (message.PartitionKind != "answer" && !modelSpec[do_not_modify].isInitlze)
                     {
                         if (modelSpec[do_wrap].isInitlze)
@@ -184,15 +189,15 @@ namespace basicClasses.models.SharedDataContextDrivers
                     message.CopyArr(new opis());
                 }
 
-            } else
+            }
+            else
             {
                 if (message.PartitionName == "value")
                     message.CopyArr(new opis());
-            }                
+            }
 
         }
-
-
+      
         opis GetLevelCheck(opis templ, opis srs)
         {
             opis rez = null;
@@ -200,15 +205,15 @@ namespace basicClasses.models.SharedDataContextDrivers
             {
                 rez = srs[templ.PartitionName];
 
-                if (  modelSpec[templateUnwrap].isInitlze && rez.PartitionKind == "wrapper")
+                if (modelSpec[templateUnwrap].isInitlze && rez.PartitionKind == "wrapper")
                     rez = rez.W();
 
-                bool haveSubitems = templ.listCou >0;
+                bool haveSubitems = templ.listCou > 0;
                 bool foundSubitems = false;
                 for (int i = 0; i < templ.listCou; i++)
                 {
-                   opis tmp = GetLevelCheck(templ[i], rez);
-                    if (tmp!=null && tmp.isInitlze)
+                    opis tmp = GetLevelCheck(templ[i], rez);
+                    if (tmp != null && tmp.isInitlze)
                     {
                         foundSubitems = true;
                         rez = tmp;
