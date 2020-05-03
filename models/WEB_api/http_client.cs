@@ -561,7 +561,7 @@ namespace basicClasses.models.WEB_api
            
             HttpWebRequest myHttpWebRequest = (HttpWebRequest)WebRequest.Create(urlUri);
             myHttpWebRequest.Method = metod;
-            myHttpWebRequest.Timeout = 200000;
+            myHttpWebRequest.Timeout = 120000;
             EncoderOfResponce = Encoder;
 
             if (AcceptAllCertificates)
@@ -570,7 +570,9 @@ namespace basicClasses.models.WEB_api
             #region  Proxy
             if (useProxy)
             {
-                myHttpWebRequest.Proxy = myProxy;                
+                myHttpWebRequest.Proxy = myProxy;
+                int to = _proxySettings["timeout"].intVal;
+                myHttpWebRequest.Timeout = to > 0 ? to : 9000;
             }
             #endregion
 
@@ -616,9 +618,15 @@ namespace basicClasses.models.WEB_api
                         myHttpWebRequest.KeepAlive = true;
                     //myHttpWebRequest.Connection = header.Substring(11).Trim();
                 }
+                else if (headerl.StartsWith("timeout"))
+                    myHttpWebRequest.Timeout = int.Parse(header.Substring(8).Trim());
+               
                 else
                     myHttpWebRequest.Headers.Add(header);
             }
+
+            if (!Array.Exists(headers, x => x.Contains("ncoding:")))
+                myHttpWebRequest.Headers.Add("Accept-Encoding: gzip, deflate");
 
 
             myHttpWebRequest.ServicePoint.Expect100Continue = false;          
