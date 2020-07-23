@@ -38,7 +38,7 @@ namespace basicClasses.models
         [model("Messaging")]
         public static readonly string Start = "Start";
 
-        [info("contain branches for each context and seperate branch for message type within context. to access current message and its parameter system generate local data context (val. acccess by * prefix) contain <currMsg> and <msg p>.    Base methods runs first when handling message, and then spec methods")]
+        [info("contain branches for each context and seperate branch for message type within context. to access current message and its parameter system generate local data context (val. acccess by * prefix) contain <cmsg> and <msg p>.    Base methods runs first when handling message, and then spec methods")]
         [model("Messaging")]
         public static readonly string Responces = "Responces";
 

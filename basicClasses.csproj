@@ -178,6 +178,7 @@
     <Compile Include="models\String proc\PeriodIterator.cs" />
     <Compile Include="models\String proc\text_case_transform.cs" />
     <Compile Include="models\StructureProcessing\arr_chuncks.cs" />
+    <Compile Include="models\StructureProcessing\EmbedTree.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
     <Compile Include="models\sys_ext\garbage_collection.cs" />
     <Compile Include="models\sys_ext\GlobalParamsProvider.cs" />
@@ -220,7 +221,6 @@
     <Compile Include="models\StructureProcessing\NextArrItm.cs" />
     <Compile Include="models\StructureProcessing\RangeAndAssign.cs" />
     <Compile Include="models\StructureProcessing\TemplateSearch.cs" />
-    <Compile Include="models\StructureProcessing\template_builder.cs" />
     <Compile Include="models\StructureProcessing\TreeDataExtractor.cs" />
     <Compile Include="models\sys_ext\AnswerToMessage.cs" />
     <Compile Include="models\sys_ext\Breaker.cs" />

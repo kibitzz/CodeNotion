@@ -218,7 +218,7 @@ namespace basicClasses
 
             string ddd = this.richTextBox1.Rtf;
 
-            color();
+            //color();
 
             treeView1.Nodes.Clear();
 
@@ -232,78 +232,7 @@ namespace basicClasses
             treeView1.Nodes.Add(replica.GetDebugTree());
 
         }
-
-        void color()
-        {
-            string rftHeader = @"{\rtf1\ansi\ansicpg1251\deff0\deflang1049{\fonttbl{\f0\fnil\fcharset204 Microsoft Sans Serif;}}";
-            //            string rftHeader = @"{\rtf1\ansi\ansicpg1251\deff0{\fonttbl{\f0\fnil\fcharset204 Microsoft Sans Serif;}}";                                         //128  // 114   // 41  143 44    128
-            rftHeader += @"{\colortbl ;\red138\green43\blue226;\red139\green0\blue0;\red0\green139\blue139;\red0\green0\blue205;\red0\green0\blue0;\red250\green90\blue160;\red250\green10\blue27;}";
-            rftHeader += @"\viewkind4\uc1\pard\cf1\b\f0\fs19 ";
-
-
-            //            rftHeader += @"\viewkind4\uc1\pard\b\cf1\lang1049\f0\fs18";
-
-            StringBuilder SB = new StringBuilder();
-
-            string[] uncoloredLines = new string[this.richTextBox1.Lines.Length];
-            this.richTextBox1.Lines.CopyTo(uncoloredLines, 0);
-
-            string[] arrFunc1 = new string[]{"присвоїти","отримати","зменшити","цикл","елемент","розмір",
-                "перевірити","якщо","послідовність","запамятати","збільшити"
-            ,"зменшити","інакше","успіх","кінець","межациклу","кінець","кінець"};
-
-            string[] arrFunc = new string[] { "отримати", "перевірити", "елемент", "розмір", "послідовність", "закінчення" };
-            //,"","","","","","",""};
-
-            string[] arrCondit = new string[] { "якщо", "інакше", "успіх" };
-
-            string[] arrHelp = new string[] { "і", "або", "то", "чи", "до", "в", "з", "на" };
-
-            string[] arrUnary = new string[] { "присвоїти", "зменшити", "запамятати", "збільшити", "додати" };
-
-            string[] arrCycle = new string[] { "цикл", "межациклу", "циклу", "кінець", "продовжити" };
-
-            string[] arrSecFunc = new string[] { "вивести", "додатьсвойство", "установититипзначення",
-                "присвоїтьОбєктПаразамкнута", "присвоїтьзначення" };
-            string[] arrBlock = new string[] { "блок", "кінецьблоку" };
-
-            foreach (string uncoloredText in uncoloredLines)
-            {
-                string[] tmp = uncoloredText.Split();
-                int cou = 0;
-                foreach (string s in tmp)
-                {
-                    int t = 0;
-                    if (Array.IndexOf(arrFunc, s) != -1) { SB.Append(GetStrColorByExpr(3)); t = 1; }
-                    if (Array.IndexOf(arrCondit, s) != -1) { SB.Append(GetStrColorByExpr(1)); t = 1; }
-                    if (Array.IndexOf(arrHelp, s) != -1) { SB.Append(GetStrColorByExpr(1)); t = 1; } //5
-                    if (Array.IndexOf(arrUnary, s) != -1) { SB.Append(GetStrColorByExpr(4)); t = 1; }
-                    if (Array.IndexOf(arrCycle, s) != -1) { SB.Append(GetStrColorByExpr(6)); t = 1; }
-                    if (Array.IndexOf(arrSecFunc, s) != -1) { SB.Append(GetStrColorByExpr(5)); t = 1; }
-                    if (Array.IndexOf(arrBlock, s) != -1) { SB.Append(GetStrColorByExpr(2)); t = 1; }
-
-                    if (t == 0)
-                    {
-                        SB.Append(GetStrColorByExpr(cou == 0 ? 3 : 222));
-                    }
-
-                    SB.Append(string.IsNullOrWhiteSpace(s) ? "" : " " + s.Replace("{", "\\{").Replace("}", "\\}"));
-
-                    cou++;
-                }
-                SB.Append(@"\line ");
-
-            }
-
-            string RTF = "";
-            RTF = SB.ToString();
-            //RTF = RTF.Substring(0, RTF.Length - 5); // delete last "\par "
-
-
-            this.richTextBox1.Rtf = rftHeader + RTF + "}";
-            this.richTextBox1.Update();
-        }
-
+       
 
         string GetStrColorByExpr(int s)
         {

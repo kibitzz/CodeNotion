@@ -65,7 +65,7 @@ namespace basicClasses.models.sys_ext
 
         public override void Process(opis message)
         {
-            bool pass = (modelSpec.V("ID") == o.V("ID") );           
+            bool pass = (modelSpec.V("ID") == o.V("ID") && !string.IsNullOrEmpty(modelSpec.V("ID")) );           
 
             var ids = modelSpec["ID"].Duplicate();
             instanse.ExecActionModel(ids, ids);

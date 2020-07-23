@@ -142,7 +142,9 @@ namespace basicClasses.Factory
             models.Add("Check_TimestampDiff", new Check_TimestampDiff());
             models.Add("TagArrayItems", new TagArrayItems());
             models.Add("NextArrItm", new NextArrItm());
-            models.Add("TemplateSearch", new TemplateSearch());            
+            models.Add("TemplateSearch", new TemplateSearch());
+            models.Add("EmbedTree", new EmbedTree());
+            
             models.Add("Make_pause", new Make_pause());
             models.Add("Check_isInArray", new Check_isInArray());
             models.Add("Check_is_odd", new Check_is_odd());

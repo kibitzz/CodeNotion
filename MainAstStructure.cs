@@ -1518,15 +1518,12 @@ namespace basicClasses
 
                 isDuplicated = true;
                 TreeNode tmp = new TreeNode(PartitionName + "[" + PartitionKind + "]  " + ((body != null && body.Length > 2000) ? "//long data//" : body));
-                tmp.Tag = this;
-                //if (treeElem != null) treeElem.Tag = null;
+                tmp.Tag = this;                
                 treeElem = tmp;
                 tmp.ForeColor = getColorOfModel(PartitionKind);
 
                 tn.Nodes.Add(tmp);
-                //if (PartitionKind == "func")
-                //    tn.Nodes.Add(new TreeNode());
-
+               
 
                 for (int i = 0; i < paramCou; i++)
                 {
@@ -1604,9 +1601,7 @@ namespace basicClasses
                     rez = Color.Chocolate;
                     break;
 
-                case "func":
-                    //  rez = Color.FromArgb(225,199,117);
-                    //rez = Color.FromArgb(217, 188, 92);
+                case "func":                   
                     rez = Color.FromArgb(226, 205, 133);
                     break;
 
@@ -1641,6 +1636,19 @@ namespace basicClasses
                 case "RangingList":
                 case "RangeAndAssign":
                     rez = Color.FromArgb(255, 151, 185);
+                    break;
+               
+                case "функция":                   
+                    rez = Color.FromArgb(203, 151, 255);
+                    break;
+                case "аппликатор":
+                    rez = Color.FromArgb(255, 134, 173);
+                    break;
+                case "класс":
+                    rez = Color.FromArgb(77, 166, 220);
+                    break;                    
+                case "категория":
+                    rez = Color.FromArgb(112, 228, 200);
                     break;
 
 
