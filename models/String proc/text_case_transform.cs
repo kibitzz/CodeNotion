@@ -8,37 +8,43 @@ namespace basicClasses.models.String_proc
 {
     class text_case_transform : ModelBase
     {
-        [info("Higher First Letter")]
-        [model("spec_tag")]
-        public static readonly string first_higher = "first_higher";
-
         [info("all to lower and trim")]
         [model("spec_tag")]
         public static readonly string to_lower = "to_lower";
 
-        [info("sentence")]
+        [info("every word First Letter to upper")]
+        [model("spec_tag")]
+        public static readonly string first_higher = "first_higher";
+
+        [info("First letter afrer each dot")]
         [model("spec_tag")]
         public static readonly string sentence = "sentence";
 
+        
         public override void Process(opis message)
         {
             opis spec = modelSpec.Duplicate();
             instanse.ExecActionModelsList(spec);
-
-            if (spec.isHere(first_higher))
-            {
-                message.body = upper(message.body, (x, prev) => char.IsWhiteSpace(x));                            
-            }
 
             if (spec.isHere(to_lower))
             {
                 message.body = message.body.ToLower().Trim();
             }
 
+            if (spec.isHere(first_higher))
+            {
+                message.body = upper(message.body, (x, prev) => char.IsWhiteSpace(x));                            
+            }
+                       
             if (spec.isHere(sentence))
             {
                 message.body = upper(message.body, (x, prev) => (x == '.' || (char.IsWhiteSpace(x) && prev)));
             }
+
+            //if (spec.isHere(sentence))
+            //{
+            //    message.body = upper(message.body, (x, prev) => (x == '.' || (char.IsWhiteSpace(x) && prev)));
+            //}
 
 
 
@@ -46,7 +52,7 @@ namespace basicClasses.models.String_proc
 
         string upper(string t, Func<char, bool, bool> f)
         {
-            var arr = t.Trim().ToLower().ToCharArray();
+            var arr = t.Trim().ToCharArray();
 
             StringBuilder output = new StringBuilder();
             bool prevsp = true;

@@ -23,9 +23,11 @@ namespace basicClasses.models.Extractors
     {
         public override void Process(opis message)
         {
-            CTX.Handle(CTX.GoUp());          
-            message.body = CTX.organizer;
-                   
+            //CTX.Handle(CTX.GoUp());          
+            //message.body = CTX.organizer;
+
+            message.body = CTX.GoUp().V(context.Organizer);
+
         }
     }
 }

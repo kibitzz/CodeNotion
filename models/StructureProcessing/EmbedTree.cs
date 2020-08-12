@@ -26,9 +26,11 @@ namespace basicClasses.models.StructureProcessing
             for (int i = 0; i < emb.listCou; i++)
             {
                 var v = emb[i];
-                host[v.PartitionName].body = v.body;
+                var hv = host[v.PartitionName];
+                hv.body = v.body;
+                hv.PartitionKind = v.PartitionKind;
 
-                build(host[v.PartitionName], v);
+                build(hv, v);
             }
         }
     }
