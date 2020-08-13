@@ -46,6 +46,8 @@ namespace basicClasses.models.String_proc
             var h = spec[hour].intVal;
             var m = spec[minute].intVal;
 
+            var format = spec[dateFormat].body;
+
             opis rez = new opis();
 
             foreach (var date in dayz)
@@ -59,7 +61,7 @@ namespace basicClasses.models.String_proc
                 dayInfo.Vset("Day", d.Day.ToString());
                 dayInfo.Vset("DayOfWeek", ((int)d.DayOfWeek).ToString());
                 dayInfo.Vset("Ticks", d.Ticks.ToString());
-                dayInfo.Vset("Formatted", d.ToString(dateFormat));
+                dayInfo.Vset("Formatted", d.ToString(format));
                 dayInfo.Vset("week_num", (Dates.WeekNumSince(firstW, d) +1).ToString());
                 dayInfo.Vset("week_1_2", (Dates.WeekForDate(firstW, 1, d)).ToString());
 
