@@ -2186,7 +2186,7 @@ namespace basicClasses
         {
             bool rez = false;
 
-            rez = this.V(kvp.PartitionName) == kvp.body;
+            rez = this.isHere(kvp.PartitionName) &&  this.V(kvp.PartitionName) == kvp.body;
 
             if (!rez)
             {

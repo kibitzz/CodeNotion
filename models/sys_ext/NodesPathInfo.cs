@@ -23,6 +23,10 @@ namespace basicClasses.models.sys_ext
         [model("spec_tag")]
         public static readonly string by_value = "by_value";
 
+        [info("remove closest parent branch from trace list")]
+        [model("spec_tag")]
+        public static readonly string remove_1st = "remove_1st";
+
         public override void Process(opis message)
         {
             opis ms = SpecLocalRunAll();
@@ -56,10 +60,101 @@ namespace basicClasses.models.sys_ext
                 return;
             }
 
-            //FindPath(ms[tree], foundFrom, foundTo);
+            opis tracef = new opis();
+            TracePath(ms[tree], foundFrom, tracef);
+
+            opis tracet = new opis();
+            TracePath(ms[tree], foundTo, tracet);
+
+            if (ms.isHere(remove_1st))
+            {
+                tracef.RemoveArrElem(tracef[0]);
+                tracet.RemoveArrElem(tracet[0]);
+
+                tracef.arr[tracef.listCou] = null;
+                tracet.arr[tracet.listCou] = null;
+            }
 
 
+            rez["PathPoints_from"] = PathPoints(tracef);
+            rez["PathPoints_to"] = PathPoints(tracet);
+
+            rez["LastCommonItem"] = LastCommonItem(tracef, tracet);
+
+            related_as(rez);
+          
             message.CopyArr(rez);
+        }
+
+        void related_as(opis rez)
+        {
+            int depthF = 0;
+            int depthT = 0;
+            int commonDepth = 0;
+
+            if (rez["LastCommonItem"].isInitlze)
+            {
+                commonDepth = rez["LastCommonItem"]["level_split"].intVal;
+            }
+
+            if (rez["PathPoints_from"].isInitlze)
+            {
+                rez["parent_from"].Wrap(rez["PathPoints_from"][0]["branch_ref"].W());
+                depthF = rez["PathPoints_from"][0]["total_depth"].intVal;
+            }
+
+            if (rez["PathPoints_to"].isInitlze)
+            {
+                rez["parent_to"].Wrap(rez["PathPoints_to"][0]["branch_ref"].W());
+                depthT = rez["PathPoints_to"][0]["total_depth"].intVal;
+            }
+
+
+            if (depthF < depthT)
+                rez.Vset("related_as", "lower_to");
+
+            if (depthF > depthT)
+                rez.Vset("related_as", "lower_from");
+
+            if (depthF == depthT)
+                rez.Vset("related_as", "equal");
+
+            rez["related_as"].Vset("lower_to", (depthT - depthF).ToString());
+            rez["related_as"].Vset("lower_from", (depthF - depthT).ToString());
+            rez["related_as"].Vset("level_from", (depthF).ToString());
+            rez["related_as"].Vset("level_to", (depthT).ToString());
+
+            rez["related_as"].Vset("common_level_from", (depthF - commonDepth).ToString());
+            rez["related_as"].Vset("common_level_to", (depthT - commonDepth).ToString());
+
+
+            rez["related_as"].Vset("common_depth", commonDepth.ToString());
+        }
+
+        opis LastCommonItem(opis trace1, opis trace2)
+        {
+            opis rez = new opis();
+
+            var re2 = trace2.arr.Reverse().Where(x=> x!= null);
+            int pos = 0;
+            opis b = new opis() { PartitionName = "no data"};
+
+            foreach (var ti1 in trace1.arr.Reverse().Where(x => x != null))
+            {
+                if (re2.ElementAt(pos) == ti1)
+                {
+                    b = ti1;                    
+                    rez.Vset("level_split", (pos + 1).ToString());
+                }
+
+                pos++;
+            }
+
+            rez.Vset("branch_kind", b.PartitionKind);
+            rez.Vset("branch_name", b.PartitionName);
+            rez.WrapByName(b, "branch_ref");
+
+            return rez;
         }
 
         opis Search(opis tree, opis branch, bool byval)
@@ -79,45 +174,54 @@ namespace basicClasses.models.sys_ext
             return rez;
         }
 
-        void FindPath(opis treeBranch, opis from, opis to, opis info, int currLvl, ref int fromLvl, ref int toLvl)
+        bool TracePath(opis treeBranch, opis item, opis trace)
         {
+            bool rez = false;
+            bool childFound = false;
             for (int i = 0; i < treeBranch.paramCou; i++)
             {
-                if (fromLvl == -1 && treeBranch[i] == from)
+                if (treeBranch[i] == item)
                 {
-                    fromLvl = currLvl;
-                    info[NodesPathInfo.from]["lvl"].intVal = currLvl;
-                    opis pathPoint = new opis() { PartitionName = "point" };
+                    rez = true;
+                }
+                else
+                    childFound = TracePath(treeBranch[i], item, trace);
 
-                    info[NodesPathInfo.from]["nodes"].AddArr(treeBranch);
+                if (childFound)
+                {
+                    trace.AddArr(treeBranch[i]);
+                    rez = true;
+                    break;
                 }
 
-                if (toLvl == -1 && treeBranch[i] == to)
-                {
-                    toLvl = currLvl;
-                    info[NodesPathInfo.to]["lvl"].intVal = currLvl;
-                    info[NodesPathInfo.to]["nodes"].AddArr(treeBranch);
-                }
-                
             }
 
-            int lfromLvl = fromLvl;
-            int ltoLvl = toLvl;
-
-            for (int i = 0; i < treeBranch.paramCou; i++)
-            {                            
-                FindPath(treeBranch[i], from, to, info, currLvl + 1, ref lfromLvl, ref ltoLvl);
-                if (currLvl < lfromLvl)
-                {
-                    
-                    info[NodesPathInfo.from]["nodes"].AddArr(treeBranch);
-                }
-            }
-
-           
-
-
+            return rez;
         }
 
+        opis PathPoints(opis trace)
+        {
+            opis rez = new opis();
+
+            for (int i = 0; i < trace.paramCou; i++)
+            {
+                var itm = new opis()
+                {
+                    PartitionName = trace[i].PartitionName,
+                    body = trace[i].body,
+                    PartitionKind = trace[i].PartitionKind,
+                };
+                itm.Vset("level_up", i.ToString());
+                itm.Vset("level_down", (trace.paramCou - i).ToString());
+                itm.Vset("total_depth", (trace.paramCou).ToString());
+                itm.WrapByName(trace[i],"branch_ref");               
+
+                rez.AddArr(itm);
+            }
+
+            return rez;
+        }
+
+        
     }
 }

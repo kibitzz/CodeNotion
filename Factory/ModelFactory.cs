@@ -199,7 +199,9 @@ namespace basicClasses.Factory
             models.Add("normalize_spaces", new normalize_spaces());            
             models.Add("linear_chart", new linear_chart());
             models.Add("garbage_collection", new garbage_collection());
-           
+
+            models.Add("NodesPathInfo", new NodesPathInfo());
+            
 
             if (ExternalModels != null)
             foreach (var kvp in ExternalModels)
