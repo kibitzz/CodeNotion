@@ -76,14 +76,50 @@ namespace basicClasses.models.sys_ext
             }
 
 
-            rez["PathPoints_from"] = PathPoints(tracef);
-            rez["PathPoints_to"] = PathPoints(tracet);
+            rez["path_points_from"] = PathPoints(tracef);
+            rez["path_points_to"] = PathPoints(tracet);
 
-            rez["LastCommonItem"] = LastCommonItem(tracef, tracet);
+            rez["last_common_parent"] = LastCommonItem(tracef, tracet);
 
             related_as(rez);
-          
+            CommonBranchPthPoints(rez);
+
+
             message.CopyArr(rez);
+        }
+
+        void CommonBranchPthPoints(opis rez)
+        {
+            opis ci = rez["last_common_parent"]["branch_ref"].W();
+
+            opis PathPoints_from = rez["path_points_from"];
+
+            opis from = new opis();
+
+            for (int i = 0; i < PathPoints_from.listCou; i++)
+            {
+                if (PathPoints_from[i].W("branch_ref") == ci)
+                    break;
+
+                from.AddArr(PathPoints_from[i]);
+            }
+
+            //===============
+            opis PathPoints_to = rez["path_points_to"];
+
+            opis to = new opis();
+
+            for (int i = 0; i < PathPoints_to.listCou; i++)
+            {
+                if (PathPoints_to[i].W("branch_ref") == ci)
+                    break;
+
+                to.AddArr(PathPoints_to[i]);
+            }
+
+            rez["common_parent_path_points_from"] = from;
+            rez["common_parent_path_points_to"] = to;
+
         }
 
         void related_as(opis rez)
@@ -92,21 +128,21 @@ namespace basicClasses.models.sys_ext
             int depthT = 0;
             int commonDepth = 0;
 
-            if (rez["LastCommonItem"].isInitlze)
+            if (rez["last_common_parent"].isInitlze)
             {
-                commonDepth = rez["LastCommonItem"]["level_split"].intVal;
+                commonDepth = rez["last_common_parent"]["level_split"].intVal;
             }
 
-            if (rez["PathPoints_from"].isInitlze)
+            if (rez["path_points_from"].isInitlze)
             {
-                rez["parent_from"].Wrap(rez["PathPoints_from"][0]["branch_ref"].W());
-                depthF = rez["PathPoints_from"][0]["total_depth"].intVal;
+                rez["parent_from"].Wrap(rez["path_points_from"][0]["branch_ref"].W());
+                depthF = rez["path_points_from"][0]["total_depth"].intVal;
             }
 
-            if (rez["PathPoints_to"].isInitlze)
+            if (rez["path_points_to"].isInitlze)
             {
-                rez["parent_to"].Wrap(rez["PathPoints_to"][0]["branch_ref"].W());
-                depthT = rez["PathPoints_to"][0]["total_depth"].intVal;
+                rez["parent_to"].Wrap(rez["path_points_to"][0]["branch_ref"].W());
+                depthT = rez["path_points_to"][0]["total_depth"].intVal;
             }
 
 

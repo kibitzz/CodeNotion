@@ -1481,7 +1481,7 @@ namespace basicClasses
         public TreeNode GetDebugTree()
         {
             listOfVisualisedCircularRefs.AddArr(this);
-            return GetDebugTreeIL(160000);
+            return GetDebugTreeIL(200000);
         }
 
         public TreeNode GetDebugTree(int maxDepth)
