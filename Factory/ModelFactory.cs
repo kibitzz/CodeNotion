@@ -201,7 +201,10 @@ namespace basicClasses.Factory
             models.Add("garbage_collection", new garbage_collection());
 
             models.Add("NodesPathInfo", new NodesPathInfo());
+            models.Add("TextCodec", new TextCodec());
             
+
+
 
             if (ExternalModels != null)
             foreach (var kvp in ExternalModels)

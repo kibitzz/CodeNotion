@@ -41,8 +41,8 @@ namespace basicClasses.models.String_proc
             instanse.ExecActionModelsList(spec);
 
             string csource = spec.V(source);
-
            
+
             var arr = string.IsNullOrEmpty(spec.V(separator)) ? csource.Split() : csource.Split(spec.V(separator)[0]);
 
             if (spec.isHere(array_source))

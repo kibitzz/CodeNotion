@@ -1151,6 +1151,9 @@ namespace basicClasses
 
         public void SaveTreeChanges(string newVal, string bodyVal)
         {
+            if (!string.IsNullOrEmpty(newVal) && newVal.Contains("[ REFERENCE ] :"))
+                return;
+
             if (EditingOpis != null && EditingOpis.PartitionName != null && !string.IsNullOrEmpty(newVal))
             {
                 string[] arr = newVal.Split('[', ']');
