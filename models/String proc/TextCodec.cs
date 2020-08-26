@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 namespace basicClasses.models.String_proc
 {
     [appliable("")]
-    [info("")]
+    [info("filler. put result to message.body")]
     class TextCodec : ModelBase
     {
 

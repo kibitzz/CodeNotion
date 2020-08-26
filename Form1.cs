@@ -2059,7 +2059,8 @@ namespace basicClasses
             
 
             if (now != null && now.PartitionName != null
-                && now.PartitionName == "_path_")
+             //   && now.PartitionName == "_path_"
+                )
             {
                 string[] arr = now.body.Trim('-','>').Split('>');
 

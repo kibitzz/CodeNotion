@@ -1101,7 +1101,7 @@ namespace basicClasses
             sb.Append("\"N\": \"" + (PartitionName != null ? PartitionName.Replace("\"", "[&amp]") : "") + "\",");
             sb.Append("\"K\": \"" + PartitionKind + "\",");
             if (body != null)
-                sb.Append("\"B\": \"" + body.Replace("\"", "[&amp]") + "\"");
+                sb.Append("\"B\": \"" + body.Replace("\"", "[&amp]").Replace("\\", "[&bsl]") + "\"");
 
             if (paramCou > 0)
             {
@@ -1209,8 +1209,8 @@ namespace basicClasses
                     // it is a string or logical-numeric value 
                     if (currprop.Length > 0)
                     {
-                        currtext = currtext.Replace("[&amp]", "\"");
-                        rawtext = rawtext.Replace("[&amp]", "\"");
+                        currtext = currtext.Replace("[&amp]", "\"").Replace("[&bsl]","\\");
+                        rawtext = rawtext.Replace("[&amp]", "\"").Replace("[&bsl]", "\\");
                         if (currprop == "PN" || currprop == "N")
                         {
                             PartitionName = currtext;

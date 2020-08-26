@@ -1182,7 +1182,7 @@ namespace basicClasses
                 if (activeCont != o)
                     Handle(activeCont);
 
-                if (req[i].PartitionKind == "Breaker" && message.isHere(Breaker.flag))
+                if (req[i].PartitionKind == "Breaker" && req[i].isHere(Breaker.flag))
                     break;
             }                 
 

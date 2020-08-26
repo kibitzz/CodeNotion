@@ -19,6 +19,10 @@ namespace basicClasses.models.sys_ext
         [info("if condition to exit is matched, make it propagate to other Breaker's that use LDC flag <exit>")]
         public static readonly string setLdcExitOnCondition = "setLdcExitOnCondition";
 
+        [model("Action")]
+        [info("code to exec when break is triggered")]
+        public static readonly string on_break = "on_break";
+
         [ignore]
         public static readonly string flag = "break further code exec";  //TODO: optimize by index
 
@@ -33,7 +37,7 @@ namespace basicClasses.models.sys_ext
                 instanse.ExecActionModel(surc, surc);
                 if (surc.body == "exit" || surc.isHere("exit") )
                 {
-                    SetFlag(message);
+                    SetFlag(modelSpec);
 
                     if (prop)
                         instanse.GetLocalDataContextVal("exit", true);
@@ -42,7 +46,7 @@ namespace basicClasses.models.sys_ext
             else
             {
                 if(!string.IsNullOrEmpty(instanse.GetLocalDataContextVal("exit").PartitionName ))
-                     SetFlag(message);
+                     SetFlag(modelSpec);
             }
                     
         }
@@ -50,6 +54,7 @@ namespace basicClasses.models.sys_ext
         void SetFlag(opis message)
         {
             message[flag].body = "true";
+            instanse.ExecActionModelsList(modelSpec[on_break]);
         }
     }
 }
