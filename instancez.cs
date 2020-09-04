@@ -1239,7 +1239,7 @@ namespace basicClasses
             {
                 rezb = true;
                 List<string> tempNames = new List<string>();
-              
+                              
                 opis ms = SVC[modelSpecIdx]; // caller function spec -- _sys_subscript can be specified there
 
                 opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body              
@@ -1278,8 +1278,8 @@ namespace basicClasses
                     modelSpec = new opis(4);
                     if (mod.body.Contains("|"))
                     {
-                        SVC["VVV"].body = req.body;
-                        SVC["AAA"].body = req.PartitionName;
+                        ms["vvv"].body = req.body;
+                        ms["aaa"].body = req.PartitionName;
                        
                         rez.PartitionKind = "exec_inline";
                     }

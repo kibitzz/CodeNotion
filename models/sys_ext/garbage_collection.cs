@@ -10,11 +10,11 @@ namespace basicClasses.models.sys_ext
     {
 
         [model("spec_tag")]
-        [info("long. fill minimun count of objects to trigger garbage collection (if less -- do nothing)")]
+        [info("long. fill minimun count of objects to trigger garbage collection (if less -- do nothing). ! delete this option to run GC unconditionally")]
         public static readonly string if_more_than = "if_more_than";
 
         [model("spec_tag")]
-        [info("long. fill Megabytes of heap to trigger garbage collection (if less -- do nothing)")]
+        [info("long. fill Megabytes of heap to trigger garbage collection (if less -- do nothing). ! heap size check run after minimun count of objects created")]
         public static readonly string if_heap_size_more_than = "if_heap_size_more_than";
 
         public override void Process(opis message)
