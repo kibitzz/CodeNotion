@@ -1151,7 +1151,9 @@ namespace basicClasses
 
         public void SaveTreeChanges(string newVal, string bodyVal)
         {
-            if (!string.IsNullOrEmpty(newVal) && newVal.Contains("[ REFERENCE ] :"))
+            if (!string.IsNullOrEmpty(newVal) &&
+                (newVal.Contains("[ REFERENCE ] :") || newVal.EndsWith("//long data//" ))
+                )
                 return;
 
             if (EditingOpis != null && EditingOpis.PartitionName != null && !string.IsNullOrEmpty(newVal))

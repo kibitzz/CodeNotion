@@ -25,7 +25,7 @@ namespace basicClasses
         public void setLines(List<IEnumerable<double>> sc, List<IEnumerable<string>> axesx)
         {
 
-            cartesianChart1.Series = new SeriesCollection();           
+            cartesianChart1.Series = new SeriesCollection();
 
             foreach (var s in sc)
                 cartesianChart1.Series.Add(new LineSeries
@@ -33,6 +33,7 @@ namespace basicClasses
                     Values = new ChartValues<double>(s),
                     PointGeometry = null,
                     LineSmoothness = 0,
+                    Title = "",
                 });
 
 
