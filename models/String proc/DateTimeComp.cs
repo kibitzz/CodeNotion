@@ -109,12 +109,11 @@ namespace basicClasses.models.String_proc
                 if (overrideActual.Year > 2000)
                     r = overrideActual;
 
-                if (mspec.isHere(hour))
+                if (mspec.isHere(hour) || mspec.isHere(day))
                 {
                     TimeSpan sp = new TimeSpan(mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
-
                     r = r.Add(sp);
-                }              
+                }
             }
 
             if (mspec.isHere(month))
