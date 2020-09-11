@@ -954,7 +954,7 @@ namespace basicClasses
             highlightDerivants = true;
 
             HighlightedWord = PointedWord;
-            treeView2.Focus();
+            //treeView2.Focus();
             highlightWord();
         }
 
