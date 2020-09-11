@@ -41,21 +41,23 @@ namespace basicClasses.models.SharedDataContextDrivers
             long integerVal = StrUtils.LongFromString( modelSpec[value].body);
             string oper = modelSpec.V(operation);
 
-            opis ft = locOpis[operationSpec].Duplicate();
-            instanse.ExecActionModel(ft, ft);
-            string opSpec = ft.body ;
+            string opSpec = locOpis[operationSpec].body;
 
             long lv = 0;
 
             switch (oper)
             {
               
-                case "rename":                                   
-                    message.PartitionName = opSpec ;
+                case "rename":
+                    opis ft = locOpis[operationSpec].Duplicate();
+                    instanse.ExecActionModel(ft, ft);
+                    message.PartitionName = ft.body;
                     break;
 
-                case "setmodel":                  
-                    message.PartitionKind = modelSpec[value].body;
+                case "setmodel":
+                    opis pv = locOpis[value].Duplicate();
+                    instanse.ExecActionModel(pv, pv);
+                    message.PartitionKind = pv.body;
                     break;            
 
                 case "conc ower":
