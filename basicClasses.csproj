@@ -176,6 +176,7 @@
     <Compile Include="models\String proc\b_length.cs" />
     <Compile Include="models\String proc\normalize_spaces.cs" />
     <Compile Include="models\String proc\PeriodIterator.cs" />
+    <Compile Include="models\String proc\RegexParcer.cs" />
     <Compile Include="models\String proc\TextCodec.cs" />
     <Compile Include="models\String proc\text_case_transform.cs" />
     <Compile Include="models\StructureProcessing\arr_chuncks.cs" />

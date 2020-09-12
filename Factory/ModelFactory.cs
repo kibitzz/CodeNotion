@@ -202,8 +202,8 @@ namespace basicClasses.Factory
 
             models.Add("NodesPathInfo", new NodesPathInfo());
             models.Add("TextCodec", new TextCodec());
+            models.Add("RegexParcer", new RegexParcer());
             
-
 
 
             if (ExternalModels != null)
