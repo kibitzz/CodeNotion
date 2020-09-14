@@ -1256,9 +1256,9 @@ namespace basicClasses
                     //ведь тогда мы изменим processParameter который будет являться и modelSpec
                     modelSpec.CopyArr(req.Duplicate());
 
-                    if (!modelSpec.isHere("v"))//TODO: optimize exec
+                    if (!modelSpec.isHere("v", false))//TODO: optimize exec
                         modelSpec.Vset("v", req.body);
-                    if (!modelSpec.isHere("a"))
+                    if (!modelSpec.isHere("a", false))
                         modelSpec.Vset("a", req.PartitionName);
 
 
@@ -1280,7 +1280,17 @@ namespace basicClasses
                     {
                         ms["vvv"].body = req.body;
                         ms["aaa"].body = req.PartitionName;
-                       
+
+                        if (req.isHere("lp", false))
+                        {
+                            var pex = req["lp"].Duplicate();
+                            ExecActionModel(pex, pex);
+
+                            var elpName = GetTempValName(SVC, tempNames);
+                            SVC[elpName].Wrap(pex.W());
+                            ms.Vset("aaa", elpName);
+                        }
+
                         rez.PartitionKind = "exec_inline";
                     }
                 }
@@ -1366,14 +1376,14 @@ namespace basicClasses
                     modelSpec.Vset("v", nameOfSubj);
                 }
 
-                if (req.isHere("rp"))
+                if (req.isHere("rp", false))
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
                     SVC[nameOfSubj].Wrap(modelSpec["rp"].W());
                     modelSpec.Vset("v", nameOfSubj);
                 }
 
-                if (req.isHere("lp"))
+                if (req.isHere("lp", false))
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
                     SVC[nameOfSubj].Wrap(modelSpec["lp"].W());
@@ -1385,15 +1395,14 @@ namespace basicClasses
                 #region context variables []*name
                 bool subscribeProduce = false;
                
-               if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")             
-               // if (b.StartsWith("*") && req.PartitionKind != "func")
+               if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")                           
                 {
                     string pn = b.Trim('>', '<', ' ', '*');
                     if (pn.Length > 0)
                     {
                         subscribeProduce = modelIsProducer
-                                    && (SVC[ldcIdx].W().isHere(pn.Trim('~') + "_sys_subscript")
-                                       || ms.isHere(pn.Trim('~') + "_sys_subscript"));
+                                    && (SVC[ldcIdx].W().isHere(pn.Trim('~') + "_sys_subscript", false)
+                                       || ms.isHere(pn.Trim('~') + "_sys_subscript", false));
                         //prodLocalContext = modelIsProducer;
 
                         nameOfSubj = GetTempValName(SVC, tempNames);
