@@ -117,18 +117,14 @@ namespace basicClasses.models.SharedDataContextDrivers
             {
                 opis rez = source;
 
-                if (modelSpec.isHere(template))
-                {
-                    opis ptt = modelSpec[template].Duplicate();
-                    if (ptt.PartitionKind != template)
-                        instanse.ExecActionModel(ptt, ptt);
+                opis templ = modelSpec.getPartitionNotInitOrigName(template)?.Duplicate();
+                if (templ != null)
+                {                  
+                    instanse.ExecActionModel(templ, templ);
 
-                    if (ptt.listCou > 0)
-                    {
-                        instanse.ExecActionModelsList(ptt);
-                        modelSpec = currSpec;
-                        rez = GetLevelCheck(ptt[0], source.W());
-
+                    if (templ.listCou > 0)
+                    {                        
+                        rez = GetLevelCheck(templ[0], source.W());
                     }
                 }
 
@@ -138,7 +134,8 @@ namespace basicClasses.models.SharedDataContextDrivers
                 if (rez != null)
                 {
                     // in case modelSpec and message referencing the same data
-                    opis procSpec = modelSpec[process].Duplicate();
+                  //  opis procSpec = modelSpec[process].Duplicate();
+                    opis procSpec = modelSpec.getPartitionNotInitOrigName(process)?.Duplicate();
 
                     rez = rez.W();
 
@@ -146,7 +143,8 @@ namespace basicClasses.models.SharedDataContextDrivers
                         rez = rez.Duplicate();
 
 
-                    if (message.PartitionKind != "answer" && !modelSpec[do_not_modify].isInitlze)
+                    //if (message.PartitionKind != "answer" && !modelSpec[do_not_modify].isInitlze)
+                    if (!modelSpec[do_not_modify].isInitlze)
                     {
                         if (modelSpec[do_wrap].isInitlze)
                         {
@@ -167,7 +165,8 @@ namespace basicClasses.models.SharedDataContextDrivers
                         }
                     }
 
-                    instanse.ExecActionResponceModelsList(procSpec, rez);
+                    if (procSpec != null)
+                        instanse.ExecActionResponceModelsList(procSpec, rez);
                 }
                 else
                 {

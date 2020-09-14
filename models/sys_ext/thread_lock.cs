@@ -38,7 +38,7 @@ namespace basicClasses.models.sys_ext
            
             int ln = specl[lock_idx].intVal;
            
-            if (currInstActiveLock > 0)  // lock inside lock is ignored along single instance
+            if (currInstActiveLock > 0)  // lock inside lock is ignored within single instance
             {
 #if DEBUG
                 var ei = new opis() { PartitionName = "WARN: nested lock -- " + spec.PartitionName + " "+ ln };

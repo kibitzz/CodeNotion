@@ -244,7 +244,20 @@ namespace basicClasses
             return rez;
         }
 
-        public virtual int getPartitionIdx(string part)
+        public virtual opis getPartitionNotInitOrigName(string part)
+        {
+            opis rez = null;
+            int idx = -1;
+
+            if ((idx = getPartitionIdx(part, false)) != -1)
+            {
+                rez = arr[idx];
+            }
+          
+            return rez;
+        }
+
+        public virtual int getPartitionIdx(string part, bool searchLower = true)
         {
             if (part == null)
                 return -1;
@@ -272,7 +285,7 @@ namespace basicClasses
             }
 
 #if pidx_second_loop_opt
-            if (rez == -1)
+            if (rez == -1 && searchLower)
             {
                 for (int i = 0; i < paramCou; i++) 
                 {
@@ -1075,9 +1088,9 @@ namespace basicClasses
         /// </summary>
         /// <param name="part"></param>
         /// <returns></returns>
-        public bool isHere(string part)
+        public bool isHere(string part, bool searchLower = true)
         {
-            return getPartitionIdx(part) != -1;
+            return getPartitionIdx(part, searchLower) != -1;
         }
 
 #endregion
@@ -2685,7 +2698,7 @@ namespace basicClasses
             return rez;
         }
 
-        public override int getPartitionIdx(string part)
+        public override int getPartitionIdx(string part, bool searchLower = true)
         {
             if (part == null)
                 return -1;          

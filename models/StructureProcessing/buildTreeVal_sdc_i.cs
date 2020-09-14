@@ -62,7 +62,7 @@ namespace basicClasses.models.StructureProcessing
 
             if (bp.listCou > 0)
             {
-                if (modelSpec.isHere(values_container))
+                if (modelSpec.isHere(values_container, false))
                 {
                     opis t = null;
                     if (modelSpec[values_container].isInitlze
@@ -80,12 +80,12 @@ namespace basicClasses.models.StructureProcessing
                     vk = t.W();
                 }
 
-                build(bp, null, vk, modelSpec.isHere(func_symbols_ignore), modelSpec.isHere(only_body_template_optimization));
+                build(bp, null, vk, modelSpec.isHere(func_symbols_ignore, false), modelSpec.isHere(only_body_template_optimization, false));
               
               
-                if (bp.listCou == 1 && message.PartitionKind != "template")
+                if (bp.listCou == 1)// && message.PartitionKind != "template")
                 {
-                    if (locmod.isHere(putWholeResult))
+                    if (locmod.isHere(putWholeResult, false))
                     {
                         message.PartitionKind = "";
                         message.CopyArr(bp);
