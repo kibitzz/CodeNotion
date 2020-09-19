@@ -41,10 +41,13 @@ namespace basicClasses.models.sys_ext
                     {
                         long heapsize = GC.GetTotalMemory(false);
                         long limmb = 0;
-                        long.TryParse(spec.V(if_heap_size_more_than), out limmb);                        
+                        long.TryParse(spec.V(if_heap_size_more_than), out limmb);
 
-                        if(heapsize / 1048576 > limmb)
+                        if (heapsize / 1048576 > limmb)
                             message.body = Collect(run);
+                        else
+                            opis.TotalObjectsCreated = 0;
+
                     }
                     else
                       message.body = Collect(run);
@@ -72,7 +75,7 @@ namespace basicClasses.models.sys_ext
             if (run != null)
             {
                 opis p = new opis() { body = rez, PartitionName = "rez"};
-                instanse.ExecActionModel(run, p);
+                instanse.ExecActionResponceModelsList(run, p);
             }
 
             return rez;
