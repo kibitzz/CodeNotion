@@ -107,7 +107,7 @@ namespace basicClasses.models.StructureProcessing
                         message.body = bp[0].body;
                         message.PartitionName = string.IsNullOrEmpty(bp[0].PartitionName) ? message.PartitionName : bp[0].PartitionName;
                         message.PartitionKind = bp[0].PartitionKind;
-                        if (modelSpec.isHere(only_value_body))
+                        if (modelSpec.isHere(only_value_body, false))
                             message.CopyArr(new opis());
                         else
                             message.CopyArr(bp[0]);

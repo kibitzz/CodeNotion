@@ -65,6 +65,7 @@ namespace basicClasses.Factory
             models.Add("Pause_To_debug", new Pause_To_debug());
             models.Add("global_log", new global_log());
             models.Add("local_log", new local_log());
+            models.Add("sys_log_info", new sys_log_info());            
             models.Add("UserNotifier", new UserNotifier());
 
 

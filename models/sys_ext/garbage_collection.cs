@@ -17,42 +17,50 @@ namespace basicClasses.models.sys_ext
         [info("long. fill Megabytes of heap to trigger garbage collection (if less -- do nothing). ! heap size check run after minimun count of objects created")]
         public static readonly string if_heap_size_more_than = "if_heap_size_more_than";
 
+        [model("Action")]
+        [info("run this if condition is matched and garbage need to be released")]
+        public static readonly string on_clear = "on_clear";
+
+
         public override void Process(opis message)
         {
             opis spec = SpecLocalRunAll();
 
-            message.body = "GC DO NOTHING. total obj count (" + opis.TotalObjectsCreated + ")  ";
+            message.body = "GC DO NOTHING. total obj count (" + opis.TotalObjectsCreated + ")  ";           
 
-            if (spec.isHere(if_more_than))
+            if (spec.isHere(if_more_than, false))
             {
                 ulong lim = 0;
                 ulong.TryParse(spec.V(if_more_than), out lim);
               
                 if (opis.TotalObjectsCreated > lim)
                 {
-                    if (spec.isHere(if_heap_size_more_than))
+                    opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
+
+                    if (spec.isHere(if_heap_size_more_than, false))
                     {
                         long heapsize = GC.GetTotalMemory(false);
                         long limmb = 0;
                         long.TryParse(spec.V(if_heap_size_more_than), out limmb);                        
 
                         if(heapsize / 1048576 > limmb)
-                            message.body = Collect();
+                            message.body = Collect(run);
                     }
                     else
-                      message.body = Collect();
+                      message.body = Collect(run);
 
                 }
             }
             else
-            {              
-                message.body = Collect();
+            {
+                opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
+                message.body = Collect(run);
             }
 
         }
 
 
-        string Collect()
+        string Collect(opis run = null)
         {
             long before = GC.GetTotalMemory(false);
             GC.Collect();
@@ -60,6 +68,12 @@ namespace basicClasses.models.sys_ext
 
             string rez = "GC before   total obj count (" + opis.TotalObjectsCreated + ")    MEM before  " + before/1048576 + "MB   after " + after / 1048576 + "MB ";
             opis.TotalObjectsCreated = 0;
+
+            if (run != null)
+            {
+                opis p = new opis() { body = rez, PartitionName = "rez"};
+                instanse.ExecActionModel(run, p);
+            }
 
             return rez;
         }
