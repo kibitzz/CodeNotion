@@ -21,6 +21,10 @@ namespace basicClasses.models.String_proc
         [info("text snippets equivalent to each block in blocks list")]
         public static readonly string substitution = "substitution";
 
+        [info("")]
+        [model("spec_tag")]
+        public static readonly string underline_in_blocks_to_space = "underline_in_blocks_to_space";
+
         [info("use presets of snippets.    blocks is like \u0430  to be replaced by russian alpha")]
         [model("spec_tag")]
         public static readonly string UTF8BigEndian_to_Kirill = "UTF8BigEndian_to_Kirill";
@@ -36,24 +40,29 @@ namespace basicClasses.models.String_proc
             opis ms = SpecLocalRunAll();
             var rez = new opis();
 
-            if (ms.isHere(UTF8BigEndian_to_Kirill))
+            if (ms.isHere(UTF8BigEndian_to_Kirill, false))
             {
                 message.body = TemplatesMan.UTF8BigEndian_to_Kirill(ms.V(text));
             }
 
-            if (ms.isHere(UTF8Codes_to_Kirill)) //&#1040;
+            if (ms.isHere(UTF8Codes_to_Kirill, false)) //&#1040;
             {
                 message.body = TemplatesMan.UTF8Codes_to_Kirill(ms.V(text));
             }
 
-            //if (ms.isHere(UTF8Codes_to_Kirill)) //&#1040;
-            //{
-            //    message.body = TemplatesMan.(ms.V(text));
-            //}
 
-            if (ms.isHere(blocks) && ms.isHere(substitution) && ms[blocks].listCou == ms[substitution].listCou)
-            {              
-                message.body = Replace(ms.V(text), ms[blocks].ListValues().ToArray(), ms[substitution].ListValues().ToArray());
+            if (ms.isHere(blocks, false) && ms.isHere(substitution, false) && ms[blocks].listCou == ms[substitution].listCou)
+            {
+
+                var bl = ms[blocks].ListValues();
+                var subst = ms[substitution].ListValues();
+                if (ms.isHere(underline_in_blocks_to_space, false))
+                {
+                    bl.ForEach(x => x = x.Replace("_", " "));
+                    subst.ForEach(x => x = x.Replace("_", " "));
+                }
+
+                message.body = Replace(ms.V(text), bl.ToArray(), subst.ToArray());
             }
 
         }
