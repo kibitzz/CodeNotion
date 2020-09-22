@@ -58,8 +58,8 @@ namespace basicClasses.models.String_proc
                 var subst = ms[substitution].ListValues();
                 if (ms.isHere(underline_in_blocks_to_space, false))
                 {
-                    bl.ForEach(x => x = x.Replace("_", " "));
-                    subst.ForEach(x => x = x.Replace("_", " "));
+                    bl = bl.Select(x => x.Replace("_", " ")).ToList();
+                    subst = subst.Select(x => x.Replace("_", " ")).ToList();
                 }
 
                 message.body = Replace(ms.V(text), bl.ToArray(), subst.ToArray());
