@@ -19,6 +19,7 @@ using basicClasses.models.Rangers;
 using basicClasses.models.WEB_api;
 using basicClasses.models.String_proc;
 using basicClasses.models.SQL;
+using basicClasses.models.Markers;
 
 namespace basicClasses.Factory
 {
@@ -38,7 +39,9 @@ namespace basicClasses.Factory
         public void Init()
         {
             models = new Dictionary<string, ModelInfo>();
-
+           
+            models.Add("valf", new valf());
+            models.Add("envf", new envf());
             models.Add("Messenger", new Messenger());
             models.Add("AnswerToMessage", new AnswerToMessage());
             models.Add("initValues", new initValues());

@@ -152,6 +152,8 @@
     <Compile Include="Atributes\infoAttribute.cs" />
     <Compile Include="models\Checkers\Check_contain_string.cs" />
     <Compile Include="models\Checkers\Check_is_odd.cs" />
+    <Compile Include="models\Markers\environment_function.cs" />
+    <Compile Include="models\Markers\value_function.cs" />
     <Compile Include="models\Messaging\Messenger.cs" />
     <Compile Include="models\Builders\BuildTermBasicValuesContainer.cs" />
     <Compile Include="models\Checkers\Check_body_isFilled.cs" />
