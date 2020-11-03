@@ -1798,7 +1798,7 @@ namespace basicClasses
                         && partition.getPartitionIdx(elemN) != i
                         )
                     {
-                        template[i].body += template[i].PartitionKind.Length > 0 ? " /" + template[i].PartitionKind + "/" : "";
+                        template[i].body += template[i].PartitionKind?.Length > 0 ? " /" + template[i].PartitionKind + "/" : "";
                         template[i].PartitionKind = "moved";
 
                     }
@@ -1808,7 +1808,7 @@ namespace basicClasses
                 }
                 else
                 {
-                    template[i].body += template[i].PartitionKind.Length > 0 ? " /" + template[i].PartitionKind + "/" : "";
+                    template[i].body += template[i].PartitionKind?.Length > 0 ? " /" + template[i].PartitionKind + "/" : "";
                     template[i].PartitionKind = markForVisualization;
                 }
 
