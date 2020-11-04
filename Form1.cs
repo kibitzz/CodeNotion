@@ -880,9 +880,16 @@ namespace basicClasses
 
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
+                if (richTextBox3.SelectedText != null 
+                    && richTextBox3.SelectedText.Length > 0
+                    && richTextBox3.SelectedText.Contains(" "))
+                {
+                    return;
+                }
                 if (HighlightedWord != PointedWord)
                 {
-                    treeView3.Focus();
+                    // treeView3.Focus();
+                    richTextBox4.Focus();
                     HighlightedWord = PointedWord;
                     highlightWord();
                     richTextBox3.Focus();
@@ -1010,6 +1017,7 @@ namespace basicClasses
             if (richTextBox3.SelectedText != null && richTextBox3.SelectedText.Length > 0)
             {
                 sentenceParts = richTextBox3.SelectedText.Split();
+                popupBanner("      " + richTextBox3.SelectedText);
             }
             else
             {
