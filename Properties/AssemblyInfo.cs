@@ -8,9 +8,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("codenotion")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("ттт")]
-[assembly: AssemblyProduct("basicClasses functional script v1.1")]
-[assembly: AssemblyCopyright("Copyright ©kibitz 2016-2019")]
+[assembly: AssemblyCompany("codenotion")]
+[assembly: AssemblyProduct("DSL framework v1.2")]
+[assembly: AssemblyCopyright("Copyright ©Igor Proskochilo 2016-2021")]
 [assembly: AssemblyTrademark("codenotion")]
 [assembly: AssemblyCulture("")]
 

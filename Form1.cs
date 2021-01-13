@@ -2086,15 +2086,21 @@ namespace basicClasses
                         else break;
                     }
 
-                    EditingOpis = rood;
-                    HighlightedWord = "";
-                    HighlightedOpis = EditingOpis;
+                    
+                    if (HighlightedOpis != rood || listBox2.Visible)
+                    {
+                        listBox2.Visible = false;
+                        EditingOpis = rood;
+                        HighlightedWord = "";
+                        HighlightedOpis = EditingOpis;
+                        
+                        PrepareWordInput();
+                    }
 
                     listBox2.Visible = false;
-                    PrepareWordInput();
-
                     treeView3.TopNode = tmp.treeElem;
                     treeView3.SelectedNode = tmp.treeElem;
+
                 }
             }
 

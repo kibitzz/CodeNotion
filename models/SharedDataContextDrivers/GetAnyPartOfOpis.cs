@@ -64,6 +64,10 @@ namespace basicClasses.models.SharedDataContextDrivers
         [model("spec_tag")]
         public static readonly string debug = "debug";
 
+
+        //TODO: find out why filler (in log it is comon bug) return arbitrary values
+        //TODO: find out why decode text _ modify its source value
+
         public override void Process(opis message)
         {
             opis source = null;
