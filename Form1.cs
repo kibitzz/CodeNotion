@@ -79,12 +79,12 @@ namespace basicClasses
             this.Left = -7;
             this.Top = -6;
            
-            Parser.ContextGlobal = new opis();
+            //Parser.ContextGlobal = new opis();
 
             inputParser = new Parser();
             Parser p = new Parser();
             DateTime st = DateTime.Now;
-            Parser.LoadEnvironment();
+          //  Parser.LoadEnvironment();
             DateTime fin = DateTime.Now;
             TimeSpan ts = fin - st;
 
@@ -2348,6 +2348,11 @@ namespace basicClasses
         private void SetStateEdited()
         {
             SavedStateLabel.Text = "#";
+        }
+
+        private void Form1_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            Application.Exit();
         }
     }
 
