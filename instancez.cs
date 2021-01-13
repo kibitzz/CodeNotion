@@ -1301,8 +1301,7 @@ namespace basicClasses
                 string b = req.body !=null ? req.body:"";
                 opis processObj = processParameter;
                 string nameOfSubj = "";
-                string nameOfSubjForFiller = "";
-
+            
                 if (b == "<")
                 {
                     req.body = "";
@@ -1312,8 +1311,7 @@ namespace basicClasses
                     {
                         nameOfSubj = GetTempValName(SVC, tempNames);                        
                         SVC[nameOfSubj].Wrap(req);
-                        modelSpec.Vset("v", nameOfSubj);
-                        nameOfSubjForFiller = nameOfSubj;
+                        modelSpec.Vset("v", nameOfSubj);                      
                     }                             
                 }
 
@@ -1366,13 +1364,21 @@ namespace basicClasses
 
                 #endregion
 
+                bool pipeline = b.Length > 0 && b[0] == '>';
+
                 #region subject change
 
-                if (b == ">")
+                //  if (b == ">")
+                if (pipeline)
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
-                    if (!modelIsProducer)
+                    if (!modelIsProducer) // why!?!  because if function create new data it rewrite previous subject - this can lead to implicit side effect modification
+                        SVC[nameOfSubj].Wrap(SVC[exec.SUBJ].W()); // if function is modifying rp or as readonly datasource
+                    else if (b == ">>") // explicit subject modification
+                    {
                         SVC[nameOfSubj].Wrap(SVC[exec.SUBJ].W());
+                    }
+
                     modelSpec.Vset("v", nameOfSubj);
                 }
 
@@ -1402,8 +1408,7 @@ namespace basicClasses
                     {
                         subscribeProduce = modelIsProducer
                                     && (SVC[ldcIdx].W().isHere(pn.Trim('~') + "_sys_subscript", false)
-                                       || ms.isHere(pn.Trim('~') + "_sys_subscript", false));
-                        //prodLocalContext = modelIsProducer;
+                                       || ms.isHere(pn.Trim('~') + "_sys_subscript", false));                        
 
                         nameOfSubj = GetTempValName(SVC, tempNames);
                         b = b.Replace("*", "");
@@ -1424,7 +1429,8 @@ namespace basicClasses
                 ExecActionModel(rez, processObj); // M A I N
 
 
-                if (b == ">")  // pipeline operator
+                //  if (b == ">")  // pipeline operator
+                if (pipeline)
                 {
                     SVC[exec.SUBJ].Wrap(SVC[modelSpec.V("v")].W());
                 }
