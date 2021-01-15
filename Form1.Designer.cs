@@ -40,6 +40,7 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
+            this.button14 = new System.Windows.Forms.Button();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.button5 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -232,6 +233,7 @@
             // splitContainer2.Panel2
             // 
             this.splitContainer2.Panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(51)))), ((int)(((byte)(51)))), ((int)(((byte)(55)))));
+            this.splitContainer2.Panel2.Controls.Add(this.button14);
             this.splitContainer2.Panel2.Controls.Add(this.listBox2);
             this.splitContainer2.Panel2.Controls.Add(this.button5);
             this.splitContainer2.Panel2.Controls.Add(this.panel1);
@@ -292,6 +294,17 @@
             this.richTextBox3.MouseHover += new System.EventHandler(this.richTextBox3_MouseHover);
             this.richTextBox3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.richTextBox3_MouseMove);
             // 
+            // button14
+            // 
+            this.button14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button14.Location = new System.Drawing.Point(-1, 318);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(56, 29);
+            this.button14.TabIndex = 24;
+            this.button14.Text = "clr";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click_2);
+            // 
             // listBox2
             // 
             this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -304,7 +317,7 @@
             this.listBox2.ItemHeight = 24;
             this.listBox2.Location = new System.Drawing.Point(0, 6);
             this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(726, 436);
+            this.listBox2.Size = new System.Drawing.Size(726, 220);
             this.listBox2.TabIndex = 8;
             this.listBox2.Visible = false;
             this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
@@ -327,7 +340,7 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(61, 7);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(333, 154);
+            this.panel1.Size = new System.Drawing.Size(333, 146);
             this.panel1.TabIndex = 16;
             this.panel1.Visible = false;
             // 
@@ -342,7 +355,7 @@
             this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip2.Location = new System.Drawing.Point(0, 34);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(333, 107);
+            this.toolStrip2.Size = new System.Drawing.Size(333, 99);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip2_ItemClicked);
@@ -388,10 +401,10 @@
             this.toolStripButton5,
             this.toolStripButton6});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.toolStrip1.Location = new System.Drawing.Point(66, 241);
+            this.toolStrip1.Location = new System.Drawing.Point(66, 233);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.ShowItemToolTips = false;
-            this.toolStrip1.Size = new System.Drawing.Size(660, 203);
+            this.toolStrip1.Size = new System.Drawing.Size(660, 211);
             this.toolStrip1.TabIndex = 11;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
@@ -494,7 +507,7 @@
             // button18
             // 
             this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button18.Location = new System.Drawing.Point(-1, 253);
+            this.button18.Location = new System.Drawing.Point(-1, 245);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(56, 27);
             this.button18.TabIndex = 17;
@@ -548,7 +561,7 @@
             this.treeView3.LineColor = System.Drawing.Color.LightGray;
             this.treeView3.Location = new System.Drawing.Point(64, 3);
             this.treeView3.Name = "treeView3";
-            this.treeView3.Size = new System.Drawing.Size(659, 236);
+            this.treeView3.Size = new System.Drawing.Size(659, 228);
             this.treeView3.TabIndex = 10;
             this.treeView3.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_BeforeLabelEdit);
             this.treeView3.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_AfterLabelEdit);
@@ -678,10 +691,10 @@
             this.richTextBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox4.Font = new System.Drawing.Font("Courier New", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox4.ForeColor = System.Drawing.Color.MistyRose;
-            this.richTextBox4.Location = new System.Drawing.Point(66, 241);
+            this.richTextBox4.Location = new System.Drawing.Point(66, 233);
             this.richTextBox4.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox4.Name = "richTextBox4";
-            this.richTextBox4.Size = new System.Drawing.Size(663, 199);
+            this.richTextBox4.Size = new System.Drawing.Size(663, 211);
             this.richTextBox4.TabIndex = 0;
             this.richTextBox4.Text = "";
             this.richTextBox4.TextChanged += new System.EventHandler(this.richTextBox4_TextChanged);
@@ -690,7 +703,7 @@
             // 
             this.SavedStateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SavedStateLabel.AutoSize = true;
-            this.SavedStateLabel.Location = new System.Drawing.Point(266, 579);
+            this.SavedStateLabel.Location = new System.Drawing.Point(258, 579);
             this.SavedStateLabel.Name = "SavedStateLabel";
             this.SavedStateLabel.Size = new System.Drawing.Size(22, 22);
             this.SavedStateLabel.TabIndex = 17;
@@ -711,7 +724,7 @@
             this.button23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button23.ForeColor = System.Drawing.Color.DarkBlue;
-            this.button23.Location = new System.Drawing.Point(226, 574);
+            this.button23.Location = new System.Drawing.Point(218, 574);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(34, 33);
             this.button23.TabIndex = 15;
@@ -724,7 +737,7 @@
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button9.ForeColor = System.Drawing.Color.DarkRed;
-            this.button9.Location = new System.Drawing.Point(382, 573);
+            this.button9.Location = new System.Drawing.Point(374, 573);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(34, 30);
             this.button9.TabIndex = 13;
@@ -735,7 +748,7 @@
             // button19
             // 
             this.button19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button19.Location = new System.Drawing.Point(9, 575);
+            this.button19.Location = new System.Drawing.Point(1, 575);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(138, 29);
             this.button19.TabIndex = 11;
@@ -1097,6 +1110,7 @@
         private System.Windows.Forms.Button button5;
         private System.Windows.Forms.ToolStripMenuItem saveToolStripMenuItem;
         private System.Windows.Forms.Label SavedStateLabel;
+        private System.Windows.Forms.Button button14;
     }
 }
 

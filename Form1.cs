@@ -370,24 +370,7 @@ namespace basicClasses
         }
 
         private void richTextBox3_SelectionChanged(object sender, EventArgs e)
-        {
-
-            //string prev =HighlightedWord;
-            ////this.richTextBox4.AppendText(richTextBox3.SelectedText);
-            //HighlightedWord = richTextBox3.SelectedText.Trim();     
-
-            //if (HighlightedWord != prev && HighlightedWord.Length > 0 && HighlightedWord.Length <18)
-            //{
-            //    texthighlight = true;
-
-            //    highlightWord();
-            //    textcolored = true;
-
-            //        textcolored = true;
-            //        texthighlight = false;
-            //}
-
-
+        {        
 
         }
 
@@ -399,11 +382,7 @@ namespace basicClasses
             {
                 currParseText += " " + s;
             }
-
-            //if (!keyDown && !textcolored && !texthighlight)
-            //{
-            //    colorInput();
-            //}
+         
             textcolored = false;
         }
 
@@ -764,7 +743,9 @@ namespace basicClasses
 
         private void richTextBox4_TextChanged(object sender, EventArgs e)
         {
-            if (EditingOpis != null && richTextBox4.Focused)
+            if (EditingOpis != null && richTextBox4.Focused 
+                && !string.IsNullOrEmpty(richTextBox4.Text)
+                && !string.IsNullOrWhiteSpace(richTextBox4.Text))
             {
                 EditingOpis.body = richTextBox4.Text;
             }
@@ -1184,6 +1165,7 @@ namespace basicClasses
             }
 
             if (EditingOpis != null && !string.IsNullOrEmpty(bodyVal)
+                && !string.IsNullOrWhiteSpace(bodyVal)
                 && bodyVal.Trim() != "_")
             {
                 if ( EditingOpis.body != bodyVal.Trim())
@@ -1212,7 +1194,7 @@ namespace basicClasses
 
                 EditingOpis = ((opis)e.Node.Tag);
                 EditingOpisValue = e.Node.Text;
-                richTextBox4.Text = EditingOpis.body;
+                richTextBox4.Text = EditingOpis.body;             
 
                 TreeNode parentNode = null;
                 string curr = "";
@@ -2353,6 +2335,18 @@ namespace basicClasses
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
             Application.Exit();
+        }
+
+        private void button14_Click_2(object sender, EventArgs e)// clear body value
+        {
+            if (EditingOpis != null)
+            {
+                SetStateEdited();
+                EditingOpis.body = "";
+            }
+            EditingOpisValue = "";
+            richTextBox4.Text = "";
+            SaveTreeChanges("", "");
         }
     }
 
