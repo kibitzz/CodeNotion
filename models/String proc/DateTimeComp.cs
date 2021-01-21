@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -63,6 +64,9 @@ namespace basicClasses.models.String_proc
 
         [info("fill this field (ticks number) to return as <actual_date> instead of real value ")]
         public static readonly string override_actual_date = "override_actual_date";
+
+        [info("")]
+        public static readonly string week_num = "week_num";
 
         DateTime curr;
         DateTime overrideActual;
@@ -151,8 +155,13 @@ namespace basicClasses.models.String_proc
             }
 
 
-
             message.body = mspec[format].isInitlze ? r.ToString(mspec.V(format)) : r.Ticks.ToString();
+
+            if (mspec.isHere(week_num, false))
+            {
+                message.body = new GregorianCalendar(GregorianCalendarTypes.Localized).GetWeekOfYear(r, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday).ToString();              
+            }
+
             message.CopyArr(new opis());
 
         }
