@@ -1142,6 +1142,53 @@ namespace basicClasses
             return rez;
         }
 
+        public string ToJson(bool sub = false)
+        {
+
+            if (isDuplicated)
+            {
+                return "";
+            }
+            isDuplicated = true;
+
+            string rez = "";
+            StringBuilder sb = new StringBuilder(paramCou);
+
+            if(!sub)
+            sb.Append("{");
+
+            sb.Append("\""+ PartitionName + "\": " );           
+            if (body != null && paramCou == 0)
+                sb.Append("\"" + body.Replace("\"", "[&amp]").Replace("\\", "[&bsl]") + "\"");
+
+            if (paramCou > 0)
+            {
+                sb.Append("{");
+
+                for (int i = 0; i < paramCou; i++)
+                {
+                    string tmp = arr[i].ToJson(true);
+                    sb.Append(tmp);
+                    if (i + 1 < paramCou && !string.IsNullOrEmpty(tmp))
+                    {
+                        sb.Append(",");
+                    }
+                }
+
+                sb.Append("}");
+            }
+
+            if (!sub)
+                sb.Append("}");
+
+            rez = sb.ToString();
+
+            isDuplicated = false;
+
+            return rez;
+        }
+
+
         public void load(string data)
         {
             load(data, 0);
@@ -2243,7 +2290,7 @@ namespace basicClasses
                 rez.AddArr(data);
         }
 
-        public int FindByTemplateValue(opis strucTmpl, opis rez, bool exactOnly, bool retdata, bool isTop, bool getdata = false)
+        public int FindByTemplateValue(opis strucTmpl, opis rez, bool exactOnly, bool retdata, bool isTop, bool getdata = false, bool allLevels = true)
         {
 
             if (isDuplicated) return 0;
@@ -2326,8 +2373,11 @@ namespace basicClasses
                     }
                 }
 
-                for (int i = 0; i < paramCou; i++)
-                    arr[i].FindByTemplateValue(strucTmpl, rez, exactOnly, retdata, true);
+                if (allLevels)
+                {
+                    for (int i = 0; i < paramCou; i++)
+                        arr[i].FindByTemplateValue(strucTmpl, rez, exactOnly, retdata, true);
+                }
             }
 
             UnlockThisForDuplication();
@@ -2335,6 +2385,7 @@ namespace basicClasses
             return matched(matchedLvl) ? 1 : 0;
 
         }
+       
 
         public int CountNodeWeight()
         {

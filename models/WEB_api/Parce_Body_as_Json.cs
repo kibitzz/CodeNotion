@@ -5,8 +5,6 @@ namespace basicClasses.models.WEB_api
 {
     [info("filler")]
     [appliable("Action exe all")]
-
-
     class Parce_Body_as_Json : ModelBase
     {
 
@@ -43,4 +41,5 @@ namespace basicClasses.models.WEB_api
 
         }
     }
+
 }

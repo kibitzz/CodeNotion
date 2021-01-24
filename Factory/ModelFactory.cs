@@ -163,6 +163,8 @@ namespace basicClasses.Factory
             models.Add("DateTimeComp", new DateTimeComp());
             models.Add("CompareFill", new CompareFill());
             models.Add("Parce_Body_as_Json", new Parce_Body_as_Json());
+            models.Add("opis_to_json", new opis_to_json());
+            
             models.Add("CheckOverrides", new CheckOverrides());
 
 
@@ -207,6 +209,8 @@ namespace basicClasses.Factory
             models.Add("NodesPathInfo", new NodesPathInfo());
             models.Add("TextCodec", new TextCodec());
             models.Add("RegexParcer", new RegexParcer());
+            models.Add("HttpListenerModel", new HttpListenerModel());
+
             
 
 

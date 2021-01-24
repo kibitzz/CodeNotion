@@ -29,6 +29,10 @@ namespace basicClasses.models.StructureProcessing
         [info("should be no additional fields in found structure. if additional fields present value become not valid and be ignored")]
         public static readonly string exact_structure = "exact_structure";
 
+        [model("spec_tag")]
+        [info("check only this array items for conformity, do not search in subitems ")]
+        public static readonly string only_top_level = "only_top_level";
+
         public override void Process(opis message)
         {
             opis ms = modelSpec.Duplicate();
@@ -36,9 +40,10 @@ namespace basicClasses.models.StructureProcessing
             opis rez = new opis();
 
             bool retdata = ms.isHere(returnItemsNotBranches);
-            bool exactOnly = ms.isHere(exact_structure);            
+            bool exactOnly = ms.isHere(exact_structure);
+            bool onlyItemsLevel = ms.isHere(only_top_level, false);
 
-            ms[source].FindByTemplateValue(ms[template], rez, exactOnly, retdata, true);
+            ms[source].FindByTemplateValue(ms[template], rez, exactOnly, retdata, true, false, !onlyItemsLevel);
 
             message.CopyArr(rez, true);
             if (!ms.isHere(all) && rez.listCou > 0)
