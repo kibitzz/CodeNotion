@@ -6,7 +6,7 @@ using System.Text;
 
 namespace basicClasses.models.SharedDataContextDrivers
 {
-    [info("Base function to work with global variables and object reflection.  Automatically unwrap name [ rez = rez.W(); ] ")]
+    [info("Base function to work with global variables and object reflection.  Automatically unwrap name [ rez = rez.W(); ]  does it once, so if unwrapped value itself is a wrapper it will be passed to process as is -- so you can wrap another value into it, or fill if explicitly by data ")]
     [appliable("all")]
    public class GetAnyPartOfOpis:ModelBase
     {
@@ -47,10 +47,6 @@ namespace basicClasses.models.SharedDataContextDrivers
         [model("FlagModelSpec")]
         public static readonly string do_wrap = "do_wrap";
 
-        [info("set body of this partition if you want    message.PartitionName = rez.body;")]
-        [model("FlagModelSpec")]
-        public static readonly string body_as_PartitionName = "body_as_PartitionName";
-
         [info("when retrieve partition on [template]  unwrap each node   rez = rez.W();")]
         [model("FlagModelSpec")]
         public static readonly string templateUnwrap = "templateUnwrap";
@@ -85,7 +81,7 @@ namespace basicClasses.models.SharedDataContextDrivers
                 int pos = svc.getPartitionIdx(p.body);
                 source = pos != -1 ? svc[pos] : null;
 
-                if (source == null && currSpec[create].isInitlze)
+                if (source == null && currSpec.OptionActive(create))
                     source = svc[p.body];
             }
             else
@@ -128,7 +124,7 @@ namespace basicClasses.models.SharedDataContextDrivers
 
                     if (templ.listCou > 0)
                     {                        
-                        rez = GetLevelCheck(templ[0], source.W());
+                        rez = GetLevelCheck(templ[0], source.W(), modelSpec.OptionActive(templateUnwrap));
                     }
                 }
 
@@ -137,28 +133,28 @@ namespace basicClasses.models.SharedDataContextDrivers
 
                 if (rez != null)
                 {
-                    // in case modelSpec and message referencing the same data
-                  //  opis procSpec = modelSpec[process].Duplicate();
+                    // in case modelSpec and message referencing the same data                  
                     opis procSpec = modelSpec.getPartitionNotInitOrigName(process)?.Duplicate();
 
                     rez = rez.W();
 
-                    if (modelSpec[duplicate].isInitlze)
+                    //  if (modelSpec[duplicate].isInitlze) 
+                    if (currSpec.OptionActive(duplicate))
                         rez = rez.Duplicate();
 
 
-                    //if (message.PartitionKind != "answer" && !modelSpec[do_not_modify].isInitlze)
-                    if (!modelSpec[do_not_modify].isInitlze)
+                    // if (!modelSpec[do_not_modify].isInitlze)
+                    if (!currSpec.OptionActive(do_not_modify))
                     {
-                        if (modelSpec[do_wrap].isInitlze)
+                      //  if (modelSpec[do_wrap].isInitlze)
+                        if(currSpec.OptionActive(do_wrap))
                         {
                             message.CopyArr(new opis());
                             message.Wrap(rez.W());
                         }
                         else
                         {
-                            if (modelSpec[body_as_PartitionName].isInitlze)
-                                message.PartitionName = rez.body;
+                         
                             message.body = rez.body;
                             message.CopyArr(rez);
                         }
@@ -187,21 +183,21 @@ namespace basicClasses.models.SharedDataContextDrivers
 
         }
       
-        opis GetLevelCheck(opis templ, opis srs)
+        opis GetLevelCheck(opis templ, opis srs, bool unwrap)
         {
             opis rez = null;
             if (srs.getPartitionIdx(templ.PartitionName) != -1)
             {
                 rez = srs[templ.PartitionName];
 
-                if (modelSpec[templateUnwrap].isInitlze && rez.PartitionKind == "wrapper")
+                if (unwrap && rez.PartitionKind == "wrapper")
                     rez = rez.W();
 
                 bool haveSubitems = templ.listCou > 0;
                 bool foundSubitems = false;
                 for (int i = 0; i < templ.listCou; i++)
                 {
-                    opis tmp = GetLevelCheck(templ[i], rez);
+                    opis tmp = GetLevelCheck(templ[i], rez, unwrap);
                     if (tmp != null && tmp.isInitlze)
                     {
                         foundSubitems = true;

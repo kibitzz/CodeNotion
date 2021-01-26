@@ -27,7 +27,7 @@ namespace basicClasses
 
         public static ulong TotalObjectsCreated;
 
-#if DEBUG
+#if debugCopyOpt
 
         public static ulong copyCacheHit;
         public static ulong copyCacheIntact;
@@ -138,6 +138,7 @@ namespace basicClasses
                 return (!string.IsNullOrEmpty(body) || paramCou > 0);
             }
         }
+
         public int intVal
         {
             get
@@ -1093,10 +1094,23 @@ namespace basicClasses
             return getPartitionIdx(part, searchLower) != -1;
         }
 
-#endregion
+        public bool OptionActive(string part, bool searchLower = false)
+        {
+            bool rez = false;
+            int idx = -1;
+
+            if ((idx = getPartitionIdx(part, searchLower)) != -1)
+            {
+                rez = arr[idx].isInitlze;
+            }
+
+            return rez;
+        }
+
+        #endregion
 
 
-#region hierarchy algorithms
+        #region hierarchy algorithms
 
         public string serialize()
         {
@@ -2002,7 +2016,7 @@ namespace basicClasses
 
 #if intact_copy_opt
 
-#if DEBUG
+#if debugCopyOpt
             copyExecTotal++;
 
             if ((source != null))
@@ -2023,7 +2037,7 @@ namespace basicClasses
 
 
 
-#if DEBUG
+#if debugCopyOpt
             if (isDuplicated && copy != null)
             {
                 duplicatedFladWhileDuplacate++;              
@@ -2041,7 +2055,7 @@ namespace basicClasses
             // actual optimization
             if ((permaCopy == 1) && copy != null)
             {
-#if DEBUG
+#if debugCopyOpt
                 copyCacheHit++;
                 //if (source != null)
                 //{
@@ -2082,14 +2096,14 @@ namespace basicClasses
 
                     if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
                     {
-#if DEBUG
+#if debugCopyOpt
                         copyCacheIntact++;
 #endif
                     }
                     else
                     {
                         permaCopy = 3;  // this instance copy should be recreated all the time                      
-#if DEBUG
+#if debugCopyOpt
                         copyCacheModified++;
 #endif
                     }

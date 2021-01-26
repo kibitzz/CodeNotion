@@ -36,18 +36,19 @@ namespace basicClasses.models.SharedDataContextDrivers
         {
             opis instLoc = thisins;
             opis datacontext = instLoc[SysInstance.svcIdx][SysInstance.ldcIdx].W();
+            int idxInstr = modelSpec.getPartitionIdx(instructions, false);
 
-            if (modelSpec.getPartitionIdx(instructions) != -1)
+            if (idxInstr != -1)
             {
                 opis currSpec = modelSpec;
-                opis instr = modelSpec[instructions].Duplicate();
+                opis instr = modelSpec[idxInstr].Duplicate();
                 instanse.ExecActionModel(instr, instr);
 
                 //opis messagerole = instr;
 
                 modelSpec = currSpec;
               
-                if (modelSpec[message_as_parameter_for_instructions].isInitlze)
+                if (modelSpec.OptionActive(message_as_parameter_for_instructions))
                     instanse.ExecActionResponceModelsList(instr, message);
                 else
                 {

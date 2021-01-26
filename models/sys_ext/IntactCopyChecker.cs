@@ -82,7 +82,7 @@ namespace basicClasses.models.sys_ext
             if (modelSpec.isHere(stata))
             {
 #if intact_copy_opt
-#if DEBUG
+#if debugCopyOpt
                 message.Vset("copyExecTotal", opis.copyExecTotal.ToString());
                 message.Vset("copyCacheHit", opis.copyCacheHit.ToString());
                 message.Vset("copyCacheIntact", opis.copyCacheIntact.ToString());
@@ -118,7 +118,7 @@ namespace basicClasses.models.sys_ext
 #endif
             }
 
-             #if intact_copy_opt
+#if intact_copy_opt
             if (modelSpec.isHere(visualize))
             {
                 message.RunRecursively(x =>
