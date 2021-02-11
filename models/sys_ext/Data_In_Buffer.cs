@@ -16,13 +16,16 @@ namespace basicClasses.models.sys_ext
         {
             opis data = new opis();
 
-            if (rawData.Trim().StartsWith("{"))
-                data.load(rawData);
-            else
-            {               
-                 data.load(Compress.DeComprez(rawData));
-            }
+            if (!string.IsNullOrEmpty(rawData))
+            {
 
+                if (rawData.Trim().StartsWith("{"))
+                    data.load(rawData);
+                else
+                {
+                    data.load(Compress.DeComprez(rawData));
+                }
+            }
 
             message.CopyArr(data);
         }

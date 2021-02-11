@@ -137,16 +137,12 @@ namespace basicClasses.models.SharedDataContextDrivers
                     opis procSpec = modelSpec.getPartitionNotInitOrigName(process)?.Duplicate();
 
                     rez = rez.W();
-
-                    //  if (modelSpec[duplicate].isInitlze) 
+                   
                     if (currSpec.OptionActive(duplicate))
                         rez = rez.Duplicate();
-
-
-                    // if (!modelSpec[do_not_modify].isInitlze)
+                   
                     if (!currSpec.OptionActive(do_not_modify))
-                    {
-                      //  if (modelSpec[do_wrap].isInitlze)
+                    {                      
                         if(currSpec.OptionActive(do_wrap))
                         {
                             message.CopyArr(new opis());
@@ -168,7 +164,7 @@ namespace basicClasses.models.SharedDataContextDrivers
                     if (procSpec != null)
                         instanse.ExecActionResponceModelsList(procSpec, rez);
                 }
-                else
+                else if (!currSpec.OptionActive(do_not_modify))
                 {
                     message.body = "";
                     message.CopyArr(new opis());

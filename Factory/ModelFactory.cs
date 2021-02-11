@@ -79,8 +79,7 @@ namespace basicClasses.Factory
                      
         
             models.Add("context", new context());
-            models.Add("Fill_Spec_Info", new Fill_Spec_Info());           
-            models.Add("formula_exe", new formula_exe());           
+            models.Add("Fill_Spec_Info", new Fill_Spec_Info());                           
           
             
             models.Add("MoveToSharedVarInstCont", new MoveToSharedVarInstCont());                  

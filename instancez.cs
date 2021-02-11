@@ -12,6 +12,7 @@ using basicClasses.models.sys_ext;
 using basicClasses.models.SharedDataContextDrivers;
 using basicClasses.models.Actions;
 using System.Threading.Tasks;
+using basicClasses.Optimizations;
 
 namespace basicClasses
 {
@@ -1128,7 +1129,7 @@ namespace basicClasses
         /// </summary>
         /// <param name="req">list of instructions</param>        
         public void ExecActionModelsList(opis req, bool parallel = false)
-        {
+        {            
            opis marg = thisins[svcIdx][exec.SUBJ];
           
                 opis wr = new opis(1);
@@ -1208,8 +1209,7 @@ namespace basicClasses
                 {
                     object obj = MF.GetModelObject(req.PartitionKind);
                     if (obj is IActionProcessor)
-                    {
-                       
+                    {                       
                         IActionProcessor processor = (IActionProcessor)obj;
                         processor.InitAct(this, req);                       
 
@@ -1247,55 +1247,106 @@ namespace basicClasses
                (poz = packages.getPartitionIdx(req.PartitionKind)) >=0)  // if inSvc -- poz never evaluated, and stay -1
             {
                 rezb = true;
-                List<string> tempNames = new List<string>();
-                              
+                List<string> tempNames = new List<string>();// remove this list use -- very costly             
+
                 opis ms = SVC[modelSpecIdx]; // caller function spec -- _sys_subscript can be specified there
-
-                opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body              
-
-                opis modelSpec = new opis(-1);
-                var modbody = mod.body;
-
+                
+                opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body (code that process modelspec and params)             
+             
                 
                 int flags = 0; // 2-producer 4-parentspec(!) 8-noRunSpec(#) 16-addcontext(*) 32-duplic($) 64-inline(|)
 
-                if (!string.IsNullOrEmpty(modbody))
-                {                   
-                    int len = modbody.Length;
-                    byte i = 1;                 
-                    while (len > 0 && i < 7)
+                if (mod.bodyObject != null && mod.bodyObject is ModelSpecIdxPresence m)
+                {
+                    flags = m.flags;
+                }
+                else
+                {
+                    var modbody = mod.body;
+
+                    if (!string.IsNullOrEmpty(modbody))
                     {
-                       // i = Array.IndexOf(flagChars, modbody[i - 1]); //which is optimal?
-                        if (modbody.Contains(flagChars[i]))
+                        int len = modbody.Length;
+                        byte i = 1;
+                        while (len > 0 && i < 7)
                         {
-                            len--;
-                            flags = flags | (1 << i);
+                            // i = Array.IndexOf(flagChars, modbody[i - 1]); //which is optimal?
+                            if (modbody.Contains(flagChars[i]))
+                            {
+                                len--;
+                                flags = flags | (1 << i);
+                            }
+                            i++;
                         }
-                        i++;
                     }
                 }
 
                 bool modelIsProducer = (flags & 2) == 2;
-                              
 
-                #region create modelSpec
-            
-                if ((flags & 4) == 0)//TODO: optimize exec       (!modbody.Contains("!"))
+                // // 2-lp 4-rp 8-a 16-v       32-duplic($) 64-inline(|) 128- 256-
+                int a_v_lp_rp_fil_iv_vcon_acon = 0;
+                int lppos = -1;
+                int rppos = -1;
+
+                if (req.bodyObject != null && req.bodyObject is ModelSpecIdxPresence reqm)
                 {
-                    //копируем на случай если модель должна выступать в роли филлера
-                    //ведь тогда мы изменим processParameter который будет являться и modelSpec
-                    modelSpec.CopyArr(req.Duplicate());
+                    a_v_lp_rp_fil_iv_vcon_acon = reqm.a_v_lp_rp_fil_iv_vcon_acon;
+                }
+                else
+                {
+                    // if (req.isHere("lp", false))    // we can chache founded index to use next time                
+                    if ((lppos = req.getPartitionIdx("lp", false)) != -1)
+                        a_v_lp_rp_fil_iv_vcon_acon = a_v_lp_rp_fil_iv_vcon_acon | 2;
 
-                    if (!modelSpec.isHere("v", false))//TODO: optimize exec
-                        modelSpec.Vset("v", req.body);
-                    if (!modelSpec.isHere("a", false))
-                        modelSpec.Vset("a", req.PartitionName);
+                    //   if (req.isHere("rp", false))     
+                    if ((rppos = req.getPartitionIdx("rp", false)) != -1)
+                        a_v_lp_rp_fil_iv_vcon_acon = a_v_lp_rp_fil_iv_vcon_acon | 4;
+                                       
+                }
 
 
-                    if ((flags & 8) == 0)// not all items should run param functions       (!modbody.Contains("#"))                                          
+                opis modelSpec = new opis(-1);
+                opis speca = null;
+                opis specv = null;
+               
+                void setA(string val)
+                {
+                    if(speca == null)
+                        speca = modelSpec["a"];
+                    speca.body = val;
+                }
+                void setV(string val)
+                {
+                    if (specv == null)
+                        specv = modelSpec["v"];
+                    specv.body = val;
+                }
+               
+                #region create modelSpec
+
+                if ((flags & 4) == 0)//   (!modbody.Contains("!"))
+                {
+                   
+                    // if modelspec not exec (modbody.Contains("#")), so no changes are made to its items 
+                    //(example: func # its modelSpec is just data-code to be exec later, and when actually exec it will be copied)
+                    modelSpec.CopyArr((flags & 8) == 8 ? req : req.Duplicate());
+
+                        //modelSpec.bodyObject = req.bodyObject; // to check if explicit ^ subscription is present in parent modelspec                   
+
+                    if ((a_v_lp_rp_fil_iv_vcon_acon & 1) == 0)
+                    {
+                        if (!req.isHere("v", false))//TODO: optimize exec                                                   
+                            setV(req.body);
+                         
+                        if (!req.isHere("a", false))
+                            setA(req.PartitionName);                                                 
+                    }
+
+
+                    if ((flags & 8) == 0)// not all items should run param functions      (!modbody.Contains("#"))                                          
                         ExecActionModelsList(modelSpec);                   
 
-                    if ((flags & 16) == 16)// add context items as missed parameters(ms)   (modbody.Contains("*"))
+                    if ((flags & 16) == 16)// add context items as missed parameters(ms)  (modbody.Contains("*"))
                         modelSpec.AddArrMissing(getSYSContainetP(SVC, ""));
 
                     if ((flags & 32) == 32)// duplicate all input data       (modbody.Contains("$"))
@@ -1305,7 +1356,8 @@ namespace basicClasses
                 }
                 else
                 {
-                    modelSpec = new opis(4);
+                  //  modelSpec = new opis(-1);                  
+
                     if ((flags & 64) == 64)
                     {
                         ms["vvv"].body = req.body;
@@ -1326,7 +1378,7 @@ namespace basicClasses
                 #endregion
 
                             
-                string b = req.body !=null ? req.body:"";
+                string b = req.body ?? "";
                 opis processObj = processParameter;
                 string nameOfSubj = "";
             
@@ -1339,21 +1391,22 @@ namespace basicClasses
                     {
                         nameOfSubj = GetTempValName(SVC, tempNames);                        
                         SVC[nameOfSubj].Wrap(req);
-                        modelSpec.Vset("v", nameOfSubj);                      
+                        setV(nameOfSubj);    
                     }                             
                 }
 
                                        
                 #region hook input object
 
-                if (req.PartitionName.EndsWith(">"))
+                if (req.PartitionName.Length > 0 && req.PartitionName[req.PartitionName.Length -1] == '>')
                 {
-                    processObj = SVC[exec.SUBJ].W();//composition
+                    processObj = SVC[exec.SUBJ].W();
 
                     string pn = req.PartitionName;
 
                     #region  input in form of <filler model>
-                    if (pn.StartsWith("<")) // when input in form of <filler model> this exec filler and put result in tmp arg
+                    // when input in form of <filler model> this exec filler and put result in tmp arg
+                    if(pn.Length > 0 && pn[0] == '<')
                     {
                         opis paramRez = new opis();
                         paramRez.PartitionName = "stub inp";
@@ -1376,8 +1429,8 @@ namespace basicClasses
                     nameOfSubj = GetTempValName(SVC, tempNames) ;
 
                     SVC[nameOfSubj].Wrap(processObj);
-                    modelSpec.Vset("a", nameOfSubj);
-                                       
+                    setA(nameOfSubj); 
+
                 }
             
                 if (req.PartitionName.Length > 0 && req.PartitionName[0] == '*')
@@ -1386,7 +1439,7 @@ namespace basicClasses
 
                     processObj = getSYSContainetP(SVC, req.PartitionName.Trim('*'));
                     SVC[nameOfSubj].Wrap(processObj);
-                    modelSpec.Vset("a", nameOfSubj);
+                    setA(nameOfSubj); 
                 }
 
                 #endregion
@@ -1405,59 +1458,77 @@ namespace basicClasses
                         SVC[nameOfSubj].Wrap(SVC[exec.SUBJ].W());
                     }
 
-                    modelSpec.Vset("v", nameOfSubj);
+                    setV(nameOfSubj);
                 }
 
-                if (req.isHere("rp", false))
+               
+                if ((a_v_lp_rp_fil_iv_vcon_acon & 4) == 4)
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
-                    SVC[nameOfSubj].Wrap(modelSpec["rp"].W());
-                    modelSpec.Vset("v", nameOfSubj);
+                    if (rppos != -1)
+                        SVC[nameOfSubj].Wrap(modelSpec[rppos].W());
+                    else
+                        SVC[nameOfSubj].Wrap(modelSpec["rp"].W());
+
+                    setV(nameOfSubj);
                 }
 
-                if (req.isHere("lp", false))
+                if ((a_v_lp_rp_fil_iv_vcon_acon & 2) == 2)
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
-                    SVC[nameOfSubj].Wrap(modelSpec["lp"].W());
-                    modelSpec.Vset("a", nameOfSubj);
+                    if (lppos != -1)
+                        SVC[nameOfSubj].Wrap(modelSpec[lppos].W());
+                    else
+                        SVC[nameOfSubj].Wrap(modelSpec["lp"].W());
+
+                    setA(nameOfSubj); 
                 }
 
                 #endregion
 
                 #region context variables []*name
                 bool subscribeProduce = false;
-               
-               if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")                           
+
+                // working sequence *~itm not ~*itm
+                if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")                           
                 {
-                    string pn = b.Trim('>', '<', ' ', '*');
+                    //  symbols '>', '<' not accepted in combination with *
+                    string pn = b.Length > 1 ? b.Remove(0, 1) : ""; // costly  b.Trim('>', '<', ' ', '*')
                     if (pn.Length > 0)
                     {
+
+                      //  pn = pn[0] == '~' ? pn.Remove(0, 1) : pn;
+
+                        //TODO: use short prefix ^ instead suffix _sys_subscript
                         subscribeProduce = modelIsProducer
                                     && (SVC[ldcIdx].W().isHere(pn.Trim('~') + "_sys_subscript", false)
-                                       || ms.isHere(pn.Trim('~') + "_sys_subscript", false));                        
+                                       || ms.isHere(pn.Trim('~') + "_sys_subscript", false));
+
+                        //subscribeProduce = modelIsProducer
+                        //           && (SVC[ldcIdx].W().isHere("^"+ pn, false)
+                        //              || ms.isHere("^" + pn, false));
 
                         nameOfSubj = GetTempValName(SVC, tempNames);
-                        b = b.Replace("*", "");
+                    
                         SVC[nameOfSubj].Wrap(getSYSContainetP(SVC, pn, modelIsProducer));
-                        modelSpec.Vset("v", nameOfSubj);
+                        setV(nameOfSubj);
                     }
                     else
                     {
                         nameOfSubj = GetTempValName(SVC, tempNames);
-                        modelSpec.Vset("v", nameOfSubj);
+                        setV(nameOfSubj);
                     }
                 }
 
                 #endregion
                 
-
-              //  ExecActionModel(rez, processObj); 
+              
                 ExecLocalModelCode(SVC, mod, processObj); // M A I N
 
 
                 if (pipeline)
                 {
-                    SVC[exec.SUBJ].Wrap(SVC[modelSpec.V("v")].W());
+                    SVC[exec.SUBJ].Wrap(SVC[specv.body].W());
                 }
 
                 //context switch []*
@@ -1470,6 +1541,8 @@ namespace basicClasses
 
                 if (subscribeProduce)
                 {
+                   
+                    //string pn = "^" + b.Trim('>', '<', ' ', '*', '~');
                     string pn = b.Trim('>', '<', ' ', '*', '~') + "_sys_subscript";
 
                     if (ms.isHere(pn)) // priority on explicit method extention in model spec
@@ -1499,15 +1572,12 @@ namespace basicClasses
         }
 
         public void ExecLocalModelCode(opis svc, opis instructions, opis processObj)
-        {
-            //opis instLoc = thisins;
-            //opis SVC = thisins[svcIdx];
+        {           
             opis datacontext = svc[ldcIdx].W();
+          
+            ExecActionResponceModelsList(instructions.DuplicateInstrOpt(0), processObj); 
 
-            ExecActionResponceModelsList(instructions.Duplicate(), processObj); 
-
-            svc[ldcIdx].Wrap(datacontext);
-          //instLoc[SysInstance.svcIdx][SysInstance.ldcIdx].Wrap(datacontext);
+            svc[ldcIdx].Wrap(datacontext);         
         }
 
         opis GenExecInstr(opis code)
@@ -1529,7 +1599,7 @@ namespace basicClasses
             {
                 rez = tempSDCstack.Pop();
 
-                SVC[rez] = new opis(1);
+                SVC[rez] = new opis(1); //TODO: optimize access by caching integer index together with string index key
             }
             else
                 rez = DateTime.Now.Ticks.ToString() + rnd.Next().ToString() + rnd.Next().ToString();
@@ -1538,6 +1608,7 @@ namespace basicClasses
 
             return rez;
         }
+     
 
         opis getSYSContainetP(opis SVC, string pn)
         {
@@ -1552,22 +1623,26 @@ namespace basicClasses
 
         opis getSYSContainetP(opis SVC, string pn, bool create, bool logerror = true)
         {
-            opis rez = new opis(1);
+            opis rez = null;
             opis t = SVC[ldcIdx].W();
 
-            bool isref = pn.Contains("~");
+            if (string.IsNullOrEmpty(pn))
+                return t;
 
-            string pnl = isref ? pn.Replace("~", "") : pn;
+            bool isref = pn.Length > 0 && pn[0] == '~';// pn.Contains("~"); costly
+
+            string pnl = isref ? pn.Remove(0, 1) : pn;
             int pos = t.getPartitionIdx(pnl);
 
             if (pos != -1)
                 rez = isref ? t[pos] : t[pos].W();
             else
             {
-                if (string.IsNullOrWhiteSpace(pn))
-                    rez = t;
-                else
-                {
+                //if (string.IsNullOrWhiteSpace(pn))
+                //    rez = t;
+                //else
+                //{
+                    rez = new opis(1);
                     if (create)
                     {                       
                         rez = isref ? t[pnl] : t[pn].W();
@@ -1583,7 +1658,7 @@ namespace basicClasses
 #endif
                         global_log.log.AddArr(err);
                     }
-                }
+                //}
             }
 
             return rez;

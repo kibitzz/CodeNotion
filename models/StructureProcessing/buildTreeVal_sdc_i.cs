@@ -83,7 +83,7 @@ namespace basicClasses.models.StructureProcessing
                 build(bp, null, vk, modelSpec.isHere(func_symbols_ignore, false), modelSpec.isHere(only_body_template_optimization, false));
               
               
-                if (bp.listCou == 1)// && message.PartitionKind != "template")
+                if (bp.listCou == 1)
                 {
                     if (locmod.isHere(putWholeResult, false))
                     {
@@ -128,15 +128,17 @@ namespace basicClasses.models.StructureProcessing
         {
             bool donotrecurce = !modelSpec.isHere(recurce_all) && bp.PartitionKind == "buildTreeVal_sdc_i";
 
-            if (bp.body.StartsWith("$"))
+            string bp_body = bp.body;
+            //  if (bp.body.StartsWith("$"))
+            if (bp_body.Length > 0 && bp_body[0] == '$')
                 bp.body = valContainer[bp.body.Replace("$", "")].body;
             else
             {
-                if (!onlyBody && bp.body.StartsWith("&"))
+                if (!onlyBody && (bp_body.Length > 0 && bp_body[0] == '&')) //bp_body.StartsWith("&"))
                 {
-                    if (bp.body.StartsWith("&b"))
+                    if (bp_body.StartsWith("&b"))
                         bp.body = valContainer.body;
-                    else if (bp.body.StartsWith("&p"))
+                    else if (bp_body.StartsWith("&p"))
                         bp.body = valContainer.PartitionName;
                 }
             }
@@ -144,11 +146,11 @@ namespace basicClasses.models.StructureProcessing
             if (!onlyBody)
             {
 
-                if (bp.PartitionName.StartsWith("$"))
+                if (bp.PartitionName.Length > 0 && bp.PartitionName[0] == '$')
                     bp.PartitionName = valContainer[bp.PartitionName.Replace("$", "")].body;
 
 
-                if (bp.PartitionName.StartsWith("&"))
+                if (bp.PartitionName.Length > 0 && bp.PartitionName[0] == '&')
                 {
                     if (bp.PartitionName.StartsWith("&b"))
                         bp.PartitionName = valContainer.body;
@@ -163,57 +165,56 @@ namespace basicClasses.models.StructureProcessing
                     else if (bp.PartitionKind == "&b")
                         bp.PartitionKind = valContainer.body;
                     else if (bp.PartitionKind == "&p")
-                        bp.PartitionKind = valContainer.PartitionName;
-                 
+                        bp.PartitionKind = valContainer.PartitionName;                 
                 }
 
-                if (!funcSymbIgnore)
+                if (!funcSymbIgnore && bp_body.Length > 0)
                 {
-                    if (bp.body.StartsWith("*"))
+
+                    switch (bp_body[0])
                     {
-                        donotrecurce = true;
 
-                        if (bp.body.Length > 1)
-                            bp.CopyArr(valContainer[bp.body.Replace("*", "")].W());
-                        else
-                            bp.CopyArr(valContainer);
+                        case '*':
+                            donotrecurce = true;
 
-                        bp.body = "";
-                    }
+                            if (bp_body.Length > 1)
+                                bp.CopyArr(valContainer[bp_body.Replace("*", "")].W());
+                            else
+                                bp.CopyArr(valContainer);
 
-                    if (bp.body.StartsWith("+"))
-                    {
-                        donotrecurce = true;
+                            bp.body = "";
+                            break;
 
-                        if (bp.body.Length > 1)
-                            bp.AddArrRange(valContainer[bp.body.Replace("+", "")].W());
-                        else
-                            bp.AddArrRange(valContainer);
+                        case '+':
+                            donotrecurce = true;
 
-                        bp.body = "";
-                    }
+                            if (bp_body.Length > 1)
+                                bp.AddArrRange(valContainer[bp_body.Replace("+", "")].W());
+                            else
+                                bp.AddArrRange(valContainer);
 
+                            bp.body = "";
+                            break;
 
-                    if (bp.body.StartsWith("@"))
-                    {
-                        donotrecurce = true;
+                        case '@':
+                            donotrecurce = true;
 
-                        if (bp.body.Length > 1)
-                            bp.Wrap(valContainer[bp.body.Replace("@", "")].W());
-                        else
-                            bp.Wrap(valContainer.W());
-                    }
+                            if (bp_body.Length > 1)
+                                bp.Wrap(valContainer[bp_body.Replace("@", "")].W());
+                            else
+                                bp.Wrap(valContainer.W());
+                            break;
 
-                    if (bp.body.StartsWith("%"))
-                    {
-                        bp.body = "random body " + rnd.Next().ToString() + rnd.Next().ToString(); ;
+                        case '%':  bp.body = "random body " + rnd.Next().ToString() + rnd.Next().ToString();
+                            break;
                     }
 
 
                 }
 
                 // # in PartitionName means that whole tree must be assigned
-                if (bp.PartitionName.StartsWith("#"))
+                //  if (bp.PartitionName.StartsWith("#"))
+                if (bp.PartitionName.Length > 0 && bp.PartitionName[0] == '#')
                 {
                     donotrecurce = true;
 

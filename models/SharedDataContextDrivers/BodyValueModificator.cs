@@ -38,12 +38,55 @@ namespace basicClasses.models.SharedDataContextDrivers
         public override void Process(opis message)
         {
             opis locOpis = modelSpec;
-            long integerVal = StrUtils.LongFromString( modelSpec[value].body);
-            string oper = modelSpec.V(operation);
+            long integerVal = 0; 
 
-            string opSpec = locOpis[operationSpec].body;
+            string oper = modelSpec.V(operation);
+            string opSpec = locOpis.V(operationSpec); 
 
             long lv = 0;
+
+            #region what to process
+
+            opis val = locOpis[value].Duplicate();
+
+            bool unwr = !locOpis.OptionActive(do_not_value_Unwrap);
+            if (unwr)
+                val = val.W();
+
+            if (!locOpis.OptionActive(do_not_exec_value))
+            {
+                // obsolete functionality, remove if use fresh context 
+                if (string.IsNullOrEmpty(val.PartitionKind) && val.listCou > 0)
+                    instanse.ExecActionModelsList(val);
+
+                instanse.ExecActionModel(val, val);
+            }
+            modelSpec = locOpis;
+
+            if (unwr)
+                val = val.W();
+
+            if (modelSpec.isHere(clear_func, false))
+            {
+                val.PartitionKind = "";
+                for (int i = 0; i < val.listCou; i++)
+                    val[i].PartitionKind = "";
+            }
+
+            opis processThis = message;
+            opis templ = modelSpec.getPartitionNotInitOrigName(partition)?.Duplicate();
+            if (templ != null)
+            {
+                if (templ.PartitionKind != "template")
+                    instanse.ExecActionModel(templ, templ);
+                else if (templ.listCou > 0)
+                    instanse.ExecActionModelsList(templ);
+
+                if (templ.listCou > 0)
+                    processThis = opis.GetLevelByTemplate(templ[0], processThis, true);
+            }
+
+            #endregion
 
             switch (oper)
             {
@@ -51,250 +94,91 @@ namespace basicClasses.models.SharedDataContextDrivers
                 case "rename":
                     opis ft = locOpis[operationSpec].Duplicate();
                     instanse.ExecActionModel(ft, ft);
-                    message.PartitionName = ft.body;
+                    processThis.PartitionName = ft.body;
                     break;
 
                 case "setmodel":
                     opis pv = locOpis[value].Duplicate();
                     instanse.ExecActionModel(pv, pv);
-                    message.PartitionKind = pv.body;
+                    processThis.PartitionKind = pv.body;
                     break;            
 
                 case "conc ower":
+                    for (int i = 0; i < val.listCou; i++)
+                        processThis[val[i].PartitionName] = val[i];
+                    break;
+                 
                 case "conc stay":
+                    processThis.AddArrMissing(val);
+                    break;
+
                 case "dec":
+                    lv = StrUtils.LongFromString(processThis.body);
+                    integerVal = StrUtils.LongFromString(val.body);
+                    processThis.body = (lv - integerVal > 0 ? lv - integerVal : 0).ToString();
+                    break;
+
                 case "inc":
+                    lv = StrUtils.LongFromString(processThis.body);
+                    integerVal = StrUtils.LongFromString(val.body);
+                    processThis.body = (lv + (integerVal > 0 ? integerVal : 1)).ToString();
+                    break;
+                  
+
                 case "add_arr_i":
-                case "add_arr":
-                case "set":
-                case "set b":
-                    opis ttt = locOpis[value].Duplicate();
-                    if (ttt.PartitionKind == "wrapper" && !locOpis[do_not_value_Unwrap].isInitlze)
-                        ttt = ttt.W();
-
-                    opis csp = locOpis;
-
-                    if (!locOpis[do_not_exec_value].isInitlze)
+                    integerVal = opSpec == "all" ? 1 : (opSpec == "new" ? 2 : 0);
+                    for (int i = 0; i < val.listCou; i++)
                     {
-                        if(string.IsNullOrEmpty(ttt.PartitionKind))
-                        instanse.ExecActionModelsList(ttt);
-
-                        instanse.ExecActionModel(ttt, ttt);
-                    }
-                    modelSpec= csp;
-
-                    if (ttt.PartitionKind == "wrapper" && !modelSpec[do_not_value_Unwrap].isInitlze)
-                        ttt = ttt.W();
-
-                    if (modelSpec.isHere(clear_func))
-                    {
-                        ttt.PartitionKind = "";
-                        for (int i = 0; i < ttt.listCou; i++)
-                            ttt[i].PartitionKind = "";
-                    }
-
-
-                    if (modelSpec[partition].isInitlze || modelSpec[partition].PartitionKind != "template")
-                    {
-                        opis ptt = modelSpec[partition].Duplicate();
-                       // instanse.ExecActionModelsList(ptt);
-
-                        bool processMessage = false;
-                        if (ptt.PartitionKind != "template")
+                        if (integerVal == 1)
                         {
-                            instanse.ExecActionModel(ptt, ptt);
-                            if (ptt.listCou == 0)
-                            {
-                                ptt.AddArr(new opis("", "body jkjk"));
-                                processMessage = true;
-                            }
-                        }else
-                            instanse.ExecActionModelsList(ptt);
-
-
-
-                        opis processThis=  message;
-                         processThis = processMessage? processThis:  opis.GetLevelByTemplate(ptt[0], message, true);
-
-                        if (processThis != null)
-                        {
-
-                            if (oper == "conc ower")
-                            {
-                                for (int i = 0; i < ttt.listCou; i++)                                
-                                    processThis[ttt[i].PartitionName] = (ttt[i]);                                                                   
-                            }
-
-                            if (oper == "conc stay")
-                            {                               
-                                  processThis.AddArrMissing(ttt);
-                            }
-                            
-
-                            if (oper == "add_arr_i")
-                            {
-                                for (int i = 0; i < ttt.listCou; i++)
-                                {
-                                    if (opSpec == "all")
-                                    {
-                                        processThis.AddArr(ttt[i]);
-                                    }
-                                    else
-                                    {
-                                        if (processThis.getPartitionIdx(ttt[i].PartitionName) == -1)
-                                        {
-                                            processThis.AddArr(ttt[i]);
-                                        }
-                                        else
-                                            if (!(opSpec == "new"))
-                                        {
-                                            if (processThis[ttt[i].PartitionName].body != ttt[i].body
-                                                 || processThis[ttt[i].PartitionName].listCou != ttt[i].listCou)
-                                                processThis.AddArr(ttt[i]);
-                                        }
-                                    }
-                                   
-                                }
-                            }
-                            
-                            if (oper == "add_arr")
-                            {
-                                if (!(opSpec == "uniq"))
-                                {
-                                    processThis.AddArr(ttt);
-                                } else
-                                {
-                                    if (processThis.getPartitionIdx(ttt.PartitionName) == -1 
-                                            || processThis[ttt.PartitionName].body != ttt.body
-                                                 || processThis[ttt.PartitionName].listCou != ttt.listCou)
-                                        processThis.AddArr(ttt);
-                                }
-                            }
-                            if (oper == "set")
-                            {
-                                if (opSpec == "w")
-                                {
-                                    processThis.Wrap(ttt.W());
-                                }
-                                else
-                                {
-                                    processThis.body = ttt.body;
-                                    processThis.CopyArr(ttt);
-                                }
-                            }
-                            if (oper == "set b")
-                            {
-                                processThis.body = ttt.body;                               
-                            }
-
-                            if (oper == "inc")
-                            {
-                                lv = StrUtils.LongFromString(processThis.body);
-                                integerVal = StrUtils.LongFromString(ttt.body); 
-                                processThis.body = (lv+ (integerVal > 0 ? integerVal : 1)).ToString();
-                            }
-
-                            if (oper == "dec")
-                            {
-                                lv = StrUtils.LongFromString(processThis.body);
-                                integerVal = StrUtils.LongFromString(ttt.body);
-                                processThis.body = (lv - integerVal > 0 ? lv - integerVal : 0).ToString();
-                            }
-
+                            processThis.AddArr(val[i]);
                         }
+                        else
+                        {
+                            if (processThis.getPartitionIdx(val[i].PartitionName) == -1)
+                            {
+                                processThis.AddArr(val[i]);
+                            }
+                            else
+                                if (!(integerVal == 2))
+                            {
+                                if (processThis[val[i].PartitionName].body != val[i].body
+                                     || processThis[val[i].PartitionName].listCou != val[i].listCou)
+                                    processThis.AddArr(val[i]);
+                            }
+                        }
+                    }
+                    break;             
+
+                case "add_arr":
+                    if (!(opSpec == "uniq"))
+                    {
+                        processThis.AddArr(val);
                     }
                     else
                     {
-                        if (oper == "conc ower")
-                        {
-                            for (int i = 0; i < ttt.listCou; i++)
-                                message[ttt[i].PartitionName] = ttt[i];
-                        }
-
-                        if (oper == "conc stay")
-                        {
-                            message.AddArrMissing(ttt);
-                        }
-
-
-                        if (oper == "add_arr_i")
-                        {
-                            for (int i = 0; i < ttt.listCou; i++)
-                            {
-                                if (opSpec == "all")
-                                {
-                                    message.AddArr(ttt[i]);
-                                }
-                                else
-                                {
-                                    if (message.getPartitionIdx(ttt[i].PartitionName) == -1)
-                                    {
-                                        message.AddArr(ttt[i]);
-                                    }
-                                    else                                  
-
-                                    if (!(opSpec == "new"))
-                                    {
-                                        if (message[ttt[i].PartitionName].body != ttt[i].body
-                                             || message[ttt[i].PartitionName].listCou != ttt[i].listCou)
-                                            message.AddArr(ttt[i]);
-                                    }
-                                }
-                                                              
-                            }
-                        }
-                       
-                       if (oper == "add_arr")
-                        {
-                          //  message.AddArr(ttt);
-
-                            if (!(opSpec == "uniq"))
-                            {
-                                message.AddArr(ttt);
-                            }
-                            else
-                            {
-                                if (message.getPartitionIdx(ttt.PartitionName) == -1
-                                        || message[ttt.PartitionName].body != ttt.body
-                                             || message[ttt.PartitionName].listCou != ttt.listCou)
-                                    message.AddArr(ttt);
-                            }
-
-                        }
-                        if (oper == "set")
-                        {
-                            if (opSpec == "w")
-                            {
-                                message.Wrap(ttt.W());
-                            }
-                            else
-                            {
-                                message.body = ttt.body;
-                                message.CopyArr(ttt);
-                            }                          
-                        }
-
-                        if (oper == "set b")
-                        {
-                            message.body = ttt.body;
-                        }
-
-                        if (oper == "inc")
-                        {
-                            lv = StrUtils.LongFromString(message.body);
-                            integerVal = StrUtils.LongFromString(ttt.body);
-                            message.body = (lv +( integerVal > 0 ? integerVal : 1)).ToString();
-                            //message.intVal += integerVal > 0 ? integerVal : 1;
-                        }
-
-                        if (oper == "dec")
-                        {
-                            lv = StrUtils.LongFromString(message.body);
-                            integerVal = StrUtils.LongFromString(ttt.body);
-                            message.body = (lv - integerVal > 0 ? lv - integerVal : 0).ToString();
-                        }
+                        if (processThis.getPartitionIdx(val.PartitionName) == -1
+                                || processThis[val.PartitionName].body != val.body
+                                     || processThis[val.PartitionName].listCou != val.listCou)
+                            processThis.AddArr(val);
                     }
-
+                    break;
+                  
+                case "set":
+                    if (opSpec == "w")
+                    {
+                        processThis.Wrap(val.W());
+                    }
+                    else
+                    {
+                        processThis.body = val.body;
+                        processThis.CopyArr(val);
+                    }
+                    break;
+                   
+                case "set b":
+                    processThis.body = val.body;
+                                                                                                                                                                  
                     break;
             }
         }

@@ -70,7 +70,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <PlatformTarget>x64</PlatformTarget>
     <OutputPath>bin\x64\Debug\</OutputPath>
-    <DefineConstants>DEBUG;NETFRAMEWORK bodyNullOptimization pidx_second_loop_opt intact_copy_opt</DefineConstants>
+    <DefineConstants>DEBUG;NETFRAMEWORK bodyNullOptimization pidx_second_loop_opt </DefineConstants>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <PlatformTarget>x64</PlatformTarget>
@@ -176,7 +176,6 @@
     <Compile Include="models\Extractors\Fill_p_notify_specs.cs" />
     <Compile Include="models\Extractors\fill_shared_context_val.cs" />
     <Compile Include="models\Extractors\Fill_Spec_Info.cs" />
-    <Compile Include="models\FunctionalInstances\formula_exe.cs" />
     <Compile Include="models\SQL\ReplaceKeyByPresentation.cs" />
     <Compile Include="models\String proc\b_length.cs" />
     <Compile Include="models\String proc\normalize_spaces.cs" />
@@ -268,6 +267,7 @@
     <Compile Include="models\WEB_api\upLoadFileSpecs.cs" />
     <Compile Include="models\WEB_api\UseSecurityProtocol.cs" />
     <Compile Include="models\WEB_api\webActorModel.cs" />
+    <Compile Include="Optimizations\ModelSpecIdxPresence.cs" />
     <Compile Include="Parser\klass.cs" />
     <Compile Include="models\Messaging.cs" />
     <Compile Include="models\ModelG.cs" />
@@ -340,6 +340,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Examples\" />
+    <Folder Include="models\FunctionalInstances\" />
     <Folder Include="models\SelectFilter\" />
     <Folder Include="SubjectArea\" />
   </ItemGroup>

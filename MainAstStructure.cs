@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using System.Drawing;
 using basicClasses.models.sys_ext;
 using basicClasses.models.WEB_api;
+using basicClasses.Optimizations;
 
 namespace basicClasses
 {
@@ -23,7 +24,7 @@ namespace basicClasses
         public const int InitialArrSize = 9;
         public const int AccommSize = 4;
 
-        public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(70000);
+        public static Dictionary<string, string> LowerMap = new Dictionary<string, string>(120000);
 
         public static ulong TotalObjectsCreated;
 
@@ -112,7 +113,7 @@ namespace basicClasses
                 return isDuplicated;
             }
         }
-        public opis copy;
+        public opis copy; 
 
 #if intact_copy_opt
         /// <summary>
@@ -157,7 +158,7 @@ namespace basicClasses
         }
    
 
-        public object bodyObject;
+        public object bodyObject; //TODO: use as holder for copy; use to store indexes cache
         public object FuncObj;
   
 #endregion
@@ -263,12 +264,16 @@ namespace basicClasses
             if (part == null)
                 return -1;
 
-            //if (arr == null)
-            //    arr = new opis[InitialArrSize];
+            //if (string.IsNullOrEmpty(part ))
+            //    return -1;
+
 
             int rez = -1;
 
-            for (int i = 0; i < arr.Length; i++) //TODO: somehow iterating to paramCou is not finding what is found using arr.Length -- bug in keeping paramCou in sync 
+           // char pf = part.Length > 0 ? part[0]: ' ';
+
+            int arrl = arr.Length;
+            for (int i = 0; i < arrl; i++) //TODO: somehow iterating to paramCou is not finding what is found using arr.Length -- bug in keeping paramCou in sync 
             {
                 if (arr[i] != null 
                     && (( arr[i].PartitionName == part)
@@ -438,9 +443,9 @@ namespace basicClasses
             //raiseEvents = prev;
         }
 
-#endregion
+        #endregion
 
-#region get values and ARR +/- elements
+        #region get values and ARR +/- elements
 
         /// <summary>
         /// do not create absent object as access by index
@@ -449,10 +454,15 @@ namespace basicClasses
         /// <returns>value of body</returns>
         public string V(string index)
         {
-            string[] arr = index.Trim().Split(new char[] { '.' });
+            //string[] arr = index.Trim().Split(new char[] { '.' });
+            //return V(arr, 0); // getPartition(index).body;  
 
+            int pos = -1;
+            if ((pos = getPartitionIdx(index)) != -1)
+                return this[pos].body;
+            else
+                return "";
 
-            return V(arr, 0); // getPartition(index).body;            
         }
 
         public string V(string[] index, int id)
@@ -463,16 +473,16 @@ namespace basicClasses
             }
 
             string rez = "";
-
-            if (getPartitionIdx(index[id]) != -1)
+            int pos = -1;
+            if ((pos = getPartitionIdx(index[id])) != -1)
             {
                 if (id + 1 == index.Length)
                 {
-                    rez = getPartition(index[id]).body;
+                    rez = this[pos].body;
                 }
                 else
                 {
-                    rez = getPartition(index[id]).V(index, id + 1);
+                    rez = this[pos].V(index, id + 1);
                 }
             }
 
@@ -628,10 +638,7 @@ namespace basicClasses
 
         public void AddArrRange(opis elem, bool turnOffUniqControl = true)
         {
-
-            //if (arr == null)
-            //    arr = new opis[paramCou + elem.listCou + AccommSize];
-            //else
+          
             if (arr.Length < paramCou + elem.listCou + AccommSize)
                 Array.Resize(ref arr, paramCou + elem.listCou + AccommSize);
 
@@ -1726,6 +1733,17 @@ namespace basicClasses
                     break;
 
 
+                case "deleted":
+                    rez = Color.FromArgb(145, 145, 145);
+                    break;
+                case "added":
+                    rez = Color.FromArgb(189, 237, 141);
+                    break;
+                case "modified":
+                    rez = Color.FromArgb(254, 133, 133);
+                    break;
+
+
                 case "":
                     break;
 
@@ -2093,7 +2111,7 @@ namespace basicClasses
             {
                 if (copy != null) 
                 {
-
+                    // (source == null) - this object is initial source
                     if ((source == null || CopyIntact(source, copy)) && CopyIntact(this, copy))
                     {
 #if debugCopyOpt
@@ -2119,6 +2137,7 @@ namespace basicClasses
                 PartitionName_Lower_ = this.PartitionName_Lower_,
                 PartitionName = this.PartitionName,
                 paramCou = this.paramCou,
+                bodyObject = bodyObject
             };
 
             copy = rez;
@@ -2175,7 +2194,87 @@ namespace basicClasses
 
         }
 
-      
+
+        public opis DuplicateInstrOpt(int lvl)
+        {
+            if (isDuplicated && copy != null)
+            {
+                return copy;
+            }
+
+            //func
+            //Action
+            //buildTreeVal_sdc_i                       
+            //initValues
+            //global_log
+
+            if (PartitionKind == "func" ||  (lvl > 0 && PartitionKind == "Action") || PartitionKind == "global_log")                       
+                return this;            
+
+            // take function body from packages or SDC to exec on different spec
+            if (lvl == 0 && bodyObject == null && PartitionKind == "Action")
+            {
+
+                var kch = new ModelSpecIdxPresence();
+                kch.Action(this);
+
+                //for (int i = 0; i < listCou; i++)
+                //{
+                //    var x = arr[i];
+                //    if (!string.IsNullOrEmpty(x.PartitionKind) && x.PartitionKind != "Action" && x.bodyObject == null)
+                //    {
+                //        kch = new ModelSpecIdxPresence();
+                //        kch.RandomModel(x);
+                //    }
+                //}
+              
+            }
+
+
+            opis rez = new opis(-1)
+            {
+                body = body_,
+                PartitionKind = this.PartitionKind,
+                PartitionName_Lower_ = this.PartitionName_Lower_,
+                PartitionName = this.PartitionName,
+                paramCou = this.paramCou,
+                bodyObject = bodyObject
+            };
+
+            copy = rez;
+
+
+            isDuplicated = true;
+
+            if (this.paramCou > 0)
+                rez.arr = new opis[this.paramCou];
+            else
+                rez.arr = new opis[0];
+
+            if (
+              //  (lvl == 0 && PartitionKind == "Action") ||
+                PartitionKind == "buildTreeVal_sdc_i" || PartitionKind == "initValues")            
+            {
+                for (int i = 0; i < this.paramCou; i++)
+                {
+                    rez.arr[i] = this.arr[i];
+                }
+            }
+            else
+            {
+                for (int i = 0; i < this.paramCou; i++)
+                {
+                    rez.arr[i] = this.arr[i].DuplicateInstrOpt(lvl+1);
+                }
+            }
+
+            isDuplicated = false;
+            copy = null;
+
+            return rez;                                                
+        }
+
+
         public T DuplicateAs<T>() where T : opis, new()
         {
             T rez = new T();
@@ -2205,12 +2304,43 @@ namespace basicClasses
             FindTreePartitions(templ, path, referers);
         }
 
-        public void FindTreePartitions(opis templ, string path, opis referers)
+        public void FindTreePartitionsStrictOrFuzzy(opis templ, string path, opis referers, bool fuzzy = false)
         {
-            FindTreePartitions(templ, path, referers, true);
+            if (fuzzy)
+                FindTreePartitionsFuzzy(templ, path, referers);
+            else
+                FindTreePartitions(templ, path, referers);
         }
 
-        public void FindTreePartitions(opis templ, string path, opis referers, bool recursive)
+        public void FindTreePartitionsFuzzy(opis templ, string path, opis referers)
+        {
+
+            for (int i = 0; i < paramCou; i++)
+            {
+                if ((string.IsNullOrEmpty(templ.PartitionKind) ||
+                    (arr[i].PartitionKind != null && arr[i].PartitionKind.Contains(templ.PartitionKind))) &&
+                    
+                    (string.IsNullOrEmpty(templ.PartitionName) ||
+                    arr[i].PartitionName.Contains(templ.PartitionName)) &&
+                    
+                    (string.IsNullOrEmpty(templ.body) ||
+                    arr[i].body.Contains(templ.body))
+                    )
+                {
+                    opis refitem = new opis();
+                    refitem.PartitionName = path + "->" + arr[i].PartitionName;
+                   
+                    refitem.AddArr(arr[i]);                
+                    referers.AddArr(refitem);
+                }
+               
+                arr[i].FindTreePartitionsFuzzy(templ, path + "->" + arr[i].PartitionName, referers);
+            }
+
+            isDuplicated = false;
+        }
+
+        public void FindTreePartitions(opis templ, string path, opis referers, bool recursive = true)
         {
 
             for (int i = 0; i < paramCou; i++)

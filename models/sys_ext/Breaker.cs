@@ -54,7 +54,9 @@ namespace basicClasses.models.sys_ext
         void SetFlag(opis message)
         {
             message[flag].body = "true";
-            instanse.ExecActionModelsList(modelSpec[on_break]);
+            opis run = modelSpec.getPartitionNotInitOrigName(on_break)?.Duplicate();
+            if (run != null)
+                instanse.ExecActionModelsList(run);
         }
     }
 }

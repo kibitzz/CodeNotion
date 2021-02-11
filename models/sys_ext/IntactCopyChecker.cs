@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace basicClasses.models.sys_ext
 {
-    [info("Optimization of functions and constants reuse")]
+    [info("Optimization of functions and constants reuse. !!! incompatible with DuplicateInstrOpt")]
     class IntactCopyChecker : ModelBase
     {
         [model("spec_tag")]

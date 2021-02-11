@@ -593,26 +593,26 @@ namespace basicClasses.models.WEB_api
             foreach (string header in headers)
             {
                 string headerl = header.ToLower();
-                 if (headerl.StartsWith("referer"))
+                if (headerl.StartsWith("referer"))
                     myHttpWebRequest.Referer = header.Substring(8).Trim();
                 else
-                     if (headerl.StartsWith("content-type"))
+                    if (headerl.StartsWith("content-type"))
                     myHttpWebRequest.ContentType = header.Substring(13).Trim();
                 else
-                     if (headerl.StartsWith("accept:") )
+                    if (headerl.StartsWith("accept:"))
                     myHttpWebRequest.Accept = header.Substring(7).Trim();
                 else
-                     if (headerl.StartsWith("host"))
+                    if (headerl.StartsWith("host"))
                     myHttpWebRequest.Host = header.Substring(5).Trim();
                 else
-                 if (headerl.StartsWith("content-length"))
+                if (headerl.StartsWith("content-length"))
                 { }
                 else
-                if (headerl.StartsWith("user-agent"))
+               if (headerl.StartsWith("user-agent"))
                     myHttpWebRequest.UserAgent = header.Substring(11).Trim();
-                
+
                 else
-                     if (headerl.StartsWith("connection"))
+                    if (headerl.StartsWith("connection"))
                 {
                     if (header.Contains("keep-alive"))
                         myHttpWebRequest.KeepAlive = true;
@@ -620,7 +620,13 @@ namespace basicClasses.models.WEB_api
                 }
                 else if (headerl.StartsWith("timeout"))
                     myHttpWebRequest.Timeout = int.Parse(header.Substring(8).Trim());
-               
+
+                else if (headerl.StartsWith("response-decoder"))
+                {
+                    var encName = header.Substring(17).Trim();
+                    EncoderOfResponce = Encoding.GetEncoding(encName);
+                }
+
                 else
                     myHttpWebRequest.Headers.Add(header);
             }

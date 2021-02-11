@@ -33,9 +33,10 @@ namespace basicClasses.models.sys_ext
         public override void Process(opis message)
         {
             opis logitem = modelSpec.Duplicate();
+            logitem.PartitionKind = "";
             instanse.ExecActionModelsList(logitem);
 
-            if(modelSpec.isHere(do_not_duplicate) && modelSpec[do_not_duplicate].isInitlze)
+            if(modelSpec.OptionActive(do_not_duplicate) )
                 log.AddArr(logitem);
             else
             log.AddArr(logitem.Duplicate());
@@ -65,7 +66,7 @@ namespace basicClasses.models.sys_ext
             opis logitem = modelSpec.Duplicate();
             instanse.ExecActionModelsList(logitem);
 
-            if (modelSpec.isHere(do_not_duplicate) && modelSpec[do_not_duplicate].isInitlze)
+            if (modelSpec.OptionActive(do_not_duplicate))
                 thisins["Models_log"].AddArr(logitem);
             else
                 thisins["Models_log"].AddArr(logitem.Duplicate());

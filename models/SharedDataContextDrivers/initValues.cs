@@ -60,10 +60,9 @@ namespace basicClasses.models.SharedDataContextDrivers
                     svc[itm.PartitionName] = itm;
                 }
             }
-
-
-            if (!modelSpec[Run_multiple_times].isInitlze) 
-            modelSpec.PartitionKind += "_done";// to prevent further execution
+           
+            if (!modelSpec.OptionActive(Run_multiple_times))
+                modelSpec.PartitionKind += "_done";// to prevent further execution
      
         }
     }

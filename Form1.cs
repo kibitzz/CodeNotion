@@ -370,8 +370,8 @@ namespace basicClasses
         }
 
         private void richTextBox3_SelectionChanged(object sender, EventArgs e)
-        {        
-
+        {
+            listBox2.Visible = false;
         }
 
         private void richTextBox3_TextChanged(object sender, EventArgs e)
@@ -1752,6 +1752,7 @@ namespace basicClasses
                 return new opis();
 
             opis reflist = new opis();
+            bool fuzzy = Control.ModifierKeys == Keys.Shift;
 
             if (alltypes)
             {
@@ -1763,7 +1764,7 @@ namespace basicClasses
                 {
                     so.PartitionName = o.PartitionName;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
                    
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
@@ -1778,7 +1779,7 @@ namespace basicClasses
 
                     so.PartitionKind = o.PartitionName;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1792,7 +1793,7 @@ namespace basicClasses
 
                     so.body = o.PartitionName;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1812,7 +1813,7 @@ namespace basicClasses
 
                     so.PartitionKind = o.PartitionKind;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1825,7 +1826,7 @@ namespace basicClasses
 
                     so.PartitionName = o.PartitionKind;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1838,7 +1839,7 @@ namespace basicClasses
 
                     so.body = o.PartitionKind;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1855,7 +1856,7 @@ namespace basicClasses
 
                     so.body = o.body;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1868,7 +1869,7 @@ namespace basicClasses
 
                     so.PartitionName = o.body;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1882,7 +1883,7 @@ namespace basicClasses
 
                     so.PartitionKind = o.body;
 
-                    EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                    EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                     for (int i = 0; i < reflisttmp.listCou; i++)
                     {
@@ -1897,7 +1898,7 @@ namespace basicClasses
 
                 so = o;
 
-                EditingOpis.FindTreePartitions(so, EditingOpis.PartitionName, reflisttmp);
+                EditingOpis.FindTreePartitionsStrictOrFuzzy(so, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                 for (int i = 0; i < reflisttmp.listCou; i++)
                 {
@@ -1909,7 +1910,7 @@ namespace basicClasses
             {
 
                 opis reflisttmp = new opis();
-                EditingOpis.FindTreePartitions(o, EditingOpis.PartitionName, reflisttmp);
+                EditingOpis.FindTreePartitionsStrictOrFuzzy(o, EditingOpis.PartitionName, reflisttmp, fuzzy);
 
                 //HighlightedOpis.FindTreePartitions(o, HighlightedOpis.PartitionName, reflisttmp);
 
@@ -1991,8 +1992,11 @@ namespace basicClasses
 
             for (int i = 0; i < EditingOpis.listCou; i++)
             {
+                if (EditingOpis[i].PartitionName == "templates_of_models" || EditingOpis[i].PartitionName == "version_control")
+                    continue;
+
                 opis rl = kkk(now, EditingOpis[i], true);
-                if (rl.listCou > 0 && EditingOpis[i].PartitionName != "version_control")
+                if (rl.listCou > 0)
                 {
                     wordsContain.AddArr(EditingOpis[i]);
 
