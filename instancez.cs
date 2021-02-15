@@ -1294,7 +1294,7 @@ namespace basicClasses
                 }
                 else
                 {
-                    // if (req.isHere("lp", false))    // we can chache founded index to use next time                
+                    // if (req.isHere("lp", false))    // we can cache founded index to use next time                
                     if ((lppos = req.getPartitionIdx("lp", false)) != -1)
                         a_v_lp_rp_fil_iv_vcon_acon = a_v_lp_rp_fil_iv_vcon_acon | 2;
 
@@ -1437,7 +1437,7 @@ namespace basicClasses
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
 
-                    processObj = getSYSContainetP(SVC, req.PartitionName.Trim('*'));
+                    processObj = getSYSContainetP(SVC, req.PartitionName.TrimStart('*'));
                     SVC[nameOfSubj].Wrap(processObj);
                     setA(nameOfSubj); 
                 }
@@ -1462,7 +1462,7 @@ namespace basicClasses
                 }
 
                
-                if ((a_v_lp_rp_fil_iv_vcon_acon & 4) == 4)
+                if ((a_v_lp_rp_fil_iv_vcon_acon & 4) == 4 && (flags & 4) == 0)
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
                     if (rppos != -1)
@@ -1473,7 +1473,7 @@ namespace basicClasses
                     setV(nameOfSubj);
                 }
 
-                if ((a_v_lp_rp_fil_iv_vcon_acon & 2) == 2)
+                if ((a_v_lp_rp_fil_iv_vcon_acon & 2) == 2 && (flags & 4) == 0)
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
                     if (lppos != -1)
@@ -1493,20 +1493,25 @@ namespace basicClasses
                 if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")                           
                 {
                     //  symbols '>', '<' not accepted in combination with *
-                    string pn = b.Length > 1 ? b.Remove(0, 1) : ""; // costly  b.Trim('>', '<', ' ', '*')
+                    string pn = b.Length > 1 ? b.Remove(0, 1) : ""; 
                     if (pn.Length > 0)
                     {
 
-                      //  pn = pn[0] == '~' ? pn.Remove(0, 1) : pn;
+                        //  pn = pn[0] == '~' ? pn.Remove(0, 1) : pn;
+
+                        // когда подписка будет префиксом односимвольным - оптимизированный поиск по первому символу
+                        //if (modelIsProducer)
+                        //{
+                        //int subidxMs = ms.getPartitionIdxCharPref("^" + pn, '^');
+                        //int subidxLdc = subidxMs == -1 ? SVC[ldcIdx].W().getPartitionIdxCharPref("^" + pn, '^') : -1;
+                        //subscribeProduce = subidxMs != -1 ||  subidxLdc != -1;
+                        //}
 
                         //TODO: use short prefix ^ instead suffix _sys_subscript
-                        subscribeProduce = modelIsProducer
-                                    && (SVC[ldcIdx].W().isHere(pn.Trim('~') + "_sys_subscript", false)
-                                       || ms.isHere(pn.Trim('~') + "_sys_subscript", false));
 
-                        //subscribeProduce = modelIsProducer
-                        //           && (SVC[ldcIdx].W().isHere("^"+ pn, false)
-                        //              || ms.isHere("^" + pn, false));
+                        subscribeProduce = modelIsProducer
+                                    && (SVC[ldcIdx].W().isHere(pn.TrimStart('~') + "_sys_subscript", false)
+                                       || ms.isHere(pn.TrimStart('~') + "_sys_subscript", false));                      
 
                         nameOfSubj = GetTempValName(SVC, tempNames);
                     
@@ -1545,13 +1550,14 @@ namespace basicClasses
                     //string pn = "^" + b.Trim('>', '<', ' ', '*', '~');
                     string pn = b.Trim('>', '<', ' ', '*', '~') + "_sys_subscript";
 
+                    //if(subidxMs != -1)
                     if (ms.isHere(pn)) // priority on explicit method extention in model spec
                     {
                         var subscription = ms[pn].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
                     }
                     else
-                    if (SVC[ldcIdx].W().isHere(pn))
+                    if (SVC[ldcIdx].W().isHere(pn)) // (subidxLdc != -1 )
                     {
                         var subscription = SVC[ldcIdx].W()[pn].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
@@ -1637,18 +1643,15 @@ namespace basicClasses
             if (pos != -1)
                 rez = isref ? t[pos] : t[pos].W();
             else
-            {
-                //if (string.IsNullOrWhiteSpace(pn))
-                //    rez = t;
-                //else
-                //{
+            {                   
+                if (create)
+                {
+                    rez = isref ? t[pnl] : t[pn].W();
+                }
+                else
+                {
                     rez = new opis(1);
-                    if (create)
-                    {                       
-                        rez = isref ? t[pnl] : t[pn].W();
-                    }
-                    else
-                    if(logerror)
+                    if (logerror)
                     {
                         opis err = new opis();
                         err.PartitionName = "ERR no such patrition: " + pn;
@@ -1658,7 +1661,8 @@ namespace basicClasses
 #endif
                         global_log.log.AddArr(err);
                     }
-                //}
+                }
+                
             }
 
             return rez;

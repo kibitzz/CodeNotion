@@ -2058,7 +2058,8 @@ namespace basicClasses
              //   && now.PartitionName == "_path_"
                 )
             {
-                string[] arr = now.body.Trim('-','>').Split('>');
+                //  string[] arr = now.body.Trim('-','>').Split("->");
+                string[] arr = now.body.Trim('-', '>').Replace("->", "Ѧ").Split('Ѧ');
 
                 opis rood = Parser.ContextGlobal["words"].Find(arr[0].Replace("-", ""));
                 if (rood.isInitlze)
@@ -2066,9 +2067,24 @@ namespace basicClasses
                     opis tmp = rood;
                     for (int i = 1; i < arr.Length; i++)
                     {
-                        string currpart = arr[i].Replace("-", "");
+                        //  string currpart = arr[i].Replace("-", "");
+                        string currpart = arr[i];
                         if (tmp.isHere(currpart))
-                            tmp = tmp[currpart];
+                        {
+                            var next = tmp[currpart];
+
+                            for (int k = 0; k < tmp.listCou; k++)
+                            {
+                                if (i + 1 < arr.Length
+                                    && tmp[k].PartitionName == currpart
+                                    && tmp[k].isHere(arr[i + 1]))
+                                {
+                                    next = tmp[k];
+                                }
+                            }
+
+                            tmp = next;
+                        }
                         else break;
                     }
 

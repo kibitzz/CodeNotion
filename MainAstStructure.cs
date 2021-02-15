@@ -365,6 +365,29 @@ namespace basicClasses
             return idx;
         }
 
+        public int getPartitionIdxCharPref(string part, char pf)
+        {
+            if (part == null)
+                return -1;
+          
+            int rez = -1;
+                    
+            for (int i = 0; i < paramCou; i++) 
+            {
+                string itmp = arr[i].PartitionName;
+                if (!string.IsNullOrEmpty(itmp)
+                    && itmp[0] == pf
+                    && itmp == part)                 
+                {
+                    rez = i;
+                    break;
+                }
+            }
+
+            return rez;
+        }
+
+
         #endregion
 
         #region constructors
@@ -819,7 +842,7 @@ namespace basicClasses
             this.PartitionKind = "wrapper";
             this.body = o.PartitionName;
 
-            this[this.body] = o;
+            this[this.body] = o; //TODO: optimization - always set this[0] = o;
         }
 
         public void WrapByName(opis o, string name, string renameO)
@@ -849,7 +872,7 @@ namespace basicClasses
             return o[o.body];
         }
 
-        public opis W()
+        public opis W() // optimization - always set this[0] = o;
         {
             if (this.PartitionKind == "wrapper")
                 return this[this.body];
