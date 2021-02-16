@@ -54,31 +54,31 @@ namespace basicClasses.models.StructureProcessing
             if (locModel[role].isInitlze)
                 rl = locModel[role].body;
 
+            bool backward = locModel.OptionActive(move_backward);
+            bool procItm = locModel.OptionActive(models_process_item);
 
             for (int i = 0; i < srs.listCou; i++)
             {
                 int pos = i;
-                if (locModel[move_backward].isInitlze)
-                    pos = srs.listCou -i -1;
+                if (backward)
+                    pos = srs.listCou -i -1;            
 
-                SharedContextRoles.GetRole(SharedContextRoles.ProcessIndex, sharedVal).intVal =pos;
-                SharedContextRoles.SetRole(srs[pos].PartitionKind =="wrapper"? srs[pos].W(): srs[pos]
-                    , rl, sharedVal);
-
-               
-
-                if (locModel[models_process_item].isInitlze)
+                if (procItm)
                     instanse.ExecActionResponceModelsList(locSeq.Duplicate(), srs[pos].W());
                 else
+                {
+                    SharedContextRoles.GetRole(SharedContextRoles.ProcessIndex, sharedVal).intVal = pos;
+                    SharedContextRoles.SetRole(srs[pos].W(), rl, sharedVal);
+
                     instanse.ExecActionModelsList(locSeq.Duplicate());
+                }
 
                 // повертаємо інстанс в поточний контекст
                 instanse.Handle(o); //на випадок коли інстанс може отримувати повідомлення
                 // чи відповіді в процесі виконання попереднього циклу
                 // отримавши повідомлення змінюється поточний контекст інстанса
                 // і через це наступний цикл не має доступу до SDC - виникає збій
-
-
+        
             }
 
         }

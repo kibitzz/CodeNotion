@@ -35,7 +35,7 @@ namespace basicClasses.models.StructureProcessing
 
 
         [model("spec_tag")]
-        [info("")]
+        [info("check template only for $ in body, to set only body values in structure")]
         public static readonly string only_value_body = "only_value_body";
 
         [model("spec_tag")]

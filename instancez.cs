@@ -1635,7 +1635,7 @@ namespace basicClasses
             if (string.IsNullOrEmpty(pn))
                 return t;
 
-            bool isref = pn.Length > 0 && pn[0] == '~';// pn.Contains("~"); costly
+            bool isref = pn.Length > 0 && pn[0] == '~';
 
             string pnl = isref ? pn.Remove(0, 1) : pn;
             int pos = t.getPartitionIdx(pnl);
@@ -1654,7 +1654,7 @@ namespace basicClasses
                     if (logerror)
                     {
                         opis err = new opis();
-                        err.PartitionName = "ERR no such patrition: " + pn;
+                        err.PartitionName = "ERR no such partition: " + pn;
 #if NETFRAMEWORK
                         err.AddArr(t.Duplicate());
                         err.AddArr(SVC[modelSpecIdx].Duplicate());
