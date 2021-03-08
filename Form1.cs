@@ -643,6 +643,11 @@ namespace basicClasses
                     }
                     else
                     {
+                        if (string.IsNullOrEmpty(mnmnm.PartitionName) 
+                            && string.IsNullOrEmpty(mnmnm.PartitionKind)
+                            && string.IsNullOrEmpty(mnmnm.body)
+                            )
+                            return;
 
                         HighlightedWord = mnmnm.PartitionName;
                         HighlightedOpis = mnmnm;
@@ -1964,7 +1969,7 @@ namespace basicClasses
                 now = ((opis)treeView2.SelectedNode.Tag);
             if (treeView3.Focused)
                 now = ((opis)treeView3.SelectedNode.Tag);
-
+           
             EditingOpisValue = "";
             richTextBox4.Text = "";
 

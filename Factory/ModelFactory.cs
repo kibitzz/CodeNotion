@@ -209,8 +209,9 @@ namespace basicClasses.Factory
             models.Add("TextCodec", new TextCodec());
             models.Add("RegexParcer", new RegexParcer());
             models.Add("HttpListenerModel", new HttpListenerModel());
-
+            models.Add("jwt_gen", new jwt_gen());
             
+
 
 
             if (ExternalModels != null)
