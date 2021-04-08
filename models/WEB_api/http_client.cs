@@ -392,6 +392,41 @@ namespace basicClasses.models.WEB_api
             return rez;
         }
 
+        public string UploadFilePut(string url, string fileName)
+        {
+            string rez = "ok";
+            HttpWebRequest httpRequest = WebRequest.Create(url) as HttpWebRequest;
+            httpRequest.Method = "PUT";
+
+            if (File.Exists(fileName))
+            {
+
+                try
+                {
+                    using (Stream dataStream = httpRequest.GetRequestStream())
+                    {
+                        var buffer = new byte[8000];
+                        using (FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read))
+                        {
+                            int bytesRead = 0;
+                            while ((bytesRead = fileStream.Read(buffer, 0, buffer.Length)) > 0)
+                            {
+                                dataStream.Write(buffer, 0, bytesRead);
+                            }
+                        }
+                    }
+                    HttpWebResponse response = httpRequest.GetResponse() as HttpWebResponse;
+
+                }
+                catch (WebException e)
+                {
+                    rez = e.Message;
+                }
+            }
+
+            return rez;
+          
+        }
 
         // multipart/form-data
         public bool UploadFilesToRemoteUrl(string url, string refer, string[] files, NameValueCollection nvc, NameValueCollection nvcFinal)

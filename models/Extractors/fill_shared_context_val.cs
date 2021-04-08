@@ -62,7 +62,7 @@ namespace basicClasses.models.Extractors
     }
 
 
-    [info("Put global variable name in BODY to set value of instance global variable(role) to this partition (key).   filler type of function (those who replace its call by resulted value)")]
+    [info("Put global variable name (role) in BODY to fill its keys set and body value.   filler type of function (those who replace its call by resulted value)")]
     [appliable("MsgTemplate all creation FillerList BodyValueModificator TreeDataExtractor ")]
     public class fill_Role : ModelBase
     {

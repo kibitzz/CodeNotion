@@ -72,6 +72,10 @@ namespace basicClasses.models.WEB_api
         [model("upLoadFileSpecs")]
         public static readonly string UP_loadResource = "UP_loadResource";
 
+        [info("body contain url ")]
+        [model("upLoadFileSpecs")]
+        public static readonly string UP_loadResource_put = "UP_loadResource_put";
+
         [info(" ")]
         [model("")]
         public static readonly string Headers = "Headers";
@@ -153,6 +157,13 @@ namespace basicClasses.models.WEB_api
                 if (ex.isHere(UP_loadResource))
                 {
                     t[webResponceModel.Status].body = hc.UploadData(ex.V(UP_loadResource), ex[UP_loadResource].V(upLoadFileSpecs.CompiledFilename));
+                    SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
+                    return;
+                }
+
+                if (ex.isHere(UP_loadResource_put))
+                {
+                    t[webResponceModel.Status].body = hc.UploadFilePut(ex.V(UP_loadResource_put), ex[UP_loadResource_put].V(upLoadFileSpecs.CompiledFilename));
                     SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
                     return;
                 }
