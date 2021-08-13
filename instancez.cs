@@ -1437,8 +1437,10 @@ namespace basicClasses
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
 
-                    processObj = getSYSContainetP(SVC, req.PartitionName.TrimStart('*'));
-                    SVC[nameOfSubj].Wrap(processObj);
+                    //  processObj = getSYSContainetP(SVC, req.PartitionName.TrimStart('*')); // is it useful to use implicitly ldc values as processObj ? is it used at prod?
+                    // for this reason function "return" can not fill proper object when its parameter is ldc value *data[return]
+                    //  SVC[nameOfSubj].Wrap(processObj);
+                    SVC[nameOfSubj].Wrap(getSYSContainetP(SVC, req.PartitionName.TrimStart('*')));
                     setA(nameOfSubj); 
                 }
 

@@ -21,43 +21,68 @@ namespace basicClasses.models.sys_ext
         [info("run this if condition is matched and garbage need to be released")]
         public static readonly string on_clear = "on_clear";
 
+        [model("Action")]
+        [info("")]
+        public static readonly string on_lock_timeout = "on_lock_timeout";
+
+        static object lockobj = new object();
 
         public override void Process(opis message)
         {
             opis spec = SpecLocalRunAll();
 
-            message.body = "GC DO NOTHING. total obj count (" + opis.TotalObjectsCreated + ")  ";           
+            message.body = "GC DO NOTHING. total obj count (" + opis.TotalObjectsCreated + ")  ";
 
-            if (spec.isHere(if_more_than, false))
+            var watch = System.Diagnostics.Stopwatch.StartNew();                                     
+
+            lock (lockobj)
             {
-                ulong lim = 0;
-                ulong.TryParse(spec.V(if_more_than), out lim);
-              
-                if (opis.TotalObjectsCreated > lim)
+
+                if (spec.isHere(if_more_than, false))
                 {
-                    opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
+                    ulong lim = 0;
+                    ulong.TryParse(spec.V(if_more_than), out lim);
 
-                    if (spec.isHere(if_heap_size_more_than, false))
+                    if (opis.TotalObjectsCreated > lim)
                     {
-                        long heapsize = GC.GetTotalMemory(false);
-                        long limmb = 0;
-                        long.TryParse(spec.V(if_heap_size_more_than), out limmb);
+                        opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
 
-                        if (heapsize / 1048576 > limmb)
-                            message.body = Collect(run);
+                        if (spec.isHere(if_heap_size_more_than, false))
+                        {
+                            long heapsize = GC.GetTotalMemory(false);
+                            long limmb = 0;
+                            long.TryParse(spec.V(if_heap_size_more_than), out limmb);
+
+                            if (heapsize / 1048576 > limmb)
+                                message.body = Collect(run);
+                            else
+                                opis.TotalObjectsCreated = 0;
+
+                        }
                         else
-                            opis.TotalObjectsCreated = 0;
+                            message.body = Collect(run);
 
                     }
-                    else
-                      message.body = Collect(run);
-
                 }
+                else
+                {
+                    opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
+                    message.body = Collect(run);
+                }
+
             }
-            else
+
+            watch.Stop();
+            var ela = watch.ElapsedMilliseconds;
+
+            if (ela > 1000)
             {
-                opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
-                message.body = Collect(run);
+                opis run = modelSpec.getPartitionNotInitOrigName(on_lock_timeout)?.Duplicate();
+                if (run != null)
+                {
+                    opis p = new opis() { body = " "+ ela.ToString(), PartitionName = "rez" };
+                    instanse.ExecActionResponceModelsList(run, p);
+                }
             }
 
         }

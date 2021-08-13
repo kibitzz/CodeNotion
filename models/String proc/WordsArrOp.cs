@@ -10,7 +10,7 @@ namespace basicClasses.models.String_proc
     [appliable("func")]
     class WordsArrOp : ModelBase
     {
-        [info("")]
+        [info("text to split by char separator")]
         [model("")]
         public static readonly string source = "source";
 
@@ -34,6 +34,10 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string glue_with = "glue_with";
 
+        [info("")]
+        [model("spec_tag")]
+        public static readonly string non_empty_only = "non_empty_only";
+
 
         public override void Process(opis message)
         {
@@ -56,12 +60,15 @@ namespace basicClasses.models.String_proc
             }
 
             opis word_arr = new opis(arr.Length +1);
-           
-            for(int i =0; i < arr.Length; i++)
+
+            bool nonempt = spec.isHere(non_empty_only, false);
+
+            for (int i = 0; i < arr.Length; i++)
             {
-                opis itm = new opis(0) { PartitionName = i.ToString(),  body = arr[i].Trim() };
-                word_arr.AddArr(itm);
-               // word_arr.Vset(i.ToString(), arr[i].Trim());
+                if (!nonempt || (nonempt && !string.IsNullOrEmpty(arr[i].Trim())))
+                {
+                    word_arr.Vset(i.ToString(), arr[i].Trim());
+                }
             }
 
             var rez = "";

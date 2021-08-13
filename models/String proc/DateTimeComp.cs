@@ -30,7 +30,7 @@ namespace basicClasses.models.String_proc
         [model("")]
         public static readonly string minute = "minute";
 
-        [info(" to use in ToString() method to fill string instead of ticks number")]
+        [info(" template used in ToString() method to fill string instead of ticks number")]
         [model("")]
         public static readonly string format = "format";
 
@@ -65,8 +65,13 @@ namespace basicClasses.models.String_proc
         [info("fill this field (ticks number) to return as <actual_date> instead of real value ")]
         public static readonly string override_actual_date = "override_actual_date";
 
-        [info("")]
+        [model("spec_tag")]
+        [info(" return week number in year instead of date")]
         public static readonly string week_num = "week_num";
+
+        [model("spec_tag")]
+        [info(" return UnixTimeSeconds instead of ticks in processed date")]
+        public static readonly string epoch_value = "epoch_value";
 
         DateTime curr;
         DateTime overrideActual;
@@ -155,14 +160,20 @@ namespace basicClasses.models.String_proc
             }
 
 
-            message.body = mspec[format].isInitlze ? r.ToString(mspec.V(format)) : r.Ticks.ToString();
+            message.body = mspec.OptionActive(format, false) ? r.ToString(mspec.V(format)) : r.Ticks.ToString();
 
-            if (mspec.isHere(week_num, false))
+
+            if (mspec.isHere(epoch_value, false))
+            {
+                message.body = Dates.EpochTime(r).ToString();
+            }
+            else if (mspec.isHere(week_num, false))
             {
                 message.body = new GregorianCalendar(GregorianCalendarTypes.Localized).GetWeekOfYear(r, CalendarWeekRule.FirstFullWeek, DayOfWeek.Monday).ToString();              
             }
 
             message.CopyArr(new opis());
+
 
         }
 
