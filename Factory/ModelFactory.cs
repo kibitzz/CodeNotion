@@ -102,6 +102,7 @@ namespace basicClasses.Factory
 
             models.Add("targetWholeBranch", new targetWholeBranch());
             models.Add("targetUpper", new targetUpper());
+            models.Add("targetUpperOnly", new targetUpperOnly());            
             models.Add("targetSubTree", new targetSubTree());
             models.Add("targetSameCont", new targetSameCont());
             models.Add("TargetingChecks", new TargetingChecks());

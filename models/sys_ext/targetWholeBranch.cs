@@ -41,7 +41,7 @@ namespace basicClasses.models.sys_ext
 
     }
 
-    [info("CheckParentOrder  -- anyone who is placed upper in tree   ")]
+    [info("CheckParentOrder  -- anyone who is placed upper in tree  (same context too) ")]
     [appliable("TargetingChecks")]
     public class targetUpper : ModelBase
     {
@@ -50,6 +50,20 @@ namespace basicClasses.models.sys_ext
 
           bool pass = (message["original_msg_context"].V("ID") == o.V("ID") ||
                    CTX.CheckParentOrder(o, message["original_msg_context"]));
+            if (pass)
+                message["run_on_this_context"].body = "yepp";
+        }
+
+    }
+
+    [info("CheckParentOrder  -- anyone who is placed upper in tree.  do not pass if ID is equal   ")]
+    [appliable("TargetingChecks")]
+    public class targetUpperOnly : ModelBase
+    {
+        public override void Process(opis message)
+        {
+
+            bool pass = ( CTX.CheckParentOrder(o, message["original_msg_context"]));
             if (pass)
                 message["run_on_this_context"].body = "yepp";
         }
