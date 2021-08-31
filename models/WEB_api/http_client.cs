@@ -218,13 +218,17 @@ namespace basicClasses.models.WEB_api
         {
             get
             {
-                string resultData = "";
+                responseData = "";
+                var sb = new StringBuilder();
+
+                //  string resultData = "";
                 if ((_ResponseStream == null) || (!_ResponseStream.CanRead)) { return ""; }
 
-                //if()
+               
 
                 StreamReader streamRead = new StreamReader(_ResponseStream, EncoderOfResponce);
-                Char[] readBuffer = new Char[256];
+                int buffsize = 65536;
+                Char[] readBuffer = new Char[buffsize];
                 // Read from buffer
                 int ttl = 0;
 
@@ -232,7 +236,7 @@ namespace basicClasses.models.WEB_api
 
                 try
                 {
-                    count = streamRead.Read(readBuffer, 0, 256);
+                    count = streamRead.Read(readBuffer, 0, buffsize);
                 }
                 catch (Exception) //  bug with server interact, try to fix by handling exception
                 { count = -1; }
@@ -241,10 +245,11 @@ namespace basicClasses.models.WEB_api
                 {
                      //Encoding encoding = Encoding.GetEncoding("windows-1251");
                     ttl += count;
-                    resultData += new String(readBuffer, 0, count);
+                    //  resultData += new String(readBuffer, 0, count);
+                    sb.Append(new String(readBuffer, 0, count));
                     try
                     {
-                        count = streamRead.Read(readBuffer, 0, 256);
+                        count = streamRead.Read(readBuffer, 0, buffsize);
                     }
                     catch (Exception) //  bug with server interact, try to fix by handling exception
                     { count = -1; }
@@ -256,7 +261,9 @@ namespace basicClasses.models.WEB_api
                 streamRead.Close();
                 _ResponseStream.Close();
 
-                return resultData;
+                responseData = sb.ToString();
+
+                return "";
             }
         }
 
@@ -804,7 +811,7 @@ namespace basicClasses.models.WEB_api
                     SetDecompressRespStream();
                 }
 
-                responseData = ResponseString;
+                var x = ResponseString;
             }
             _myHttpWebResponse.Close();
 

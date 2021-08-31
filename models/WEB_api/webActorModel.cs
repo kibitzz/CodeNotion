@@ -230,6 +230,8 @@ namespace basicClasses.models.WEB_api
                 }
             }
 
+            hc.responseData = null;
+
 
             SharedContextRoles.SetRole(t, ex.isHere(role) ? ex[role].body : "responce", sharedVal);
 
