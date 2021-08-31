@@ -10,7 +10,7 @@ namespace basicClasses.models.SharedDataContextDrivers
    public class BodyValueModificator:ModelBase
     {
 
-        [info("inc  dec  set (set b - only body)  add_arr   rename   setmodel(new value place in body)  add_arr_i(add elelments of array from <value> key, only missing keys)  (conc ower) (conc stay)")]
+        [info("inc;  dec;  set (set b - only body);  add_arr - treat patrition as array, and add value to it (opSpec[uniq (body != val.body || listCou != val.listCou) ]);  rename ;  setmodel(new value place in body);  add_arr_i(add elelments of array from <value> key, only missing keys)  (conc ower) (conc stay)")]
         public static readonly string operation = "operation";
 
         [info("")]

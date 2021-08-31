@@ -5,7 +5,7 @@ using System.Text;
 
 namespace basicClasses.models.SharedDataContextDrivers
 {
-    [info("add all items from spec to shared values context (SVC) or to the function packages partition. can contain fill models or constants.  message is not modified")]
+    [info("add all items from spec to shared values context (SVC) or to the function packages partition. can contain fill models or constants. if not used option <Run_multiple_times> exec only once.  message is not modified")]
     [appliable("Action creation Builders func")]
    public class initValues:ModelBase
     {

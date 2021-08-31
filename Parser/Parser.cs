@@ -59,6 +59,7 @@ namespace basicClasses
 
             File.Copy("context.zip", "context " + DateTime.Now.Ticks.ToString() + ".zip");
             //DataFileUtils.savefile(fd, "context" + DateTime.Now.Ticks.ToString() + ".txt");
+            System.Media.SystemSounds.Asterisk.Play();            
         }
 
 

@@ -814,7 +814,7 @@ namespace basicClasses.models.WEB_api
             #region  Proxy
 
             //This URLs or Page has been blocked.
-            if (responseData.Contains("This URLs or Page has been blocked"))
+            if (responseData.Length < 2000 && responseData.Contains("This URLs or Page has been blocked"))
             {
                 //if(!string.IsNullOrEmpty(proxyServer)){
                 //    pm.DeadResp(proxyServer);}
@@ -827,6 +827,7 @@ namespace basicClasses.models.WEB_api
             //}
             #endregion
 
+            responceHeaders.Vset("code", ((int)_myHttpWebResponse.StatusCode).ToString());
 
             bool rez = false;
             if (_myHttpWebResponse.StatusCode == HttpStatusCode.Redirect || _myHttpWebResponse.StatusCode == HttpStatusCode.OK)
