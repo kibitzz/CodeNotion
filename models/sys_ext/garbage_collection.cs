@@ -35,8 +35,8 @@ namespace basicClasses.models.sys_ext
 
             var watch = System.Diagnostics.Stopwatch.StartNew();                                     
 
-            lock (lockobj)
-            {
+            //lock (lockobj)
+            //{
 
                 if (spec.isHere(if_more_than, false))
                 {
@@ -45,22 +45,25 @@ namespace basicClasses.models.sys_ext
 
                     if (opis.TotalObjectsCreated > lim)
                     {
-                        opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
-
-                        if (spec.isHere(if_heap_size_more_than, false))
+                        lock (lockobj)
                         {
-                            long heapsize = GC.GetTotalMemory(false);
-                            long limmb = 0;
-                            long.TryParse(spec.V(if_heap_size_more_than), out limmb);
+                            opis run = modelSpec.getPartitionNotInitOrigName(on_clear)?.Duplicate();
 
-                            if (heapsize / 1048576 > limmb)
-                                message.body = Collect(run);
+                            if (spec.isHere(if_heap_size_more_than, false))
+                            {
+                                long heapsize = GC.GetTotalMemory(false);
+                                long limmb = 0;
+                                long.TryParse(spec.V(if_heap_size_more_than), out limmb);
+
+                                if (heapsize / 1048576 > limmb)
+                                    message.body = Collect(run);
+                                else
+                                    opis.TotalObjectsCreated = 0;
+
+                            }
                             else
-                                opis.TotalObjectsCreated = 0;
-
+                                message.body = Collect(run);
                         }
-                        else
-                            message.body = Collect(run);
 
                     }
                 }
@@ -70,7 +73,7 @@ namespace basicClasses.models.sys_ext
                     message.body = Collect(run);
                 }
 
-            }
+            //}
 
             watch.Stop();
             var ela = watch.ElapsedMilliseconds;

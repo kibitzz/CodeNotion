@@ -54,6 +54,10 @@ namespace basicClasses.models.String_proc
         [info(" ")]
         public static readonly string return_actual_date = "return_actual_date";
 
+        [model("spec_tag")]
+        [info(" ")]
+        public static readonly string return_system_date = "return_system_date";
+
         [model("")]
         [info(" fill ticks here to be parced (and modified)  ")]
         public static readonly string from_ticks = "from_ticks";
@@ -117,6 +121,17 @@ namespace basicClasses.models.String_proc
 
                 if (overrideActual.Year > 2000)
                     r = overrideActual;
+
+                if (mspec.isHere(hour) || mspec.isHere(day))
+                {
+                    TimeSpan sp = new TimeSpan(mspec[day].intVal, mspec[hour].intVal, mspec[minute].intVal, 0);
+                    r = r.Add(sp);
+                }
+            }
+
+            if (mspec.isHere(return_system_date))
+            {
+                r = DateTime.Now;
 
                 if (mspec.isHere(hour) || mspec.isHere(day))
                 {

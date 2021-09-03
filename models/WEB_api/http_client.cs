@@ -220,18 +220,15 @@ namespace basicClasses.models.WEB_api
             {
                 responseData = "";
                 var sb = new StringBuilder();
-
-                //  string resultData = "";
+               
                 if ((_ResponseStream == null) || (!_ResponseStream.CanRead)) { return ""; }
-
                
 
                 StreamReader streamRead = new StreamReader(_ResponseStream, EncoderOfResponce);
                 int buffsize = 65536;
                 Char[] readBuffer = new Char[buffsize];
-                // Read from buffer
+              
                 int ttl = 0;
-
                 int count = -1;
 
                 try

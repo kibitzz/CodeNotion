@@ -62,8 +62,15 @@ namespace basicClasses.models.String_proc
                 dayInfo.Vset("DayOfWeek", ((int)d.DayOfWeek).ToString());
                 dayInfo.Vset("Ticks", d.Ticks.ToString());
                 dayInfo.Vset("Formatted", d.ToString(format));
-                dayInfo.Vset("week_num", (Dates.WeekNumSince(firstW, d) +1).ToString());
-                dayInfo.Vset("week_1_2", (Dates.WeekForDate(firstW, 1, d)).ToString());
+
+                int wnum = (Dates.WeekNumSince(firstW, d) + 1);
+                int week_odd_even = Dates.WeekForDate(firstW, 1, d);
+                int quattro_odd_even = 0;
+                dayInfo.Vset("week_num", wnum.ToString());
+                dayInfo.Vset("week_1_2", week_odd_even.ToString());
+               
+                quattro_odd_even = (wnum + 3) % 4;
+                dayInfo.Vset("week_1_2_3_4", quattro_odd_even.ToString());
 
 
                 rez.AddArr(dayInfo);
@@ -72,5 +79,7 @@ namespace basicClasses.models.String_proc
             message.CopyArr(rez);
 
         }
+
+
     }
 }
