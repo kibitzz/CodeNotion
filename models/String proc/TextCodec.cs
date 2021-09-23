@@ -74,7 +74,8 @@ namespace basicClasses.models.String_proc
 
             for (int i = 0; i < repl.Length; i++)
             {
-                b.Replace(repl[i], by[i]);
+                if (repl[i].Length > 0)
+                    b.Replace(repl[i], by[i]);
             }
             return b.ToString();
         }

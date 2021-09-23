@@ -11,7 +11,7 @@ namespace basicClasses.models.StructureProcessing
     public class NextArrItm:ModelBase
     {
         [model("")]
-        [info("роль обєкта котрий зберігає позицію")]
+        [info("global variable name to init|reuse iteration state. if empty -- init, else reuse data as state")]
         public static readonly string Iterator = "Iterator";
 
         [model("")]

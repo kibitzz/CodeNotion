@@ -201,6 +201,8 @@
     <Compile Include="models\String proc\TextCodec.cs" />
     <Compile Include="models\String proc\text_case_transform.cs" />
     <Compile Include="models\StructureProcessing\arr_chuncks.cs" />
+    <Compile Include="models\StructureProcessing\arr_length.cs" />
+    <Compile Include="models\StructureProcessing\car_cdr_oper.cs" />
     <Compile Include="models\StructureProcessing\EmbedTree.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
     <Compile Include="models\sys_ext\garbage_collection.cs" />

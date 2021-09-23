@@ -202,6 +202,7 @@ namespace basicClasses.Factory
             models.Add("arr_chuncks", new arr_chuncks());
             models.Add("text_case_transform", new text_case_transform());
             models.Add("b_length", new b_length());
+            models.Add("arr_length", new arr_length());          
             models.Add("normalize_spaces", new normalize_spaces());            
             models.Add("linear_chart", new linear_chart());
             models.Add("garbage_collection", new garbage_collection());
@@ -210,8 +211,9 @@ namespace basicClasses.Factory
             models.Add("TextCodec", new TextCodec());
             models.Add("RegexParcer", new RegexParcer());
             models.Add("HttpListenerModel", new HttpListenerModel());
-           
-            
+            models.Add("car_cdr_oper", new car_cdr_oper());          
+
+
 
 
 
