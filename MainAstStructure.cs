@@ -2772,6 +2772,9 @@ namespace basicClasses
             if (type == 3)
                 arr = SortArray(x => x[partname].intVal, asc).ToArray();
 
+            if (type == 4)
+                arr = SortArray(x => { long.TryParse(x[partname].body, out long rez); return rez; }, asc).ToArray();
+
             paramCou = paramCou >= arr.Length ? arr.Length : paramCou;
         }
 
@@ -2792,10 +2795,23 @@ namespace basicClasses
             if (type == 3)
                 arr = SortArray(x => x.intVal, asc).ToArray();
 
+            if (type == 4)
+                arr = SortArray(x => { long.TryParse(x.body, out long rez); return rez; }, asc).ToArray();
+
             paramCou = arr.Length;
         }
 
         public List<opis> SortArray(Func<opis, int> key, bool asc = true)
+        {
+            var l = arr.ToList();
+
+            if (asc)
+                return l.Where(x => x != null).OrderBy(key).ToList();
+            else
+                return l.Where(x => x != null).OrderByDescending(key).ToList();
+        }
+
+        public List<opis> SortArray(Func<opis, long> key, bool asc = true)
         {
             var l = arr.ToList();
 

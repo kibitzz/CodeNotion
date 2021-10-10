@@ -12,6 +12,10 @@ namespace basicClasses.models.WEB_api
         [model("spec_tag")]
         public static readonly string opis_json = "opis_json";
 
+        [info("if not only values contain cyrillic text u0410, but also names")]
+        [model("spec_tag")]
+        public static readonly string decode_names = "decode_names";
+
         public override void Process(opis message)
         {
             opis trtrt = new opis();
@@ -34,8 +38,12 @@ namespace basicClasses.models.WEB_api
             message.body = "";
             if (modelSpec.isHere(opis_json))           
                 message.body = trtrt.body;
-            
-            //  message.CopyArr(trtrt);
+
+            if (modelSpec.isHere(decode_names))
+                trtrt.RunRecursively(x=> x.PartitionName = TemplatesMan.UTF8BigEndian_to_Kirill(x.PartitionName));
+                
+
+
             message.CopyArr(new opis());
             message.AddArr(trtrt);
 

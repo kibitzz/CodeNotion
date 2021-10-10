@@ -28,8 +28,7 @@ namespace basicClasses.models.StructureProcessing
 
         public override void Process(opis message)
         {
-            opis ms = SpecLocalRunAll();
-            var rez = new opis();
+            opis ms = SpecLocalRunAll();            
 
             var srs = ms[source];
 

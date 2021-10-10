@@ -28,7 +28,7 @@ namespace basicClasses.models.StructureProcessing
         public static readonly string order = "order";
 
         [model("spec_tag")]
-        [info(" items part name to sort array, leave empty to sort on item partition name")]
+        [info(" items part name to sort array (put name as subitem), leave empty to sort on item partition name")]
         public static readonly string order_by_partition = "order_by_partition";
 
         [model("spec_tag")]
