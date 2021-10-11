@@ -20,7 +20,7 @@ namespace basicClasses.models.StructureProcessing
         [model("spec_tag")]
         public static readonly string car = "car";
 
-        [info("(not implemented yet) The CDR of a list is the rest of the list, that is, the cdr function returns the part of the list that follows the first item.")]
+        [info("The CDR of a list is the rest of the list, that is, the cdr function returns the part of the list that follows the first item.")]
         [model("spec_tag")]
         public static readonly string cdr = "cdr";
 
@@ -42,7 +42,8 @@ namespace basicClasses.models.StructureProcessing
 
             if (ms.isHere(cdr, false)) 
             {
-                
+                message.CopyArr(srs);
+                message.RemoveArrElem(0);
             }
            
         }

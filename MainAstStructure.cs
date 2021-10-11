@@ -749,6 +749,23 @@ namespace basicClasses
 
         }
 
+        public void RemoveArrElem(int idx)
+        {           
+            int idxLess = 0;
+            for (int i = 0; i < paramCou; i++)
+            {
+                arr[i - idxLess] = arr[i];
+
+                if (i == idx)
+                {
+                    idxLess = 1;
+                    arr[i] = null;
+                }
+            }
+
+            paramCou = paramCou - idxLess;
+        }
+
         public void InsertArrElem(opis elem, int pos)
         {
             if (arr.Length <= paramCou)
