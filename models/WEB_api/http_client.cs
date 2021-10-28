@@ -402,6 +402,49 @@ namespace basicClasses.models.WEB_api
             HttpWebRequest httpRequest = WebRequest.Create(url) as HttpWebRequest;
             httpRequest.Method = "PUT";
 
+            foreach (string header in headers)
+            {
+                string headerl = header.ToLower();
+                if (headerl.StartsWith("referer"))
+                    httpRequest.Referer = header.Substring(8).Trim();
+                else
+                    if (headerl.StartsWith("content-type"))
+                    httpRequest.ContentType = header.Substring(13).Trim();
+                else
+                    if (headerl.StartsWith("accept:"))
+                    httpRequest.Accept = header.Substring(7).Trim();
+                else
+                    if (headerl.StartsWith("host"))
+                    httpRequest.Host = header.Substring(5).Trim();
+                else
+                if (headerl.StartsWith("content-length"))
+                { }
+                else
+               if (headerl.StartsWith("user-agent"))
+                    httpRequest.UserAgent = header.Substring(11).Trim();
+
+                else
+                    if (headerl.StartsWith("connection"))
+                {
+                    if (header.Contains("keep-alive"))
+                        httpRequest.KeepAlive = true;
+                    //myHttpWebRequest.Connection = header.Substring(11).Trim();
+                }
+                else if (headerl.StartsWith("timeout"))
+                    httpRequest.Timeout = int.Parse(header.Substring(8).Trim());
+
+                else if (headerl.StartsWith("response-decoder"))
+                {
+                    var encName = header.Substring(17).Trim();
+                    EncoderOfResponce = Encoding.GetEncoding(encName);
+                }
+
+                else
+                    httpRequest.Headers.Add(header);
+            }
+
+
+
             if (File.Exists(fileName))
             {
 
@@ -424,12 +467,27 @@ namespace basicClasses.models.WEB_api
                 }
                 catch (WebException e)
                 {
-                    rez = e.Message;
-                }
-            }
+                    if (e.Status == WebExceptionStatus.ProtocolError)
+                    {
+                        using (var response = (HttpWebResponse)e.Response)
+                        {
+                            using (var stream = response.GetResponseStream())
+                            {
+                                using (var reader = new StreamReader(stream, Encoding.GetEncoding("utf-8")))
+                                {
+                                    rez = reader.ReadToEnd();                                   
+                                }
+                            }
+                        }
 
+                        rez += e.Message;
+                    }
+                }
+
+            }
             return rez;
-          
+
+
         }
 
         // multipart/form-data

@@ -33,6 +33,10 @@ namespace basicClasses.models.String_proc
         [model("spec_tag")]
         public static readonly string UTF8Codes_to_Kirill = "UTF8Codes_to_Kirill";
 
+        [info("use presets of snippets.    blocks is like %3E%3C; to be replaced by russian alpha")]
+        [model("spec_tag")]
+        public static readonly string UTF_to_win1251 = "UTF_to_win1251";
+
 
 
         public override void Process(opis message)
@@ -49,6 +53,13 @@ namespace basicClasses.models.String_proc
             {
                 message.body = TemplatesMan.UTF8Codes_to_Kirill(ms.V(text));
             }
+
+            if (ms.isHere(UTF_to_win1251, false)) //%3E%3C;
+            {
+                message.body = TemplatesMan.UTF_to_win1251(ms.V(text));
+            }
+
+           
 
 
             if (ms.isHere(blocks, false) && ms.isHere(substitution, false) && ms[blocks].listCou == ms[substitution].listCou)

@@ -87,6 +87,7 @@ namespace basicClasses.models.SQL
                   connectionString))
                 {
                     var command = new MySqlCommand(queryString, connection);
+                    command.CommandTimeout = 600;
                     command.Connection.Open();
 
                     using (var reader = command.ExecuteReader())
