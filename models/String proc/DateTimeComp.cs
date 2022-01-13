@@ -87,7 +87,7 @@ namespace basicClasses.models.String_proc
 
             DateTime r = new DateTime();
 
-            if (mspec.isHere(override_actual_date))
+            if (mspec.isHere(override_actual_date, false))
             {
                 if (mspec[override_actual_date].isInitlze)
                     overrideActual = Dates.FromStringTicks(mspec.V(override_actual_date));
@@ -95,7 +95,7 @@ namespace basicClasses.models.String_proc
                     overrideActual = new DateTime(2);
             }
 
-            if (mspec.isHere(from_ticks) && mspec[from_ticks].isInitlze)
+            if (mspec.isHere(from_ticks, false) && mspec[from_ticks].isInitlze)
             {
                 r = Dates.FromStringTicks(mspec.V(from_ticks));
                 if (mspec.isHere(hour) || mspec.isHere(day))
@@ -105,7 +105,7 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            if (mspec.isHere(from_unix) && mspec[from_unix].isInitlze)
+            if (mspec.isHere(from_unix, false) && mspec[from_unix].isInitlze)
             {
                 r = Dates.FromEpochTime(mspec.V(from_unix));
                 if (mspec.isHere(hour) || mspec.isHere(day))
@@ -115,7 +115,7 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            if (mspec.isHere(return_actual_date))
+            if (mspec.isHere(return_actual_date, false))
             {
                 r = DateTime.Now;
 
@@ -129,7 +129,7 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            if (mspec.isHere(return_system_date))
+            if (mspec.isHere(return_system_date, false))
             {
                 r = DateTime.Now;
 
@@ -140,7 +140,7 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            if (mspec.isHere(month))
+            if (mspec.isHere(month, false))
             {
                 try
                 {
@@ -153,11 +153,11 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            if (mspec.isHere(set_curr))
+            if (mspec.isHere(set_curr, false))
                 curr = r;
 
 
-            if (mspec.isHere(Get_next_Week_monday))
+            if (mspec.isHere(Get_next_Week_monday, false))
             {
                 r = Dates.MondayForDate(Dates.MondayForDate(curr).AddDays((mspec[Get_next_Week_monday].intVal > 0 
                                                                          || mspec[Get_next_Week_monday].PartitionKind != "spec_tag")
@@ -169,7 +169,7 @@ namespace basicClasses.models.String_proc
                 }
             }
 
-            if (mspec.isHere(Get_This_Week_Sunday))
+            if (mspec.isHere(Get_This_Week_Sunday, false))
             {
                 r = Dates.SundayForDate(curr);              
             }

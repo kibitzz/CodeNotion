@@ -2127,7 +2127,8 @@ namespace basicClasses
 
             if (now != null && now.PartitionKind != null)
             {
-                opis so = SearchStructureFunction(now.PartitionKind);                           
+                bool fillerSugar = Control.ModifierKeys == Keys.Shift;
+                opis so = SearchStructureFunction(fillerSugar ? now.PartitionName.Trim('<','>') : now.PartitionKind);                           
                 opis reflisttmp = FindDefinition(so, HighlightedOpis);
 
                 if (reflisttmp.listCou > 0)

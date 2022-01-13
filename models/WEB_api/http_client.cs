@@ -214,6 +214,14 @@ namespace basicClasses.models.WEB_api
         WebProxy myProxy;
         //public static ProxyMan pm;
 
+        WebClient _myWebClient;
+        WebClient myWebClient
+        {
+            get { if (_myWebClient == null)
+                    _myWebClient = new WebClient();
+                    return _myWebClient; }
+        }
+
         private string ResponseString
         {
             get
@@ -347,15 +355,15 @@ namespace basicClasses.models.WEB_api
             return SendHttpRequest(_URL.Trim(), "", "GET", true);
         }
 
-        public bool DownloadData(string StringWebResource, string fileName)
+        public FileInfo DownloadData(string StringWebResource, string fileName)
         {
             bool rez = true;
             if (string.IsNullOrEmpty(StringWebResource))
-                return false;
+                return null;
            
             WebClient myWebClient = new WebClient();
-            //myWebClient.UploadData
-
+          
+           
             try
             {
                 myWebClient.DownloadFile(StringWebResource.Trim('"'), fileName);
@@ -364,11 +372,32 @@ namespace basicClasses.models.WEB_api
                 rez = false;
             }
 
-            rez = File.Exists(fileName);
+            var inf = new FileInfo(fileName);                                   
+
+
+            return inf;
+        }
+
+        public byte[] DownloadBytes(string StringWebResource)
+        {
+            byte[] rez = null;
+            if (string.IsNullOrEmpty(StringWebResource))
+                return null;
+
+           // WebClient myWebClient = new WebClient();
+           
+
+            try
+            {
+                rez = myWebClient.DownloadData(StringWebResource.Trim('"'));
+            }
+            catch (WebException e)
+            {
+               
+            }
             
 
-
-            return rez;
+            return rez ;
         }
 
         public string UploadData(string StringWebResource, string fileName)

@@ -211,7 +211,9 @@ namespace basicClasses.Factory
             models.Add("TextCodec", new TextCodec());
             models.Add("RegexParcer", new RegexParcer());
             models.Add("HttpListenerModel", new HttpListenerModel());
-            models.Add("car_cdr_oper", new car_cdr_oper());          
+            models.Add("car_cdr_oper", new car_cdr_oper());
+            models.Add("file", new file());
+            
 
 
 

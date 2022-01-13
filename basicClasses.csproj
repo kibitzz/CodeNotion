@@ -205,6 +205,7 @@
     <Compile Include="models\StructureProcessing\car_cdr_oper.cs" />
     <Compile Include="models\StructureProcessing\EmbedTree.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
+    <Compile Include="models\sys_ext\file.cs" />
     <Compile Include="models\sys_ext\garbage_collection.cs" />
     <Compile Include="models\sys_ext\GlobalParamsProvider.cs" />
     <Compile Include="models\sys_ext\GuiFomsFactory.cs" />

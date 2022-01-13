@@ -69,6 +69,10 @@ namespace basicClasses.models.WEB_api
         public static readonly string DownloadResource = "DownloadResource";
 
         [info("body contain url ")]
+        [model("")]
+        public static readonly string DownloadBytes = "DownloadBytes";
+
+        [info("body contain url ")]
         [model("upLoadFileSpecs")]
         public static readonly string UP_loadResource = "UP_loadResource";
 
@@ -151,8 +155,18 @@ namespace basicClasses.models.WEB_api
 
                 if (ex.isHere(DownloadResource))
                 {
-                    rez = hc.DownloadData(ex.V(DownloadResource), ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename));
+                    var fi =  hc.DownloadData(ex.V(DownloadResource), ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename));
+                    rez = fi == null ? false : fi.Exists && fi.Length > 100;
                 }
+
+                if (ex.isHere(DownloadBytes))
+                {
+                    var fi = hc.DownloadBytes(ex.V(DownloadBytes));
+                    rez = fi == null ? false : fi.Length > 0;
+                    t[webResponceModel.responseData]["data"].bodyObject = fi;
+                    t[webResponceModel.responseData].Vset("length", (fi == null ? 0 : fi.Length).ToString() );
+                }
+                
 
                 if (ex.isHere(UP_loadResource))
                 {
@@ -183,7 +197,7 @@ namespace basicClasses.models.WEB_api
                 t["filename"].body = ex[DownloadResource].V(upLoadFileSpecs.CompiledFilename);
             //t.Vset(webResponceModel.responseData, hc.responseData);
 
-            if (true && !ex.isHere(DownloadResource))
+            if (!ex.isHere(DownloadBytes) && !ex.isHere(DownloadResource))
             {
                 t[webResponceModel.responseHeaders] = hc.responceHeaders;
 

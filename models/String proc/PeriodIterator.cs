@@ -41,6 +41,9 @@ namespace basicClasses.models.String_proc
         
             var dayz = Dates.DaysInPeriod(Dates.FromStringTicks(spec.V(start)), Dates.FromStringTicks(spec.V(fin)));
 
+            if (Dates.FromStringTicks(spec.V(start)) > Dates.FromStringTicks(spec.V(fin)))
+                dayz.Clear();
+
             var firstW = Dates.FromStringTicks(spec.V(dateForFirstWeek));
 
             var h = spec[hour].intVal;
