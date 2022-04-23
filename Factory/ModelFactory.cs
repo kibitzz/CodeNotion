@@ -21,6 +21,7 @@ using basicClasses.models.String_proc;
 using basicClasses.models.SQL;
 using basicClasses.models.Markers;
 
+
 namespace basicClasses.Factory
 {
    public class ModelFactory
@@ -28,6 +29,7 @@ namespace basicClasses.Factory
         Dictionary<string, ModelInfo> models;
 
         public static opis hotkeys = new opis();
+        public static opis hotkeys_mod = new opis();
 
         public static Dictionary<string, ModelBase> ExternalModels;
 
@@ -213,7 +215,9 @@ namespace basicClasses.Factory
             models.Add("HttpListenerModel", new HttpListenerModel());
             models.Add("car_cdr_oper", new car_cdr_oper());
             models.Add("file", new file());
-            
+
+                     
+
 
 
 
@@ -283,10 +287,64 @@ namespace basicClasses.Factory
             ModelInfo m;
             if (models.TryGetValue(name.Trim(), out m))
             {
-                return m.Info ;
+                return m.Info;
             }
             else
-                return new opis();
+            {
+                opis rez = HotkeyItemsModelInfo( name);               
+
+                return rez;
+            }
+        }
+
+        public opis HotkeyItemsModelInfo(string name, bool conc = false)
+        {
+            opis rez = new opis();
+            if (hotkeys_mod != null && hotkeys_mod.isHere(name))
+            {
+                rez = hotkeys_mod[name]["info"].DuplicateA();
+
+                for (int i = 0; i < hotkeys_mod[name]["items"].listCou; i++)
+                {
+
+                    var o = hotkeys_mod[name]["items"][i];
+                    var modelName = o.PartitionKind;
+
+                    if (hotkeys_mod[modelName]["info"].isHere("i"))
+                    {
+                        rez.Vset(modelName, hotkeys_mod[modelName]["info"]["i"].body);
+
+                        if (conc)
+                            rez[o.PartitionName].body += "\n/ " + hotkeys_mod[modelName]["info"]["i"].body;
+                    }
+                }
+            }
+
+            return rez;
+        }
+
+        public (opis items, opis info) HotkeyItemsByContextAndCategory(opis ParentOfEditingOpis, string selectedModel)
+        {
+            opis items = new opis();
+            opis info = new opis();
+
+            var categoryOfItemsInList = hotkeys_mod[ParentOfEditingOpis.PartitionKind].PartitionKind;
+            var contextOfItemsInList = ParentOfEditingOpis.PartitionName;
+
+            items = hotkeys_mod[categoryOfItemsInList]["items"].DuplicateA();
+            items.AddArrRange(hotkeys_mod[contextOfItemsInList]["items"].DuplicateA());
+            info.AddArrRange(hotkeys_mod[contextOfItemsInList]["info"].DuplicateA());
+
+            info.AddArrRange(hotkeys_mod[categoryOfItemsInList]["info"].DuplicateA());
+
+            if (!string.IsNullOrEmpty(selectedModel) && !hotkeys_mod[selectedModel]["info"].isInitlze || hotkeys_mod[selectedModel].isHere("auto"))
+            {
+                hotkeys_mod[selectedModel].Vset("auto", "auto");
+                hotkeys_mod[selectedModel]["info"] = info.DuplicateA();
+                hotkeys_mod[selectedModel]["info"].RemoveArrElem(hotkeys_mod[selectedModel]["info"].getPartitionIdx("i"));
+            }
+
+            return (items, info);
         }
     }
 }

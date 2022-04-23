@@ -51,8 +51,8 @@ namespace basicClasses.models.WEB_api
             if (modelSpec.isHere(use_Tls))
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls;
 
-            if (modelSpec.isHere(use_Ssl3))
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
+            //if (modelSpec.isHere(use_Ssl3))
+            //    ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3;
 
             if (modelSpec.isHere(ServerCertificateValidationCallback) && !callbIsSet)
             {

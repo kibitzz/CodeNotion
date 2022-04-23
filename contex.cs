@@ -173,6 +173,7 @@ namespace basicClasses
             StartPreparationMessages = sentence["preparation messages"].DuplicateA();
 
             ModelFactory.hotkeys = sentence["hotkeys"].DuplicateA();
+            ModelFactory.hotkeys_mod = sentence["hotkeys for models"].DuplicateA();
 
             CTX.AddRootElem(sentence);
             SysInstance.Words = context;

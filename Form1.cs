@@ -46,6 +46,7 @@ namespace basicClasses
         /// поточний елемент дерева опису поняття
         /// </summary>
         opis EditingOpis;
+        opis EditingOpisParent;
         opis partInfo;
         opis copiedBranch;
         string EditingOpisValue;
@@ -1197,6 +1198,7 @@ namespace basicClasses
             {
                 SaveTreeChangesAnywhere();
 
+                EditingOpisParent = null;
                 EditingOpis = ((opis)e.Node.Tag);
                 EditingOpisValue = e.Node.Text;
                 richTextBox4.Text = EditingOpis.body;             
@@ -1206,8 +1208,8 @@ namespace basicClasses
                 string parent = "";
                 if (e.Node.Parent != null && e.Node.Parent.Tag != null)
                 {
-                    //parent = ((opis)e.Node.Parent.Tag).PartitionKind;
-                    curr = ((opis)e.Node.Parent.Tag).PartitionKind;
+                    EditingOpisParent = ((opis)e.Node.Parent.Tag);
+                    curr = EditingOpisParent.PartitionKind;
                     parentNode = e.Node.Parent;
                 }
 
@@ -1215,17 +1217,20 @@ namespace basicClasses
                 {
                     parent = ((opis)parentNode.Parent.Tag).PartitionKind;
                 }
-
-                //curr = !string.IsNullOrEmpty(EditingOpis.PartitionKind) ? EditingOpis.PartitionKind : "";
-                //curr = !EditingOpis.isInitlze ? "creation" : curr;
-
+               
                 if (parent == "set") { parent = ""; }
                 if (!string.IsNullOrEmpty(curr))
-                { partInfo = mf.GetModelInfo(curr); }
-
-                if (partInfo != null && partInfo[EditingOpis.PartitionName].isInitlze)
                 {
-                    textBox5.Text = partInfo[EditingOpis.PartitionName].body;
+                    partInfo = mf.GetModelInfo(curr);
+                    (opis items, opis info) ii = mf.HotkeyItemsByContextAndCategory(EditingOpisParent, EditingOpis.PartitionKind);
+                    partInfo.AddArrRange(ii.info);
+                }
+
+                if (partInfo != null && 
+                    (partInfo[EditingOpis.PartitionName].isInitlze 
+                    || partInfo[EditingOpis.PartitionKind].isInitlze))
+                {
+                    textBox5.Text = partInfo[EditingOpis.PartitionName].body + "\n / " + partInfo[EditingOpis.PartitionKind].body;
                     textBox5.Visible = true;
                 }
                 else
@@ -1429,8 +1434,34 @@ namespace basicClasses
                 label2.Text = EditingOpis.PartitionKind + " (aval)";
                 var modlist = mf.GetModel(EditingOpis.PartitionKind).DuplicateA();
 
-                if (!modlist.isInitlze && ModelFactory.hotkeys != null)
-                    modlist = ModelFactory.hotkeys.DuplicateA();
+
+                // Dynamic list from context
+                if (!modlist.isInitlze)
+                {
+                    if (ModelFactory.hotkeys_mod != null &&
+                        (ModelFactory.hotkeys_mod.isHere(EditingOpis.PartitionKind)
+                        || ModelFactory.hotkeys_mod.isHere(EditingOpisParent.PartitionKind)
+                        || ModelFactory.hotkeys_mod.isHere(EditingOpisParent.PartitionName)
+                        )
+                        )
+                    {
+                        modlist = ModelFactory.hotkeys_mod[EditingOpis.PartitionKind]["items"].DuplicateA();
+                        partInfo = mf.HotkeyItemsModelInfo(EditingOpis.PartitionKind, true);
+
+                        (opis items, opis info) ii = mf.HotkeyItemsByContextAndCategory(EditingOpis, null);
+                       // modlist.AddArrRange(ii.items);
+                        partInfo.AddArrRange(ii.info);
+
+                        ii = mf.HotkeyItemsByContextAndCategory(EditingOpisParent, EditingOpis.PartitionKind);
+                        modlist.AddArrRange(ii.items);
+                        partInfo.AddArrRange(ii.info);
+                    }
+                    else 
+                    if (ModelFactory.hotkeys != null)
+                    {
+                        modlist = ModelFactory.hotkeys.DuplicateA();
+                    }
+                }
 
                 toolStrip2.Items.Clear();
                 for (int i = 0; i < modlist.listCou; i++)
@@ -1482,7 +1513,8 @@ namespace basicClasses
         {
             if (sender is ToolStripItem)
             {
-                textBox5.Text = partInfo[((ToolStripItem)sender).Text].body;
+                textBox5.Text = partInfo[((ToolStripItem)sender).Text].body 
+                                + " / " + partInfo[((opis)((ToolStripItem)sender).Tag).PartitionKind].body;
                 textBox5.Visible = true;
             }
         }
