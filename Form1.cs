@@ -52,6 +52,7 @@ namespace basicClasses
         string EditingOpisValue;
 
         opis currContext;
+        ScriptRuntime runtime;
 
         ModelFactory mf;
         Thread moneyThread;
@@ -528,6 +529,7 @@ namespace basicClasses
             treeView2.Sort();
         }
 
+        // right tree (secondary noneditable)
         private void treeView2_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (!texthighlight)
@@ -1078,7 +1080,10 @@ namespace basicClasses
             
             currContext["globalcomm"].lockThisForDuplication();
             treeView2.Nodes.Clear();
-           
+
+            runtime = new ScriptRuntime(currContext);
+
+
             Thread.Sleep(300);
 
             listBox2.Visible = true;
@@ -1093,6 +1098,21 @@ namespace basicClasses
                     listBox2.Items.Add(m);
                 }
             }
+        }
+
+        opis GetContextualSubitemsHelp()
+        {           
+            opis p = new opis();
+            if (runtime == null)
+                return p;
+
+            p["EditingOpisParent"].Wrap(EditingOpisParent ?? new opis());
+            p["EditingOpis"].Wrap( EditingOpis ?? new opis());
+            p["whole"].Wrap((opis)treeView3.Nodes[0].Tag);
+
+            return runtime.SendMsg("контекстречення", 
+                                   runtime.CreateMethodMessage("контекстречення", 
+                                           "get contextual subitems and hints", p));            
         }
 
         private void listBox2_SelectedIndexChanged(object sender, EventArgs e)
@@ -1222,16 +1242,16 @@ namespace basicClasses
                 if (!string.IsNullOrEmpty(curr))
                 {
                     partInfo = mf.GetModelInfo(curr);
-                    (opis items, opis info) ii = mf.HotkeyItemsByContextAndCategory(EditingOpisParent, EditingOpis.PartitionKind);
-                    partInfo.AddArrRange(ii.info);
+                    partInfo.AddArrRange(GetContextualSubitemsHelp()["info"]);                   
                 }
 
                 if (partInfo != null && 
                     (partInfo[EditingOpis.PartitionName].isInitlze 
                     || partInfo[EditingOpis.PartitionKind].isInitlze))
                 {
-                    textBox5.Text = partInfo[EditingOpis.PartitionName].body + "\n / " + partInfo[EditingOpis.PartitionKind].body;
-                    textBox5.Visible = true;
+                    popupBanner(partInfo[EditingOpis.PartitionName].body + "\n / " + partInfo[EditingOpis.PartitionKind].body);
+                    //textBox5.Text = partInfo[EditingOpis.PartitionName].body + "\n / " + partInfo[EditingOpis.PartitionKind].body;
+                    //textBox5.Visible = true;
                 }
                 else
                 {
@@ -1438,24 +1458,13 @@ namespace basicClasses
                 // Dynamic list from context
                 if (!modlist.isInitlze)
                 {
-                    if (ModelFactory.hotkeys_mod != null &&
-                        (ModelFactory.hotkeys_mod.isHere(EditingOpis.PartitionKind)
-                        || ModelFactory.hotkeys_mod.isHere(EditingOpisParent.PartitionKind)
-                        || ModelFactory.hotkeys_mod.isHere(EditingOpisParent.PartitionName)
-                        )
-                        )
+
+                    var ii = GetContextualSubitemsHelp();
+                    if(ii.isHere("items"))
                     {
-                        modlist = ModelFactory.hotkeys_mod[EditingOpis.PartitionKind]["items"].DuplicateA();
-                        partInfo = mf.HotkeyItemsModelInfo(EditingOpis.PartitionKind, true);
-
-                        (opis items, opis info) ii = mf.HotkeyItemsByContextAndCategory(EditingOpis, null);
-                       // modlist.AddArrRange(ii.items);
-                        partInfo.AddArrRange(ii.info);
-
-                        ii = mf.HotkeyItemsByContextAndCategory(EditingOpisParent, EditingOpis.PartitionKind);
-                        modlist.AddArrRange(ii.items);
-                        partInfo.AddArrRange(ii.info);
-                    }
+                        modlist = ii["items"].DuplicateA();
+                        partInfo = ii["info"].DuplicateA();
+                    }                  
                     else 
                     if (ModelFactory.hotkeys != null)
                     {

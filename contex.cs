@@ -172,8 +172,7 @@ namespace basicClasses
             var sentence = context.Find("sentence_context");
             StartPreparationMessages = sentence["preparation messages"].DuplicateA();
 
-            ModelFactory.hotkeys = sentence["hotkeys"].DuplicateA();
-            ModelFactory.hotkeys_mod = sentence["hotkeys for models"].DuplicateA();
+            ModelFactory.hotkeys = sentence["hotkeys"].DuplicateA();           
 
             CTX.AddRootElem(sentence);
             SysInstance.Words = context;
@@ -202,10 +201,7 @@ namespace basicClasses
         {
             for (int i = 0; i < StartPreparationMessages.paramCou; i++)
                 contextToIgnite["globalcomm"][StartPreparationMessages[i].PartitionName] = StartPreparationMessages[i].DuplicateA();
-
-
-            //contextToIgnite["globalcomm"]["контекстречення"] = new opis("message", "body GenerateTags");
-            //contextToIgnite["globalcomm"]["all"] = new opis("message", "body GenerateTags");
+           
 
             if (contextParameterizeMessages != null)
                 for (int i = 0; i < contextParameterizeMessages.listCou; i++)
@@ -228,84 +224,146 @@ namespace basicClasses
 
     public class ScriptRuntime
     {
+        // тільки в процесі роботи над проектом ми дізнаємося що є що і які відношення між сутностями домену та його реалізаціями в коді
+        // тому дуже важливо мати середовще де ці відношення легко можна описати/установити та модифікувати в процесі пізнання (категоріі, відношення, сутності)
+
         object scriptLocker = new object();
+
+        /// <summary>
+        /// name of function defined in used context
+        /// </summary>
+        public static string TermTargetFuncName = "target term";
 
         opis ScriptContext;
 
-        opis CreateMethodMessage(string specName, string method, string param = "")
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="command"> sentence of one or more words that will define context specifications and awailable functions and classes (terms)</param>
+        public ScriptRuntime(string command)
+        {
+            ScriptContext = InitNewScriptContext(command);
+        }
+
+        public ScriptRuntime(opis InitializedScriptContext)
+        {
+            ScriptContext = InitializedScriptContext;
+        }
+
+        public opis CreateMethodMessage(string receiverClass, string method, string param = "")
         {
             var methodRun = new opis();
-            var req = "{\"N\": \"api_provider\",\"K\": \"message\",\"B\": \"###msgtype\",\"a\": [{\"N\": \"contTargetModel\",\"K\": \"TargetingChecks\",\"B\": \"\",\"a\": [{\"N\": \"1\",\"K\": \"targetAnyCont\",\"B\": \"\"}]},{\"N\": \"p\",\"K\": \"\",\"B\": \"" + param + "\"}]}";
-            methodRun.load(req.Replace("###msgreceiv", specName)
+            var req = "{\"N\": \"###msgreceiv\",\"K\": \"message\",\"B\": \"###msgtype\",\"a\": [{\"N\": \"contTargetModel\",\"K\": \"TargetingChecks\",\"B\": \"\",\"a\": [{\"N\": \"1\",\"K\": \"targetAnyCont\",\"B\": \"\"}]},{\"N\": \"p\",\"K\": \"\",\"B\": \"" + param + "\"}]}";
+            methodRun.load(req.Replace("###msgreceiv", receiverClass)
                 .Replace("###msgtype", method));
 
             return methodRun;
         }
 
-        opis CreateMethodMessage(string specName, string method, opis param)
+        public opis CreateMethodMessage(string receiverClass, string method, opis param)
         {
-            var t = CreateMethodMessage(specName, method);
-            t["p"] = param;
+            var t = CreateMethodMessage(receiverClass, method);
+
+            if (param != null)
+                t["p"] = param;
 
             return t;
         }
 
-
-        public opis CodenotionScript(string specName, string sysName, string method, opis param)
+        public opis CreateMethodMessage(string receiverClass, string term, string method, opis param)
         {
-            var methodRun = CreateMethodMessage(sysName, method, param);
-         
+            var t = CreateMethodMessage(receiverClass, method, param);
+
+            if (receiverClass != term)
+            {
+                t["contTargetModel"] = TargetTermName(term);
+            }
+
+            return t;
+        }
+
+        string[] SplitSentence(string sentence)
+        {
+            return sentence.Split();
+        }
+
+        public opis InitNewScriptContext(string sentence)
+        {          
+            return InitNewScriptContext(SplitSentence(sentence));
+        }
+
+        public opis InitNewScriptContext(string[] sentenceParts)
+        {
+            opis cont = null;
+
+            OntologyTreeBuilder otb = new OntologyTreeBuilder();
+            otb.context = Parser.ContextGlobal["words"];
+
+            cont = new opis("context");
+            cont.PartitionName = "context";
+            cont.Vset("level", "topBranch");
+            cont.Vset(context.Higher, "none");
+            cont.Vset(context.Organizer, "контекстречення");
+
+            foreach (string term in sentenceParts)
+            {
+                otb.buildTree(otb.context.Find(term), cont);               
+            }
+           
+            cont["globalcomm"] = new opisEventsSubscription();
+           
+            otb.initInstances(cont);
+
+            otb.contextToIgnite = cont;
+            otb.igniteTree();
+
+                    
+            return cont;
+        }
+
+        bool isMetaTerm(string term)
+        {
+            return term.Contains("системн");
+        }
+
+        public opis TargetTermName(string term)
+        {
+            opis rez = new opis();
+            rez["1"] = new opis(0) { PartitionName = "1", PartitionKind = TermTargetFuncName, body = term };
+
+            return rez;
+        }
+
+        public opis SendMsg(string term, string method, opis param = null)
+        {
+            var t = Parser.ContextGlobal["words"].Find(term);
+            string receiverClass = t.V("intellection");
+            receiverClass = isMetaTerm(receiverClass) ? term : receiverClass;
+
+            var message = receiverClass == term ? CreateMethodMessage(receiverClass, method, param)
+                                                : CreateMethodMessage(receiverClass, term, method, param);
+          
+            return SendMsg(receiverClass,  message);
+        }
+
+        public opis SendMsg(string receiverClass, opis message)
+        {                    
             lock (scriptLocker)
             {              
-                if (ScriptContext == null)
-                {                   
-                    OntologyTreeBuilder tpb = new OntologyTreeBuilder();
-                    tpb.context = Parser.ContextGlobal["words"];
-
-                    opis o = new opis("context");
-                    o.PartitionName = "context";
-                    o.Vset("level", "topBranch");
-                    o.Vset(context.Higher, "none");
-                    o.Vset(context.Organizer, "контекстречення");
-
-                    tpb.buildTree(tpb.context.Find(specName), o);
-
-                    opis currContext = o;
-                    currContext["globalcomm"] = new opisEventsSubscription();
-
-                    var vmsg = CreateMethodMessage(sysName, "version");
-
-                    tpb.messagesToSend = new opis();
-                    tpb.messagesToSend.AddArr(vmsg);
-
-                    tpb.initInstances(currContext);
-
-                    #if NETFRAMEWORK
-                    if (SysInstance.Log != null)
-                        SysInstance.Log.Clear();
-                    #endif
-
-                    tpb.contextToIgnite = currContext;
-                    tpb.igniteTree();
-
-                    ScriptContext = currContext;
-                    //AddAnalytic(222, "Init new ScriptContext ", specName, vmsg["p"].serialize(), "");
-                    ScriptContext["globalcomm"][sysName] = methodRun;
-                }
-                else
+                if (ScriptContext != null)             
                 {
                     try
                     {
-                        ScriptContext["globalcomm"][sysName] = methodRun;
+                        ScriptContext["globalcomm"][receiverClass] = message;
                     }
                     catch (Exception e)
                     {
-                        //AddAnalytic(222, "Exception running ScriptContext " + e.StackTrace, specName, methodRun.serialize(), e.Message);
+                        
                     }                    
                 }
             }
           
-            return methodRun["p"];
+            return message["p"]; // receiverClass put responce back via the received message, responce data is placed in the partition 'p' where was parameter of the message
         }
 
     }

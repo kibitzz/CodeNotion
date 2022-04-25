@@ -291,60 +291,12 @@ namespace basicClasses.Factory
             }
             else
             {
-                opis rez = HotkeyItemsModelInfo( name);               
+                opis rez = new opis();            
 
                 return rez;
             }
         }
 
-        public opis HotkeyItemsModelInfo(string name, bool conc = false)
-        {
-            opis rez = new opis();
-            if (hotkeys_mod != null && hotkeys_mod.isHere(name))
-            {
-                rez = hotkeys_mod[name]["info"].DuplicateA();
-
-                for (int i = 0; i < hotkeys_mod[name]["items"].listCou; i++)
-                {
-
-                    var o = hotkeys_mod[name]["items"][i];
-                    var modelName = o.PartitionKind;
-
-                    if (hotkeys_mod[modelName]["info"].isHere("i"))
-                    {
-                        rez.Vset(modelName, hotkeys_mod[modelName]["info"]["i"].body);
-
-                        if (conc)
-                            rez[o.PartitionName].body += "\n/ " + hotkeys_mod[modelName]["info"]["i"].body;
-                    }
-                }
-            }
-
-            return rez;
-        }
-
-        public (opis items, opis info) HotkeyItemsByContextAndCategory(opis ParentOfEditingOpis, string selectedModel)
-        {
-            opis items = new opis();
-            opis info = new opis();
-
-            var categoryOfItemsInList = hotkeys_mod[ParentOfEditingOpis.PartitionKind].PartitionKind;
-            var contextOfItemsInList = ParentOfEditingOpis.PartitionName;
-
-            items = hotkeys_mod[categoryOfItemsInList]["items"].DuplicateA();
-            items.AddArrRange(hotkeys_mod[contextOfItemsInList]["items"].DuplicateA());
-            info.AddArrRange(hotkeys_mod[contextOfItemsInList]["info"].DuplicateA());
-
-            info.AddArrRange(hotkeys_mod[categoryOfItemsInList]["info"].DuplicateA());
-
-            if (!string.IsNullOrEmpty(selectedModel) && !hotkeys_mod[selectedModel]["info"].isInitlze || hotkeys_mod[selectedModel].isHere("auto"))
-            {
-                hotkeys_mod[selectedModel].Vset("auto", "auto");
-                hotkeys_mod[selectedModel]["info"] = info.DuplicateA();
-                hotkeys_mod[selectedModel]["info"].RemoveArrElem(hotkeys_mod[selectedModel]["info"].getPartitionIdx("i"));
-            }
-
-            return (items, info);
-        }
+       
     }
 }
