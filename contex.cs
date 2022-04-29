@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Igor Proskochilo
+﻿// Copyright (C) 2015-2022 Igor Proskochilo
 
 using basicClasses.Factory;
 using basicClasses.models;
@@ -31,6 +31,8 @@ namespace basicClasses
         public opis context;
         private opis StartPreparationMessages;
 
+        public const string globalcomm = "globalcomm";
+
         public OntologyTreeBuilder()
         {
             CTX = new contex();
@@ -43,6 +45,11 @@ namespace basicClasses
             buildTree(o);
 
             return o;
+        }
+
+        public static bool isMetaTerm(string term)
+        {
+            return term.Contains("системн");
         }
 
         public void buildTree(opis b)
@@ -96,15 +103,17 @@ namespace basicClasses
         public void buildTree(opis term, opis con)
         {
             if (string.IsNullOrEmpty(term.PartitionName)
-               || term.isDuplicated_)       {
-                return;          }
+               || term.isDuplicated_)
+            {
+                return;
+            }
 
             CTX.Handle(con);
 
             string currItemID = term.PartitionName + DateTime.Now.Ticks.ToString();
 
             CTX.itemContextID = currItemID;
-       
+
             opis curr = CTX.curr;
             opis ncon = curr;
 
@@ -119,44 +128,41 @@ namespace basicClasses
             string ontology = term.V(ModelNotion.ontology) + " "
                 + intellection.V(ModelNotion.ontology);
 
-            //if (!string.IsNullOrWhiteSpace(ontology))
-            //{
-                ncon = new opis("context");
-                           
-                ncon.Vset(models.context.Owner, term.PartitionName+", "+ intellection.PartitionName);
-                ncon.Vset(models.context.Organizer, intellection.PartitionName);
-                // функция [intellection] : системное
-                if (intellection.PartitionName.Contains("системн"))
-                {
-                    ncon.Vset(models.context.Organizer, term.PartitionName);
-                }
 
-                CTX.AddContext(ncon);
+            ncon = new opis("context");
 
-                string[] ttt = ontology.Split();
+            ncon.Vset(models.context.Owner, term.PartitionName + ", " + intellection.PartitionName);
+            ncon.Vset(models.context.Organizer, intellection.PartitionName);
+            // функция [intellection] : системное
+            if (isMetaTerm(intellection.PartitionName))
+            {
+                ncon.Vset(models.context.Organizer, term.PartitionName);
+            }
 
-                foreach (string n in ttt)
-                {
-                    buildTree(context.Find(n), ncon);
-                }
-            //}
-           
+            CTX.AddContext(ncon);
+
+            string[] ttt = ontology.Split();
+
+            foreach (string n in ttt)
+            {
+                buildTree(context.Find(n), ncon);
+            }
+
             CTX.Handle(ncon);// switch back to our local context (to add system elem. to proper context),
                              // because previously there was calls to {CTX.AddLvl()} which can change CTX.curr
 
-           
             #region system elements to global context
 
             // больше [intellection] : суждение [intellection] : системное
-            if (intellection.V(ModelNotion.intellection).Contains("системн"))
+            if (isMetaTerm(intellection.V(ModelNotion.intellection)))
             {
                 CTX.AddRootElem(intellection);
             }
 
             // суждение [intellection] : системное
-            if (intellection.PartitionName.Contains("системн"))
+            if (isMetaTerm(intellection.PartitionName))
             {
-                CTX.AddRootElem(term);              
+                CTX.AddRootElem(term);
             }
 
             #endregion
@@ -177,8 +183,8 @@ namespace basicClasses
             CTX.AddRootElem(sentence);
             SysInstance.Words = context;
 
-            o["globalcomm"] = new opisEventsSubscription();
-            o["globalcomm"].PartitionKind = "communicator";
+            o[globalcomm] = new opisEventsSubscription();
+            o[globalcomm].PartitionKind = "communicator";
 
             for (int i = 0; i < o["sys"].listCou; i++)
             {
@@ -200,24 +206,24 @@ namespace basicClasses
         public void igniteTree()
         {
             for (int i = 0; i < StartPreparationMessages.paramCou; i++)
-                contextToIgnite["globalcomm"][StartPreparationMessages[i].PartitionName] = StartPreparationMessages[i].DuplicateA();
+                contextToIgnite[globalcomm][StartPreparationMessages[i].PartitionName] = StartPreparationMessages[i].DuplicateA();
            
 
             if (contextParameterizeMessages != null)
                 for (int i = 0; i < contextParameterizeMessages.listCou; i++)
                 {
-                    contextToIgnite["globalcomm"].AddArr(contextParameterizeMessages[i]);
+                    contextToIgnite[globalcomm].AddArr(contextParameterizeMessages[i]);
                 }
 
-            contextToIgnite["globalcomm"]["all"] = new opis("message", "body start");
+            contextToIgnite[globalcomm]["all"] = new opis("message", "body start");
 
             if (messagesToSend != null)
                 for (int i = 0; i < messagesToSend.listCou; i++)
                 {
-                    contextToIgnite["globalcomm"].AddArr(messagesToSend[i]);
+                    contextToIgnite[globalcomm].AddArr(messagesToSend[i]);
                 }
 
-            contextToIgnite["globalcomm"]["контекстречення"] = new opis("message", "body NotifyFinished");
+            contextToIgnite[globalcomm]["контекстречення"] = new opis("message", "body NotifyFinished");
         }
         
     }
@@ -250,6 +256,7 @@ namespace basicClasses
             ScriptContext = InitializedScriptContext;
         }
 
+
         public opis CreateMethodMessage(string receiverClass, string method, string param = "")
         {
             var methodRun = new opis();
@@ -265,7 +272,7 @@ namespace basicClasses
             var t = CreateMethodMessage(receiverClass, method);
 
             if (param != null)
-                t["p"] = param;
+                t[MsgTemplate.p] = param;
 
             return t;
         }
@@ -276,11 +283,13 @@ namespace basicClasses
 
             if (receiverClass != term)
             {
-                t["contTargetModel"] = TargetTermName(term);
+                t[MsgTemplate.contTargetModel] = TargetTermName(term);
             }
 
             return t;
         }
+
+
 
         string[] SplitSentence(string sentence)
         {
@@ -310,7 +319,7 @@ namespace basicClasses
                 otb.buildTree(otb.context.Find(term), cont);               
             }
            
-            cont["globalcomm"] = new opisEventsSubscription();
+            cont[OntologyTreeBuilder.globalcomm] = new opisEventsSubscription();
            
             otb.initInstances(cont);
 
@@ -321,11 +330,8 @@ namespace basicClasses
             return cont;
         }
 
-        bool isMetaTerm(string term)
-        {
-            return term.Contains("системн");
-        }
 
+        
         public opis TargetTermName(string term)
         {
             opis rez = new opis();
@@ -334,11 +340,13 @@ namespace basicClasses
             return rez;
         }
 
+
+
         public opis SendMsg(string term, string method, opis param = null)
         {
             var t = Parser.ContextGlobal["words"].Find(term);
-            string receiverClass = t.V("intellection");
-            receiverClass = isMetaTerm(receiverClass) ? term : receiverClass;
+            string receiverClass = t.V(ModelNotion.intellection);
+            receiverClass = OntologyTreeBuilder.isMetaTerm(receiverClass) ? term : receiverClass;
 
             var message = receiverClass == term ? CreateMethodMessage(receiverClass, method, param)
                                                 : CreateMethodMessage(receiverClass, term, method, param);
@@ -354,16 +362,20 @@ namespace basicClasses
                 {
                     try
                     {
-                        ScriptContext["globalcomm"][receiverClass] = message;
+                        ScriptContext[OntologyTreeBuilder.globalcomm][receiverClass] = message;
                     }
                     catch (Exception e)
                     {
-                        
+                        opis rez = message[MsgTemplate.p];
+                        rez.Vset("Exception", e.Message);
+                        rez.Vset("InnerException", e.InnerException?.Message);
+                        rez.Vset("StackTrace", e.StackTrace);
+                        rez.Vset("InnerException StackTrace", e.InnerException?.StackTrace);
                     }                    
                 }
             }
           
-            return message["p"]; // receiverClass put responce back via the received message, responce data is placed in the partition 'p' where was parameter of the message
+            return message[MsgTemplate.p]; // receiverClass put responce back via the received message, responce data is placed in the partition 'p' where was parameter of the message
         }
 
     }
@@ -371,7 +383,6 @@ namespace basicClasses
 
     public class root : SysInstance
     {
-
         public string nameSpec;
 
         public override string Name()
@@ -397,9 +408,7 @@ namespace basicClasses
         }
 
 #endregion
-
-  
-   
+    
     }
 
 

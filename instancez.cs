@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Igor Proskochilo
+﻿// Copyright (C) 2015-2022 Igor Proskochilo
 
 using System;
 using System.Collections.Generic;
@@ -37,7 +37,7 @@ namespace basicClasses
             if ((j["spec"].body == clicked.PartitionName ||
                 j["spec"].body == clicked.PartitionKind)
                 && (j["waiter"].body == clicked.PartitionKind ||
-                clicked.PartitionKind =="системное"))
+                OntologyTreeBuilder.isMetaTerm(clicked.PartitionKind)))
             {
                 rez = true;
             }
@@ -827,34 +827,7 @@ namespace basicClasses
             return rez;
         }
 
-       // process broadcast request and answer if needed
-        protected void MsgRequestPresentHere(opis msg)
-        {
-            for(int i =0; i < contexts.listCou;i++)
-            {              
-                // is there some context of this notion that lies under given context
-                if (CTX.CheckParentOrder(msg["context"], contexts[i]))
-                {
-                    Handle(contexts[i]);
-                    AnswerToMessage(msg, "rez ischild");                                
-                }
-            }
-        }
-
-        // process broadcast request and answer if needed
-        protected void MsgRequestExistAsOwner(opis msg)
-        {
-            for (int i = 0; i < contexts.listCou; i++)
-            {               
-                if (CTX.CheckParentOrder(contexts[i], msg["context"]))
-                {
-                    Handle(contexts[i]);
-                    AnswerToMessage(msg, "rez isparent");
-                }
-            }
-        }
-    
-
+        
         protected void Start(opis msg)
         {
             for (int i = 0; i < contexts.listCou; i++)
@@ -2067,7 +2040,7 @@ namespace basicClasses
             ExecActionResponceModelsList(code, message);
 
             if(!message.isHere("cancel"))
-            SendMessageNoAspect(receiver, message);
+                SendMessageNoAspect(receiver, message);
         }
 
         public void SendMessageNoAspect(string receiver, opis message)

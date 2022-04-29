@@ -1,4 +1,4 @@
-﻿// Copyright (C) 2015 Igor Proskochilo
+﻿// Copyright (C) 2015-2022 Igor Proskochilo
 
 using basicClasses.models;
 using System;
@@ -63,7 +63,7 @@ namespace basicClasses
 
         #region  variables  properties
 
-        public static ObjectsFactory OF;
+      //  public static ObjectsFactory OF;
 
         string PartitionName_Lower_;
         public string PartitionName_Lower 
@@ -1599,9 +1599,20 @@ namespace basicClasses
 
 #if NETFRAMEWORK
 
+        void RegisterCircularRefs()
+        {
+            if(PartitionKind !=  ModelNotion.patritionKinda)
+                listOfVisualisedCircularRefs.AddArr(this);
+        }
+
+        public void RemoveFromClearRefs()
+        {
+            listOfVisualisedCircularRefs.RemoveArrElem(this);
+        }
+
         public TreeNode GetDebugTree()
         {
-            listOfVisualisedCircularRefs.AddArr(this);
+            RegisterCircularRefs();
             return GetDebugTreeIL(200000);
         }
 
@@ -1609,7 +1620,7 @@ namespace basicClasses
         {
             TreeNode rez = new TreeNode("-=#Root#=-");
 
-            listOfVisualisedCircularRefs.AddArr(this);
+            RegisterCircularRefs();
             if (!do_not_build_debug)
                 BuildTree(rez, 0, maxDepth, null);
 
@@ -2500,8 +2511,8 @@ namespace basicClasses
                         arr[i].PartitionName == templ.PartitionName) &&
                         (string.IsNullOrEmpty(templ.body)
                         || (templ.body[0] == '?' && templ.body.StartsWith("???"))
-                       || arr[i].body == templ.body
-                       || (templ.body[0] == '#' && templ.body.StartsWith("###") && arr[i].body.Contains(templ.body.Substring(3)))
+                        || arr[i].body == templ.body
+                        || (templ.body[0] == '#' && templ.body.StartsWith("###") && arr[i].body.Contains(templ.body.Substring(3)))
                         )
                         )
                     {
@@ -3089,31 +3100,5 @@ namespace basicClasses
     }
 
 
-    public class ObjectsFactory
-    {
-        public object GetInstance(string kind, opis o)
-        {
 
-            return null;
-        }
-
-        public static object GetInstance(string kind)
-        {
-            object rez = null;
-
-            rez = new root();
-            if (kind != "root")
-                ((root)rez).nameSpec = kind;
-
-            return rez;
-
-        }
-
-        public void init()
-        {
-
-        }
-
-
-    }
 }

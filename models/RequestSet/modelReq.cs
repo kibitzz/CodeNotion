@@ -17,7 +17,7 @@ namespace basicClasses.models
 
 
         [model("Action")]
-        [info("System message, send by framework after <Build> is finished, and before <Start> message")]
+        [info("")]
         public static readonly string GenerateTags = "GenerateTags";
 
         [model("Action")]

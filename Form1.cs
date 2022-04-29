@@ -62,11 +62,14 @@ namespace basicClasses
         TreeNode notionTree;
         bool doSplitterMove;
         bool SplittersResized;
+        bool ignoreTreeView3;
+        Dictionary<string, opis> scrolltoPos;
 
         public Form1()
         {
             InitializeComponent();
 
+            scrolltoPos = new Dictionary<string, opis>();
             this.Text = "repl";
             doSplitterMove = Screen.PrimaryScreen.Bounds.Width < 1400;
 
@@ -115,12 +118,12 @@ namespace basicClasses
 
        
             treeView2.Nodes.Clear();
-        
 
-            string[] arr = DataFileUtils.LoadLines("code.txt");
-            richTextBox1.Lines = arr;
 
-            arr = DataFileUtils.LoadLines("codeInput.txt");
+            //string[] arr = DataFileUtils.LoadLines("code.txt");
+            //richTextBox1.Lines = arr;
+
+            string[] arr = DataFileUtils.LoadLines("codeInput.txt");
             richTextBox3.Lines = arr;
            
 
@@ -701,10 +704,15 @@ namespace basicClasses
                 {
                     treeView3.Nodes.Add(HighlightedOpis.GetDebugTree().FirstNode);
                 }
+               
+
             }
 
             treeView3.TopNode.Expand();
             richTextBox4.Text = "";
+
+            if (scrolltoPos.ContainsKey(HighlightedWordTreeEdited))
+                treeView3.TopNode = scrolltoPos[HighlightedWordTreeEdited].treeElem;
 
         }
 
@@ -719,8 +727,7 @@ namespace basicClasses
 
                 SetStateEdited();
             }
-            panel1.Visible = false;
-            //PrepareWordInput();
+            panel1.Visible = false;          
         }
 
         string getNewPartitionIndexerName(opis container)
@@ -737,16 +744,55 @@ namespace basicClasses
             return rez;
         }
 
-        void AddElemToEditingOpis(opis ne)
+        void AddElemToEditingOpis(opis ne, bool justUpdate = false)
         {
-            EditingOpis.AddArr(ne);
-
-            if (EditingOpis.treeElem != null)
+            if (!justUpdate)
             {
-                EditingOpis.treeElem.Nodes.Add(ne.GetDebugTree().FirstNode);
+                EditingOpis.AddArr(ne);
+
+                if (EditingOpis.treeElem != null)
+                {
+                    EditingOpis.treeElem.Nodes.Add(ne.GetDebugTree().FirstNode);
+                    ne.RemoveFromClearRefs();
+                }
+            }
+            else
+            {
+                ignoreTreeView3 = true;
+                UpdateTreeNodes(EditingOpisParent ?? EditingOpis);
+                treeView3.SelectedNode = EditingOpis.treeElem;
+                ignoreTreeView3 = false;
             }
             SetStateEdited();
             panel1.Visible = false;
+        }
+
+        void UpdateTreeNodes(opis o)
+        {
+            var treeState = o.treeElem;           
+            o.GetDebugTree();
+            o.RemoveFromClearRefs();
+            UpdateStateOnNewTree(treeState);
+
+            var pos = treeState.Parent.Nodes.IndexOf(treeState);
+            if(pos >=0)
+                treeState.Parent.Nodes.Insert(pos, o.treeElem);
+          
+            treeState.Parent.Nodes.Remove(treeState);           
+        }
+
+        void UpdateStateOnNewTree(TreeNode n)
+        {
+            if(n.Tag != null)
+            {
+                if (n.IsExpanded)
+                    ((opis)n.Tag).treeElem.Expand();
+               
+                foreach (TreeNode c in n.Nodes)
+                {
+                    UpdateStateOnNewTree(c);
+                }
+            }
         }
 
         private void richTextBox4_TextChanged(object sender, EventArgs e)
@@ -1206,22 +1252,36 @@ namespace basicClasses
         }
 
         public void SaveTreeChangesAnywhere()
-        {
-           
+        {           
             SaveTreeChanges(EditingOpisValue, richTextBox4.Text);
+        }
 
+        void SetEditedPosition(string term, opis parent, opis selected)
+        {
+            if (parent != null && parent.treeElem.IsVisible)
+            {
+                TreeNode pp = parent.treeElem.Parent;                
+                scrolltoPos[term] = parent;
+
+                if (pp != null && pp.IsVisible)
+                    scrolltoPos[term] = (opis)pp.Tag;
+
+            }
+            else
+                scrolltoPos[term] = selected;
         }
 
         private void treeView3_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            if (e.Node.Tag != null)
+            if (e.Node.Tag != null && !ignoreTreeView3)
             {
                 SaveTreeChangesAnywhere();
+
 
                 EditingOpisParent = null;
                 EditingOpis = ((opis)e.Node.Tag);
                 EditingOpisValue = e.Node.Text;
-                richTextBox4.Text = EditingOpis.body;             
+                richTextBox4.Text = EditingOpis.body;
 
                 TreeNode parentNode = null;
                 string curr = "";
@@ -1233,25 +1293,25 @@ namespace basicClasses
                     parentNode = e.Node.Parent;
                 }
 
+                SetEditedPosition(HighlightedWordTreeEdited, EditingOpisParent, EditingOpis);
+
                 if (parentNode != null && parentNode.Parent != null && parentNode.Parent.Tag != null)
                 {
                     parent = ((opis)parentNode.Parent.Tag).PartitionKind;
                 }
-               
+
                 if (parent == "set") { parent = ""; }
                 if (!string.IsNullOrEmpty(curr))
                 {
-                    partInfo = mf.GetModelInfo(curr);
-                    partInfo.AddArrRange(GetContextualSubitemsHelp()["info"]);                   
+                    partInfo = mf.GetModelInfo(curr).DuplicateA();
+                    partInfo.AddArrRange(GetContextualSubitemsHelp()["info"]);
                 }
 
-                if (partInfo != null && 
-                    (partInfo[EditingOpis.PartitionName].isInitlze 
+                if (partInfo != null &&
+                    (partInfo[EditingOpis.PartitionName].isInitlze
                     || partInfo[EditingOpis.PartitionKind].isInitlze))
                 {
                     popupBanner(partInfo[EditingOpis.PartitionName].body + "\n / " + partInfo[EditingOpis.PartitionKind].body);
-                    //textBox5.Text = partInfo[EditingOpis.PartitionName].body + "\n / " + partInfo[EditingOpis.PartitionKind].body;
-                    //textBox5.Visible = true;
                 }
                 else
                 {
@@ -1260,6 +1320,9 @@ namespace basicClasses
 
                 BuildModelsList(curr, "" /*parent*/);
             }
+            else
+                 if (e.Node.Tag == null && !ignoreTreeView3)
+                popupBanner("Reload term, current node have no ref to data");
         }
 
         private void treeView3_AfterLabelEdit(object sender, NodeLabelEditEventArgs e)
@@ -1376,8 +1439,7 @@ namespace basicClasses
         }
 
         private void button15_Click(object sender, EventArgs e)
-        {
-            //EditingOpis.PartitionName;
+        {          
             if (HighlightedOpis != null
                 && HighlightedOpis.PartitionKind == ModelNotion.patritionKinda
                 && EditingOpis != null)
@@ -1443,6 +1505,8 @@ namespace basicClasses
                     EditingOpis.AddArr(tt);
                     EditingOpis.treeElem.Nodes.Add(tt.GetDebugTree().FirstNode);
                 }
+
+                tt.RemoveFromClearRefs();
             }
         }
 
@@ -1450,34 +1514,34 @@ namespace basicClasses
         {
             if (EditingOpis != null && !string.IsNullOrEmpty(EditingOpis.PartitionKind))
             {
-                partInfo = mf.GetModelInfo(EditingOpis.PartitionKind);
+                partInfo = mf.GetModelInfo(EditingOpis.PartitionKind).DuplicateA();
                 label2.Text = EditingOpis.PartitionKind + " (aval)";
                 var modlist = mf.GetModel(EditingOpis.PartitionKind).DuplicateA();
 
 
-                // Dynamic list from context
-                if (!modlist.isInitlze)
-                {
 
-                    var ii = GetContextualSubitemsHelp();
-                    if(ii.isHere("items"))
-                    {
-                        modlist = ii["items"].DuplicateA();
-                        partInfo = ii["info"].DuplicateA();
-                    }                  
-                    else 
-                    if (ModelFactory.hotkeys != null)
-                    {
-                        modlist = ModelFactory.hotkeys.DuplicateA();
-                    }
+                // Dynamic list from context
+                var ii = GetContextualSubitemsHelp();
+                if (ii.isHere("items"))
+                {
+                    modlist.AddArrRange(ii["items"].DuplicateA());
+                    partInfo.AddArrRange(ii["info"].DuplicateA());
                 }
+
+                if (!modlist.isInitlze && ModelFactory.hotkeys != null)
+                    modlist = ModelFactory.hotkeys.DuplicateA();
+                   
+               
 
                 toolStrip2.Items.Clear();
                 for (int i = 0; i < modlist.listCou; i++)
                 {
                     if (EditingOpis.getPartitionIdx(modlist[i].PartitionName) == -1)
                     {
-                        var itm = toolStrip2.Items.Add(modlist[i].PartitionName);
+                        var brackets = string.IsNullOrWhiteSpace(modlist[i].PartitionKind) ? "[] " : " ";
+                        var itm = toolStrip2.Items.Add(modlist[i].PartitionName 
+                                                     + (!string.IsNullOrWhiteSpace( modlist[i].PartitionKind) ? "["+ modlist[i].PartitionKind +"]" : "")
+                                                     + (!string.IsNullOrWhiteSpace(modlist[i].body) ? brackets + modlist[i].body : ""));
                         itm.Tag = modlist[i];
                         itm.AutoToolTip = false;
                         itm.MouseHover += new System.EventHandler(this.toolStrip2_MouseHover);
@@ -1494,8 +1558,28 @@ namespace basicClasses
             if (e.ClickedItem.Tag != null)
             {
                 opis builtin = (opis)e.ClickedItem.Tag;
-                AddElemToEditingOpis(builtin);
+
+                var dos = OnDynamicOptionSelected(builtin);
+
+                AddElemToEditingOpis(builtin, dos.isHere("refresh"));
             }
+        }
+
+        opis OnDynamicOptionSelected(opis sel)
+        {
+            opis p = new opis();
+            if (runtime == null)
+                return p;
+
+            p["EditingOpisParent"].Wrap(EditingOpisParent ?? new opis());
+            p["EditingOpis"].Wrap(EditingOpis ?? new opis());
+            p["whole"].Wrap((opis)treeView3.Nodes[0].Tag);
+
+            p["selected"].Wrap(sel);
+
+            return runtime.SendMsg("контекстречення",
+                                   runtime.CreateMethodMessage("контекстречення",
+                                           "contextual subitem selected", p));
         }
 
         private void treeView3_Enter(object sender, EventArgs e)
@@ -1522,9 +1606,9 @@ namespace basicClasses
         {
             if (sender is ToolStripItem)
             {
-                textBox5.Text = partInfo[((ToolStripItem)sender).Text].body 
-                                + " / " + partInfo[((opis)((ToolStripItem)sender).Tag).PartitionKind].body;
-                textBox5.Visible = true;
+                opis o = (opis)((ToolStripItem)sender).Tag;              
+                popupBanner(partInfo[o.PartitionName].body
+                                + " / " + partInfo[o.PartitionKind].body);              
             }
         }
 

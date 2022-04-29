@@ -74,22 +74,11 @@ namespace basicClasses.models
         }
 
         public void InitAct(SysInstance ins, opis specification)
-        {
-            //modelSpec = new opis();
+        {          
             instanse = ins;          
             env = ins.GetEnvirinmentForModel();
-
-            //thisins = env.W("thisins");
-            //spec = env.W("spec");
-
-            //o = env.W("currCont");
-
-            //sharedVal = thisins["sharedVariablesContext"];
-            modelSpec = specification;
-
-            //if (CTX ==null)
-            //CTX = new contex(spec.V(ModelNotion.canHandleParentRange));
-            //CTX.Handle(o);
+       
+            modelSpec = specification;          
 
             if(logopis==null)
             logopis = new opis(name);          
@@ -276,11 +265,7 @@ namespace basicClasses.models
                 if(!ignore) _dataModel.Vset(p.Name, "");
 
             }
-
-            //foreach (var p in allPropertyInfo)
-            //{
-            //    _dataModel.Vset(p.Name,"");
-            //}
+          
 
             foreach (var p in allMethodInfo)
             {
