@@ -1256,18 +1256,23 @@ namespace basicClasses
             SaveTreeChanges(EditingOpisValue, richTextBox4.Text);
         }
 
+        opis ScanClosestVisibleParent(opis parent)
+        {
+            TreeNode pp = parent.treeElem.Parent;
+           
+            if (pp != null && pp.IsVisible)
+                return ScanClosestVisibleParent((opis)pp.Tag);
+
+            return parent;
+        }
+
         void SetEditedPosition(string term, opis parent, opis selected)
         {
             if (parent != null && parent.treeElem.IsVisible)
-            {
-                TreeNode pp = parent.treeElem.Parent;                
-                scrolltoPos[term] = parent;
-
-                if (pp != null && pp.IsVisible)
-                    scrolltoPos[term] = (opis)pp.Tag;
-
+            {               
+                scrolltoPos[term] = ScanClosestVisibleParent(parent);               
             }
-            else
+            else if(selected.PartitionKind != ModelNotion.patritionKinda)
                 scrolltoPos[term] = selected;
         }
 
@@ -1558,9 +1563,7 @@ namespace basicClasses
             if (e.ClickedItem.Tag != null)
             {
                 opis builtin = (opis)e.ClickedItem.Tag;
-
                 var dos = OnDynamicOptionSelected(builtin);
-
                 AddElemToEditingOpis(builtin, dos.isHere("refresh"));
             }
         }
@@ -1585,9 +1588,7 @@ namespace basicClasses
         private void treeView3_Enter(object sender, EventArgs e)
         {
             panel1.Visible = false;
-
-            SetupSplitterPositions();
-
+           
             if (doSplitterMove)
             splitContainer1.SplitterDistance = prevSplitPos;
         }
@@ -1722,10 +1723,7 @@ namespace basicClasses
 
         private void treeView2_MouseLeave(object sender, EventArgs e)
         {
-            //if (prevSplitPos > 600)
-            //    prevSplitPos = 528;
-
-            if (!listBox2.Visible && !treeView2.Focused && doSplitterMove)
+             if (!listBox2.Visible && !treeView2.Focused && doSplitterMove)
                 splitContainer1.SplitterDistance = prevSplitPos;
         }
 
@@ -2498,6 +2496,26 @@ namespace basicClasses
             EditingOpisValue = "";
             richTextBox4.Text = "";
             SaveTreeChanges("", "");
+        }
+
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            SetupSplitterPositions();
+        }
+
+        private void Form1_Shown(object sender, EventArgs e)
+        {
+
+        }
+
+        private void treeView3_AfterCollapse(object sender, TreeViewEventArgs e)
+        {
+
+        }
+
+        private void treeView3_AfterExpand(object sender, TreeViewEventArgs e)
+        {
+          //  SetEditedPosition(HighlightedWordTreeEdited, null, (opis)e.Node.Tag);
         }
     }
 

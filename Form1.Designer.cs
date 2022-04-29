@@ -40,7 +40,6 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
-            this.button14 = new System.Windows.Forms.Button();
             this.listBox2 = new System.Windows.Forms.ListBox();
             this.button5 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
@@ -76,6 +75,7 @@
             this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.richTextBox4 = new System.Windows.Forms.RichTextBox();
+            this.button14 = new System.Windows.Forms.Button();
             this.SavedStateLabel = new System.Windows.Forms.Label();
             this.button25 = new System.Windows.Forms.Button();
             this.button23 = new System.Windows.Forms.Button();
@@ -294,17 +294,6 @@
             this.richTextBox3.MouseHover += new System.EventHandler(this.richTextBox3_MouseHover);
             this.richTextBox3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.richTextBox3_MouseMove);
             // 
-            // button14
-            // 
-            this.button14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button14.Location = new System.Drawing.Point(-1, 314);
-            this.button14.Name = "button14";
-            this.button14.Size = new System.Drawing.Size(56, 29);
-            this.button14.TabIndex = 24;
-            this.button14.Text = "clr";
-            this.button14.UseVisualStyleBackColor = true;
-            this.button14.Click += new System.EventHandler(this.button14_Click_2);
-            // 
             // listBox2
             // 
             this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -340,7 +329,7 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(61, 7);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(333, 142);
+            this.panel1.Size = new System.Drawing.Size(333, 138);
             this.panel1.TabIndex = 16;
             this.panel1.Visible = false;
             // 
@@ -355,7 +344,7 @@
             this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip2.Location = new System.Drawing.Point(0, 34);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(333, 95);
+            this.toolStrip2.Size = new System.Drawing.Size(333, 91);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip2_ItemClicked);
@@ -401,7 +390,7 @@
             this.toolStripButton5,
             this.toolStripButton6});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.toolStrip1.Location = new System.Drawing.Point(66, 229);
+            this.toolStrip1.Location = new System.Drawing.Point(66, 225);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.ShowItemToolTips = false;
             this.toolStrip1.Size = new System.Drawing.Size(660, 211);
@@ -415,7 +404,7 @@
             this.toolStripButton1.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton1.Image")));
             this.toolStripButton1.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton1.Name = "toolStripButton1";
-            this.toolStripButton1.Size = new System.Drawing.Size(154, 29);
+            this.toolStripButton1.Size = new System.Drawing.Size(153, 29);
             this.toolStripButton1.Text = "toolStripButton1";
             this.toolStripButton1.Click += new System.EventHandler(this.toolStripButton1_Click);
             // 
@@ -425,7 +414,7 @@
             this.toolStripButton2.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton2.Image")));
             this.toolStripButton2.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton2.Name = "toolStripButton2";
-            this.toolStripButton2.Size = new System.Drawing.Size(26, 26);
+            this.toolStripButton2.Size = new System.Drawing.Size(29, 26);
             this.toolStripButton2.Text = "toolStripButton2";
             // 
             // toolStripButton3
@@ -434,7 +423,7 @@
             this.toolStripButton3.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton3.Image")));
             this.toolStripButton3.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton3.Name = "toolStripButton3";
-            this.toolStripButton3.Size = new System.Drawing.Size(26, 26);
+            this.toolStripButton3.Size = new System.Drawing.Size(29, 26);
             this.toolStripButton3.Text = "toolStripButton3";
             // 
             // toolStripButton4
@@ -443,7 +432,7 @@
             this.toolStripButton4.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton4.Image")));
             this.toolStripButton4.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton4.Name = "toolStripButton4";
-            this.toolStripButton4.Size = new System.Drawing.Size(26, 26);
+            this.toolStripButton4.Size = new System.Drawing.Size(29, 26);
             this.toolStripButton4.Text = "toolStripButton4";
             // 
             // toolStripButton5
@@ -452,7 +441,7 @@
             this.toolStripButton5.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton5.Image")));
             this.toolStripButton5.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton5.Name = "toolStripButton5";
-            this.toolStripButton5.Size = new System.Drawing.Size(26, 26);
+            this.toolStripButton5.Size = new System.Drawing.Size(29, 26);
             this.toolStripButton5.Text = "toolStripButton5";
             // 
             // toolStripButton6
@@ -461,7 +450,7 @@
             this.toolStripButton6.Image = ((System.Drawing.Image)(resources.GetObject("toolStripButton6.Image")));
             this.toolStripButton6.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.toolStripButton6.Name = "toolStripButton6";
-            this.toolStripButton6.Size = new System.Drawing.Size(26, 26);
+            this.toolStripButton6.Size = new System.Drawing.Size(29, 26);
             this.toolStripButton6.Text = "toolStripButton6";
             // 
             // button22
@@ -507,7 +496,7 @@
             // button18
             // 
             this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button18.Location = new System.Drawing.Point(-1, 241);
+            this.button18.Location = new System.Drawing.Point(-1, 237);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(56, 27);
             this.button18.TabIndex = 17;
@@ -561,10 +550,12 @@
             this.treeView3.LineColor = System.Drawing.Color.LightGray;
             this.treeView3.Location = new System.Drawing.Point(64, 3);
             this.treeView3.Name = "treeView3";
-            this.treeView3.Size = new System.Drawing.Size(659, 224);
+            this.treeView3.Size = new System.Drawing.Size(659, 220);
             this.treeView3.TabIndex = 10;
             this.treeView3.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_BeforeLabelEdit);
             this.treeView3.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_AfterLabelEdit);
+            this.treeView3.AfterCollapse += new System.Windows.Forms.TreeViewEventHandler(this.treeView3_AfterCollapse);
+            this.treeView3.AfterExpand += new System.Windows.Forms.TreeViewEventHandler(this.treeView3_AfterExpand);
             this.treeView3.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView3_AfterSelect);
             this.treeView3.Enter += new System.EventHandler(this.treeView3_Enter);
             this.treeView3.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView3_KeyDown);
@@ -691,7 +682,7 @@
             this.richTextBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox4.Font = new System.Drawing.Font("Courier New", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox4.ForeColor = System.Drawing.Color.MistyRose;
-            this.richTextBox4.Location = new System.Drawing.Point(66, 229);
+            this.richTextBox4.Location = new System.Drawing.Point(66, 225);
             this.richTextBox4.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox4.Name = "richTextBox4";
             this.richTextBox4.Size = new System.Drawing.Size(663, 211);
@@ -699,11 +690,22 @@
             this.richTextBox4.Text = "";
             this.richTextBox4.TextChanged += new System.EventHandler(this.richTextBox4_TextChanged);
             // 
+            // button14
+            // 
+            this.button14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
+            this.button14.Location = new System.Drawing.Point(-1, 310);
+            this.button14.Name = "button14";
+            this.button14.Size = new System.Drawing.Size(56, 29);
+            this.button14.TabIndex = 24;
+            this.button14.Text = "clr";
+            this.button14.UseVisualStyleBackColor = true;
+            this.button14.Click += new System.EventHandler(this.button14_Click_2);
+            // 
             // SavedStateLabel
             // 
             this.SavedStateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SavedStateLabel.AutoSize = true;
-            this.SavedStateLabel.Location = new System.Drawing.Point(254, 579);
+            this.SavedStateLabel.Location = new System.Drawing.Point(250, 579);
             this.SavedStateLabel.Name = "SavedStateLabel";
             this.SavedStateLabel.Size = new System.Drawing.Size(22, 22);
             this.SavedStateLabel.TabIndex = 17;
@@ -724,7 +726,7 @@
             this.button23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button23.ForeColor = System.Drawing.Color.DarkBlue;
-            this.button23.Location = new System.Drawing.Point(214, 574);
+            this.button23.Location = new System.Drawing.Point(210, 574);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(34, 33);
             this.button23.TabIndex = 15;
@@ -737,7 +739,7 @@
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button9.ForeColor = System.Drawing.Color.DarkRed;
-            this.button9.Location = new System.Drawing.Point(370, 573);
+            this.button9.Location = new System.Drawing.Point(366, 573);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(34, 30);
             this.button9.TabIndex = 13;
@@ -748,7 +750,7 @@
             // button19
             // 
             this.button19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button19.Location = new System.Drawing.Point(-3, 575);
+            this.button19.Location = new System.Drawing.Point(-7, 575);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(138, 29);
             this.button19.TabIndex = 11;
@@ -822,7 +824,7 @@
             this.treeView2.Location = new System.Drawing.Point(4, 28);
             this.treeView2.Margin = new System.Windows.Forms.Padding(4);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(456, 541);
+            this.treeView2.Size = new System.Drawing.Size(452, 541);
             this.treeView2.TabIndex = 0;
             this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView2_AfterSelect);
             this.treeView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView2_KeyDown);
@@ -900,6 +902,7 @@
             // 
             this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.treeView1.LineColor = System.Drawing.Color.Empty;
             this.treeView1.Location = new System.Drawing.Point(781, 45);
             this.treeView1.Margin = new System.Windows.Forms.Padding(4);
             this.treeView1.Name = "treeView1";
@@ -1012,6 +1015,8 @@
             this.Text = "Form1";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.Form1_FormClosed);
+            this.Load += new System.EventHandler(this.Form1_Load);
+            this.Shown += new System.EventHandler(this.Form1_Shown);
             this.tabControl2.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.splitContainer1.Panel1.ResumeLayout(false);
