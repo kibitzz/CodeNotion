@@ -7,7 +7,7 @@ using System.Text;
 namespace basicClasses.models.StructureProcessing
 {
     [appliable("initValues all BodyValueModificator template FillerList MsgTemplate")]
-    [info("fill message with blueprint parameterized by shared context (or cpecified in values_container object) .   $some[]$some - will be replaced by body value of <some> .  some_new_part_name[]*some - will copy array of some to partition.   some_new_part_name[]@some - wrap some object to defined partition.  #some_part[] - replaced by some_part object or its duplication.  &b  &p  for getting context object body and partname ")]
+    [info("fill message with blueprint parameterized by shared context (or cpecified in values_container object) .   $some[]$some - will be replaced by body value of <some> .  some_new_part_name[]*some - will copy array of some to partition.   some_new_part_name[]@some - wrap some object to defined partition.  #some_part[] - replaced by some_part object or its duplication.  &b  &p &k  for getting context object body, partname, kind ")]
     public class buildTreeVal_sdc_i:ModelBase
     {
         [ignore]
@@ -140,6 +140,8 @@ namespace basicClasses.models.StructureProcessing
                         bp.body = valContainer.body;
                     else if (bp_body.StartsWith("&p"))
                         bp.body = valContainer.PartitionName;
+                    else if (bp_body.StartsWith("&k"))
+                        bp.body = valContainer.PartitionKind;
                 }
             }
 

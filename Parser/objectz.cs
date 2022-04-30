@@ -7,15 +7,7 @@ using System.Text;
 
 namespace basicClasses
 {
-    //interface ISushnostj
-    //{
-    //    opis op { get; set;}
-    //    string name{ get; set;}
-    //    string kind{ get; set;}
-
-    //    opis baseOpis();
-    //}
-
+   
     class objBases 
     {
      
@@ -23,8 +15,13 @@ namespace basicClasses
         {
             opis rez = new opis();
 
-            var mf = new ModelFactory();
-            rez = mf.GetModel("ModelNotion");
+            //var mf = new ModelFactory();
+            //rez = mf.GetModel("ModelNotion");
+            rez.PartitionKind = "ModelNotion";
+
+            rez.Vset("intellection", "");
+            rez.Vset("ontology", "");
+            rez.Vset("comments", "");
 
             rez.body = "";
 

@@ -89,6 +89,8 @@ namespace basicClasses
 
     public delegate void guiGelegate();
 
+
+
     public  class SysInstance : IOpisFunctionalInstance
     {
 #if NETFRAMEWORK
@@ -98,7 +100,7 @@ namespace basicClasses
 #endif
 
         public static opis Words;
-         ModelFactory _mf;
+        ModelFactory _mf;
         public  ModelFactory MF
         {
             get
@@ -458,7 +460,7 @@ namespace basicClasses
 
  // ==========================================================================
 
-        #region IOpisFunctionalInstance {
+        #region IOpisFunctionalInstance 
 
 
         public virtual opis Process(string internl, opis environment)
@@ -523,12 +525,14 @@ namespace basicClasses
             return f.Contains(name);
         }
 
-        #endregion  IOpisFunctionalInstance }
+        #endregion  IOpisFunctionalInstance 
 
- // ==========================================================================
+        // ==========================================================================
 
-        #region internl commands that accepted by base class
+     
+        // ==========================================================================
 
+        #region INITIALIZATION
 
         protected void bind(opis context)
         {
@@ -671,6 +675,20 @@ namespace basicClasses
             ExecActionResponceModelsList(waiter[ModelNotion.Build], rez);
             ExecActionResponceModelsList(rez[ModelNotion.Build], rez);
         }
+
+        public opis GetWordForm(string f)
+        {
+            opis rez = Words.Find(f);
+
+            return rez;
+        }
+
+
+        #endregion initialization
+
+        // ==========================================================================
+
+        #region MESSAGE receive check run
 
         protected bool CanRunOnThisContext(opis msg)
         {
@@ -839,7 +857,13 @@ namespace basicClasses
         }
 
 
-        #region Executing models 
+
+        #endregion MESSAGE receive check run
+
+        // ==========================================================================
+
+
+        #region ACTOR methods run to proc message | ASPECTS | HOOKS
 
         string GetContextOrganizerName()
         {
@@ -1021,12 +1045,10 @@ namespace basicClasses
             ExecActionResponceModelsList(responses, msg);          
         }
 
-        public opis GetWordForm(string f )
-        {
-            opis rez = Words.Find(f);
-      
-            return rez;
-        }
+
+        #endregion ACTOR methods run
+
+        // ==========================================================================      
 
         #region Message template exec
 
@@ -1096,6 +1118,11 @@ namespace basicClasses
         }
 
         #endregion
+
+        // ==========================================================================
+
+        #region EXEC ACTION | MAIN language implementation
+
 
         /// <summary>
         ///  switch exec.SUBJ
@@ -1174,6 +1201,9 @@ namespace basicClasses
             thisins[svcIdx][exec.SUBJ] = marg;
         }     
 
+
+        // -----------------------------------------------
+
         public void ExecActionModel(opis req, opis processParameter)
         {        
             if (req !=null && !string.IsNullOrEmpty(req.PartitionKind))
@@ -1191,7 +1221,9 @@ namespace basicClasses
                 }
             }
         }
-      
+
+        //  -----------------------------------------------
+
         bool IsLocalDataModel(opis req, opis processParameter)
         {
             bool rezb = false;         
@@ -1558,8 +1590,10 @@ namespace basicClasses
           
             ExecActionResponceModelsList(instructions.DuplicateInstrOpt(0), processObj); 
 
-            svc[ldcIdx].Wrap(datacontext);         
+            svc[ldcIdx].Wrap(datacontext);
         }
+
+        // -----------------------------------------------
 
         opis GenExecInstr(opis code)
         {
@@ -1589,7 +1623,8 @@ namespace basicClasses
 
             return rez;
         }
-     
+
+        #region LDC variables
 
         opis getSYSContainetP(opis SVC, string pn)
         {
@@ -1642,6 +1677,8 @@ namespace basicClasses
 
             return rez;
         }
+
+        #endregion ldc variables
 
         opis GetLocalDataModel(opis req)
         {
@@ -1708,7 +1745,12 @@ namespace basicClasses
         }
 
 
-        #endregion Executing models 
+        #endregion Exec Action
+
+
+        // ==========================================================================
+
+        #region BuildActionPath
 
         void BuildActionPath(opis rez)
         {
@@ -1792,8 +1834,9 @@ namespace basicClasses
             }
         }
 
+        #endregion BuildActionPath
 
-        #endregion  internl commands that accepted by base class
+       
 
         // answers base
         public bool ReceiveSubscriptionsBase(opis evento, opis sender)
@@ -1860,7 +1903,7 @@ namespace basicClasses
 
         // ==========================================================================
 
-#region messaging {
+     #region MESSAGING 
 
         public void ResendToUpper()
         {
@@ -2049,7 +2092,7 @@ namespace basicClasses
 
  #if NETFRAMEWORK
             AddInstLog("msg", "", message);
-#endif
+ #endif
 
             message.PartitionKind = "message";
 
@@ -2060,7 +2103,8 @@ namespace basicClasses
             communicator.AddArr(message);
         }
 
-#endregion  messaging }
+
+    #endregion  messaging 
 
     }
 

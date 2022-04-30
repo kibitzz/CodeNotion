@@ -23,7 +23,7 @@ namespace basicClasses
 
     public partial class Form1 : Form
     {
-        Parser inputParser;
+       // Parser inputParser;
 
         bool keyDown;
         bool highlightDerivants;
@@ -84,12 +84,10 @@ namespace basicClasses
             this.Left = -7;
             this.Top = -6;
            
-            //Parser.ContextGlobal = new opis();
-
-            inputParser = new Parser();
+           
+          //  inputParser = new Parser();
             Parser p = new Parser();
-            DateTime st = DateTime.Now;
-          //  Parser.LoadEnvironment();
+            DateTime st = DateTime.Now;       
             DateTime fin = DateTime.Now;
             TimeSpan ts = fin - st;
 
@@ -115,18 +113,12 @@ namespace basicClasses
 
 
             #endregion
-
        
             treeView2.Nodes.Clear();
-
-
-            //string[] arr = DataFileUtils.LoadLines("code.txt");
-            //richTextBox1.Lines = arr;
-
+       
             string[] arr = DataFileUtils.LoadLines("codeInput.txt");
             richTextBox3.Lines = arr;
            
-
             currParseText = "";
 
             opis.listOfVisualisedCircularRefs = new opis();
@@ -671,9 +663,7 @@ namespace basicClasses
 
 
         void PrepareWordInput()
-        {
-            //opis ooo =mf.GetModel("ModelNotion");
-
+        {         
             SaveTreeChangesAnywhere();
             if (HighlightedOpis == null)
             {
@@ -1336,6 +1326,7 @@ namespace basicClasses
             SaveTreeChangesAnywhere();
         }
 
+        // lower panel to select system models
         public void BuildModelsList(string local, string parent)
         {
             var modlist = mf.getAppliableModels(local, parent);
@@ -1360,6 +1351,7 @@ namespace basicClasses
                 toolStrip1.Visible = false;
         }
 
+        //  lower panel item selected -- set it to current node
         private void toolStrip1_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
         {
 
@@ -1368,7 +1360,7 @@ namespace basicClasses
                 opis builtin = (opis)e.ClickedItem.Tag;
 
                 EditingOpis.PartitionKind = builtin.PartitionKind;
-                EditingOpis.CopyArr(builtin.DuplicateA());
+               // EditingOpis.CopyArr(builtin.DuplicateA());
 
                 TreeNode original = EditingOpis.treeElem;
                 var trel = EditingOpis.GetDebugTree().FirstNode;
@@ -1515,6 +1507,7 @@ namespace basicClasses
             }
         }
 
+        // ADD button hover -- open list of suggestions | useful snippets etc
         private void button7_MouseHover(object sender, EventArgs e)
         {
             if (EditingOpis != null && !string.IsNullOrEmpty(EditingOpis.PartitionKind))
@@ -1543,9 +1536,9 @@ namespace basicClasses
                 {
                     if (EditingOpis.getPartitionIdx(modlist[i].PartitionName) == -1)
                     {
-                        var brackets = string.IsNullOrWhiteSpace(modlist[i].PartitionKind) ? "[] " : " ";
+                        var brackets = string.IsNullOrWhiteSpace(modlist[i].PartitionKind) ? " [] " : " ";
                         var itm = toolStrip2.Items.Add(modlist[i].PartitionName 
-                                                     + (!string.IsNullOrWhiteSpace( modlist[i].PartitionKind) ? "["+ modlist[i].PartitionKind +"]" : "")
+                                                     + (!string.IsNullOrWhiteSpace( modlist[i].PartitionKind) ? " ["+ modlist[i].PartitionKind +"]" : "")
                                                      + (!string.IsNullOrWhiteSpace(modlist[i].body) ? brackets + modlist[i].body : ""));
                         itm.Tag = modlist[i];
                         itm.AutoToolTip = false;

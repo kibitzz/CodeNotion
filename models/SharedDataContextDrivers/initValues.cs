@@ -10,7 +10,6 @@ namespace basicClasses.models.SharedDataContextDrivers
    public class initValues:ModelBase
     {
 
-
         [model("FlagModelSpec")]
         [info("set body of this partition if you want  this initialization run more than one time (in message validation)")]
         public static readonly string Run_multiple_times = "Run_multiple_times";      

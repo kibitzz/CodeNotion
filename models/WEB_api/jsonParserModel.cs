@@ -10,8 +10,7 @@ namespace basicClasses.models.WEB_api
     {
 
         public override void Process(opis message)
-        {
-        
+        {        
             string[] proc=(string[]) message.bodyObject;
 
             for (int i = 0; i < proc.Length; i++)
@@ -25,9 +24,7 @@ namespace basicClasses.models.WEB_api
                     break;
                 }
             }
-
         }
-
     }
 
 
@@ -128,11 +125,9 @@ namespace basicClasses.models.WEB_api
             for (int i = 0; i < proc.Length; i++)
             {
                 if (proc[i].Length > 4)
-                {
-                    //JsonObject jrez = JsonParser.Parse(proc[i]);
+                {                   
                     opis d = new opis();
-                    d.load(proc[i]);
-                    //jrez.BuildTreeopis(d);
+                    d.load(proc[i]);                   
                     message["data"] = d;
 
                     break;

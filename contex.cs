@@ -378,6 +378,9 @@ namespace basicClasses
             return message[MsgTemplate.p]; // receiverClass put responce back via the received message, responce data is placed in the partition 'p' where was parameter of the message
         }
 
+
+
+
     }
 
 

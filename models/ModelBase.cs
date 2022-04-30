@@ -115,7 +115,6 @@ namespace basicClasses.models
 
         public void BindToDataContext(opis modelData)
         {
-
             modelData.FuncObj = this;
             sharedVal.SubscribeForNotification(modelData);
         }
