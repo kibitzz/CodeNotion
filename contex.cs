@@ -38,6 +38,8 @@ namespace basicClasses
             CTX = new contex();
         }
 
+        #region Visualisation
+
         public opis buildOntologyOnly(opis term)
         {
             opis o = new opis();
@@ -57,23 +59,26 @@ namespace basicClasses
 
             opis term = context.Find(b.PartitionName);
 
-            if (string.IsNullOrEmpty(term.PartitionName)
-               || term.isDuplicated_)
+            if (term.isDuplicated_)
             {
+                b.PartitionKind = "circular";
                 return;
             }
-                     
-            term.lockThisForDuplication();
 
+            if (string.IsNullOrEmpty(term.PartitionName) || !term.isInitlze)
+            {                         
+                return;
+            }
+                                
             opis intellection = context.Find(term[ModelNotion.intellection].body.Trim());
             if (!intellection.isInitlze)
-            {
+            {               
                 return;
             }
 
+            term.lockThisForDuplication();
+
             b.PartitionKind = intellection.PartitionName;
-
-
 
             string ontology = term.V(ModelNotion.ontology) + " "
                 + intellection.V(ModelNotion.ontology);
@@ -89,6 +94,9 @@ namespace basicClasses
                     {
                         opis tmp = new opis();
                         tmp.PartitionName = context.Find(n).PartitionName;
+                        if (string.IsNullOrEmpty(tmp.PartitionName))
+                            tmp.PartitionName = n;
+
                         b.AddArr(tmp);
 
                         buildTree(tmp);
@@ -99,6 +107,66 @@ namespace basicClasses
             term.UnlockThisForDuplication();
 
         }
+
+        public opis buildFullRelativeOntology(opis term)
+        {
+            opis o = new opis();
+            o.PartitionName = term.PartitionName;
+            buildTreeAllRelations(o);
+
+            return o;
+        }
+
+        public void buildTreeAllRelations(opis b)
+        {
+
+            opis term = context.Find(b.PartitionName);
+
+            if (string.IsNullOrEmpty(term.PartitionName)
+               || term.isDuplicated_)
+            {
+                return;
+            }
+           
+            opis intellection = context.Find(term[ModelNotion.intellection].body.Trim());
+            if (string.IsNullOrEmpty(intellection.PartitionName) || !intellection.isInitlze)
+            {
+                return;
+            }
+
+            term.lockThisForDuplication();
+
+            b.PartitionKind = intellection.PartitionName;
+
+            string ontology = term.V(ModelNotion.ontology) + " "
+                + intellection.V(ModelNotion.ontology);
+
+            if (!string.IsNullOrWhiteSpace(ontology))
+            {
+
+                string[] ttt = ontology.Split();
+
+                foreach (string n in ttt)
+                {
+                    if (!string.IsNullOrWhiteSpace(n))
+                    {
+                        opis tmp = new opis();
+                        tmp.PartitionName = context.Find(n).PartitionName;
+                        b.AddArr(tmp);
+
+                        buildTreeAllRelations(tmp);
+                    }
+                }
+            }
+
+            term.UnlockThisForDuplication();
+
+        }
+
+
+
+        #endregion
+
 
         public void buildTree(opis term, opis con)
         {

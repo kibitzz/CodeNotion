@@ -58,12 +58,13 @@ namespace basicClasses
 #if NETFRAMEWORK
 
         public TreeNode treeElem;
+        public static opis colorChemeForModels;
 
 #endif
 
         #region  variables  properties
 
-      //  public static ObjectsFactory OF;
+        //  public static ObjectsFactory OF;
 
         string PartitionName_Lower_;
         public string PartitionName_Lower 
@@ -1714,9 +1715,6 @@ namespace basicClasses
         {
             Color rez = Color.AntiqueWhite;
 
-            //if (partitionKind.StartsWith("fill_"))
-            //    partitionKind = "filler";
-
             switch (partKind)
             {
 
@@ -1755,10 +1753,6 @@ namespace basicClasses
                     rez = Color.FromArgb(113, 204, 182);
                     break;
 
-                //case "ConditionChecker":
-                //    rez = Color.FromArgb(179, 138, 0);
-                //    break;
-
                 case "template":
                 case "buildTreeVal_sdc_i":
                 case "TreeDataExtractor":
@@ -1769,40 +1763,21 @@ namespace basicClasses
                 case "RangeAndAssign":
                     rez = Color.FromArgb(255, 151, 185);
                     break;
-               
-                case "функция":                   
-                    rez = Color.FromArgb(203, 151, 255);
-                    break;
-                case "аппликатор":
-                    rez = Color.FromArgb(255, 134, 173);
-                    break;
-                case "класс":
-                    rez = Color.FromArgb(77, 166, 220);
-                    break;                    
-                case "категория":
-                    rez = Color.FromArgb(112, 228, 200);
-                    break;
-
-
-                case "deleted":
-                    rez = Color.FromArgb(145, 145, 145);
-                    break;
-                case "added":
-                    rez = Color.FromArgb(189, 237, 141);
-                    break;
-                case "modified":
-                    rez = Color.FromArgb(254, 133, 133);
-                    break;
-
-
+                              
                 case "":
                     break;
 
+                default:
+
+                    if(colorChemeForModels != null && colorChemeForModels.isHere(partKind))
+                    {
+                        opis c = colorChemeForModels[partKind];
+                        rez = Color.FromArgb(c["r"].intVal, c["g"].intVal, c["b"].intVal);
+                    }
+                    break;
             }
 
-
             return rez;
-
         }
 
         public void CleanPartitions(string pt)
