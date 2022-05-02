@@ -165,6 +165,8 @@ namespace basicClasses
 
         public static bool ContainNonPrefixedSuffixed(string word, string text)
         {
+            if (string.IsNullOrEmpty(text))
+                return false;
            return word.ToLower().Split().Contains(text.ToLower());
         }
 
