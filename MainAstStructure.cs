@@ -2852,7 +2852,7 @@ namespace basicClasses
                 idList.Add(arr[i].body);
 
             return idList;
-        }
+        }       
 
         public List<int> ListValuesInt(string part)
         {
@@ -2861,6 +2861,15 @@ namespace basicClasses
             return l.Select(x => { int.TryParse(x, out int v); return v; }).ToList();
         }
 
+        public List<string> ListPartitions()
+        {
+            List<string> idList = new List<string>(listCou);
+
+            for (int i = 0; i < listCou; i++)
+                idList.Add(arr[i].PartitionName);
+
+            return idList;
+        }
 
     }
 

@@ -31,12 +31,18 @@ namespace basicClasses
         string rftHeaderViewkind = @"\viewkind4\uc1\pard\cf1\f0\fs24 ";
         string rftHeaderColorTbl = @"{\colortbl ;\red138\green43\blue226;\red139\green0\blue0;\red0\green139\blue139;\red0\green0\blue205;\red255\green224\blue204;\red252\green133\blue184;\red250\green10\blue27;\red77\green166\blue255;\red203\green151\blue255;\red255\green172\blue132;\red191\green235\blue182;\red163\green192\blue254;}";
         opis RTFColorSheme;
+        int maxLimitToAutoexpandNT = 5;
+        int refListMaxCouToExp = 12;
+        int minimumBannerHeight = 60;
+
+        opis NotionTreeAllDerivantsRec;
 
         bool highlightDerivants;
         bool highlightUnspec;
         bool textcolored;
         bool texthighlight;
         string HighlightedWord;
+        string HighlightedWordRootOfDerivants;
         opis HighlightedOpis;
         opis TreeViewOpis;
         string EditingProperty;
@@ -73,6 +79,8 @@ namespace basicClasses
         public Form1()
         {
             InitializeComponent();
+
+            textBox5.Multiline = true;           
 
             scrolltoPos = new Dictionary<string, opis>();
             this.Text = "repl";
@@ -145,9 +153,9 @@ namespace basicClasses
             GuiFomsFactory.deleg = new guiFactoryGelegate(CreateForm);
 
             opis.do_not_build_debug = false;
+           
 
-           
-           
+
         }
 
         // =====================================================
@@ -189,18 +197,34 @@ namespace basicClasses
         // |||||||||||||||||||||||||||||||||||||||||||||||||||||
         // =====================================================
 
+        #region additional forms
+
         public void popupBanner()
         {
-            textBox5.Text = SysInstance.messageBannertext;
-            textBox5.Visible = true;
+            popupBanner(SysInstance.messageBannertext);            
         }
 
         public void popupBanner(string msg)
         {
+            if (string.IsNullOrWhiteSpace(msg) || string.IsNullOrEmpty(msg))
+                return;
+         
             textBox5.Text = msg;
-            textBox5.Visible = true;
+            var size =  textBox5.GetPreferredSize(new Size(richTextBox3.Width, richTextBox3.Height));
+            
+            var areaAval = (richTextBox3.Width * richTextBox3.Height);
+            var areaNeed = (size.Width * size.Height);
+            textBox5.Height =  (areaNeed / richTextBox3.Width) +30;
+            if (textBox5.Height < minimumBannerHeight)
+                textBox5.Height = minimumBannerHeight;
+
+             textBox5.Visible = true;
         }
-       
+
+        public void hideBanner()
+        {
+            textBox5.Visible = false;
+        }
 
         public void CreateForm(string name)
         {
@@ -211,7 +235,9 @@ namespace basicClasses
                 linear_chart.form = f;
                 linear_chart.updateDelegate = new guiChartGelegate(linear_chart.form.setLines);
             }
-        }                           
+        }
+
+        #endregion
 
         // =====================================================
         // |||||||||||||||||||||||||||||||||||||||||||||||||||||
@@ -243,16 +269,26 @@ namespace basicClasses
 
         private void richTextBox3_MouseDoubleClick(object sender, MouseEventArgs e)
         {
+            if(highlightDerivants && HighlightedWordRootOfDerivants == PointedWord)
+            {
+                highlightDerivants = false;
+                colorInput();
+                return;
+            }
+
             highlightDerivants = true;
 
             HighlightedWord = PointedWord;
+            HighlightedWordRootOfDerivants = PointedWord;
             //treeView2.Focus();
             highlightWord();
+            ShowRecursiveDerivativeOntology();
+            colorInput();
         }
 
         private void richTextBox3_MouseClick(object sender, MouseEventArgs e)
         {
-            highlightDerivants = false;
+           // highlightDerivants = false;
             GetPointedWord(e.Location);
 
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
@@ -426,11 +462,14 @@ namespace basicClasses
         string GetColorForNotion(string n)
         {
             // @"\cf4 "
+            if (highlightDerivants && NotionTreeAllDerivantsRec != null)
+                n = "backgr";
+
             return @"\cf" + GetColorIdxForNotion(n) + " ";
         }
 
         string GetColorIdxForNotion(string n)
-        {
+        {            
             string rez = "";
             var found = RTFColorSheme.getPartitionNotInitOrigName(n);
             if (found == null)
@@ -448,17 +487,29 @@ namespace basicClasses
             string intellection = n.V(ModelNotion.intellection);
             string rez = GetColorIdxForNotion(intellection);
 
-            if (HighlightedOpis != null && HighlightedOpis.PartitionName != null)
+            if (!string.IsNullOrEmpty(HighlightedWord))
             {
-                if (highlightDerivants && intellection.Contains(HighlightedOpis.PartitionName)
-                    && (intellection.Contains(HighlightedOpis.PartitionName + " ") || intellection.EndsWith(HighlightedOpis.PartitionName)))
+
+                if (highlightDerivants && NotionTreeAllDerivantsRec != null)
+                {
+                    if (OntologyTreeBuilder.NotionTreeContainsTerm(NotionTreeAllDerivantsRec, n))
+                        rez = GetColorIdxForNotion("related 2");
+                    else
+                        rez = GetColorIdxForNotion("backgr");
+                }
+
+                if (HighlightedWord == n.PartitionName)
+                    rez = GetColorIdxForNotion("selected");
+
+                if (highlightDerivants && OntologyTreeBuilder.ContainNonPrefixedSuffixed(intellection, HighlightedWordRootOfDerivants))
                     rez = GetColorIdxForNotion("related");
 
                 var onto = n.V(ModelNotion.ontology);
-                if (highlightDerivants && onto.Contains(HighlightedOpis.PartitionName)
-                    && (onto.Contains(HighlightedOpis.PartitionName + " ") || onto.EndsWith(HighlightedOpis.PartitionName)))
+                if (highlightDerivants && OntologyTreeBuilder.ContainNonPrefixedSuffixed(onto, HighlightedWordRootOfDerivants))
                     rez = GetColorIdxForNotion("related");
+
             }
+          
 
             return @"\cf" + rez + " ";
         }
@@ -491,21 +542,16 @@ namespace basicClasses
 
                     opis curr = Parser.ContextGlobal["words"].getForm(str);
 
-                    if (HighlightedOpis == curr)
+
+                    if (!curr.isInitlze || string.IsNullOrEmpty(curr.V(ModelNotion.intellection)))
                     {
-                        SB.Append(GetColorForNotion("selected"));
+                        SB.Append(GetColorForNotion("undef"));
                     }
                     else
                     {
-                        if (!curr.isInitlze || string.IsNullOrEmpty(curr.V(ModelNotion.intellection)))
-                        {
-                            SB.Append(GetColorForNotion("undef"));
-                        }
-                        else
-                        {
-                            SB.Append(GetColorForNotion(curr));
-                        }
+                        SB.Append(GetColorForNotion(curr));
                     }
+
 
                     SB.Append(string.IsNullOrWhiteSpace(s) ? "" : " " + s.Replace("{", "\\{").Replace("}", "\\}"));
 
@@ -534,6 +580,7 @@ namespace basicClasses
 
         #region MAIN TREE editor
 
+        // node SELECTED 
         private void treeView3_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (e.Node.Tag != null && !ignoreTreeView3)
@@ -577,7 +624,7 @@ namespace basicClasses
                 }
                 else
                 {
-                    textBox5.Visible = false;
+                    hideBanner();
                 }
 
                 BuildModelsList(curr, "" /*parent*/);
@@ -825,6 +872,14 @@ namespace basicClasses
             panel1.Visible = false;
         }
 
+        private void treeView3_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
+        {
+            toolStrip1.Visible = false;
+            if (EditingOpis != null)
+                richTextBox4.Text = EditingOpis.body;
+            else
+                richTextBox4.Text = "";
+        }
 
         #region add elem to editing node
 
@@ -1030,6 +1085,22 @@ namespace basicClasses
 
         }
 
+        void OtherConstants(opis c)
+        {
+            var minimumBannetHeight = c["min banner height"].intVal;
+            minimumBannerHeight = minimumBannetHeight > 0 ? minimumBannetHeight : minimumBannerHeight;
+
+            if (!c.isHere("secondary tree"))
+                return;
+
+            var set = c["secondary tree"];
+            var maxLimitToAutoexpNT = set["notion tree max count to expand"].intVal;
+            var refListMaxCou = set["references list max count to expand"].intVal;
+
+            maxLimitToAutoexpandNT = maxLimitToAutoexpNT > 0 ? maxLimitToAutoexpNT : maxLimitToAutoexpandNT;
+            refListMaxCouToExp = refListMaxCou > 0 ? refListMaxCou : refListMaxCouToExp;
+
+        }
 
         void SaveSplitterPositions()
         {
@@ -1040,10 +1111,12 @@ namespace basicClasses
 
         void SetupSplitterPositions()
         {
-            if (!SplittersResized)
-            {
-                opis sc = GuiSettings();
 
+            opis sc = GuiSettings();
+            OtherConstants(sc);
+
+            if (!SplittersResized)
+            {                
                 opis.colorChemeForModels = sc["color cheme for models"];
 
                 if (sc.isHere("vsplit"))
@@ -1070,20 +1143,11 @@ namespace basicClasses
 
         // =====================================================
         // |||||||||||||||||||||||||||||||||||||||||||||||||||||
-        // =====================================================
+        // =====================================================       
 
-        private void button6_Click(object sender, EventArgs e)
-        {
-            treeView2.Nodes.Clear();
-            //label1.Text = "W count " + Parser.ContextGlobal["words"].listCou.ToString();
-            TreeNode m = Parser.ContextGlobal["words"].GetDebugTree(3);
-            m.Text += " "+ Parser.ContextGlobal["words"].listCou.ToString();
-            treeView2.Nodes.Add(m);
-            treeView2.TreeViewNodeSorter = null;
-            treeView2.Sort();
-        }
+        #region SECONDARY tree visualizations
 
-        // right tree (secondary noneditable)
+        // node selected
         private void treeView2_AfterSelect(object sender, TreeViewEventArgs e)
         {
             if (!texthighlight)
@@ -1120,12 +1184,17 @@ namespace basicClasses
                     if (top.Tag != null
                       && ((opis)top.Tag).PartitionName == "notion_tree")
                     {
+                        hideBanner();
                         opis mnmn = new opis();
 
                         opis clicked = ((opis)e.Node.Tag);
-                        mnmn.AddArr(Parser.ContextGlobal["words"].getForm(clicked.PartitionName));
-                        mnmn.AddArr(Parser.ContextGlobal["words"].getForm(clicked.PartitionKind));
 
+                        var spec = Parser.ContextGlobal["words"].getForm(clicked.PartitionName);
+                        mnmn.AddArr(spec);
+                        var meta = Parser.ContextGlobal["words"].getForm(clicked.PartitionKind);
+                        mnmn.AddArr(meta);
+
+                        ShowNotionTreeNodeInfo(spec, meta);
                         listBox2.Items.Clear();
 
 
@@ -1184,10 +1253,10 @@ namespace basicClasses
                         texthighlight = false;
 
                         PrepareWordInput();
-                        if(mnmn["m e s s a g e s"].treeElem !=null)
-                        mnmn["m e s s a g e s"].treeElem.Expand();
-                        if(mnmn.listCou <3)
-                        mnmn[0].treeElem.Expand();
+                        if (mnmn["m e s s a g e s"].treeElem != null)
+                            mnmn["m e s s a g e s"].treeElem.Expand();
+                        if (mnmn.listCou < 3)
+                            mnmn[0].treeElem.Expand();
                         return;
                     }
 
@@ -1200,7 +1269,7 @@ namespace basicClasses
                     }
                     else
                     {
-                        if (string.IsNullOrEmpty(mnmnm.PartitionName) 
+                        if (string.IsNullOrEmpty(mnmnm.PartitionName)
                             && string.IsNullOrEmpty(mnmnm.PartitionKind)
                             && string.IsNullOrEmpty(mnmnm.body)
                             )
@@ -1220,6 +1289,113 @@ namespace basicClasses
 
         }
 
+
+        // show notion tree rooted from ontology
+        private void button10_Click(object sender, EventArgs e)
+        {
+            if (TreeViewOpis != null && HighlightedOpis == null)
+            {
+                HighlightedOpis = TreeViewOpis;
+            }
+
+            if (HighlightedOpis != null && !listBox2.Visible)
+            {
+                TreeViewOpis = HighlightedOpis;
+                OntologyTreeBuilder tpb = new OntologyTreeBuilder();
+                tpb.context = Parser.ContextGlobal["words"];
+                opis o = new opis("context");
+
+                opis nnn = tpb.buildOntologyOnly(HighlightedOpis);
+
+                //treeView2.TreeViewNodeSorter = null;
+                treeView2.TreeViewNodeSorter = new NodeSorter();
+                treeView2.Nodes.Clear();
+                //treeView2.Nodes.Add(nnn.GetDebugTree());
+
+                opis wrwr = new opis();
+                wrwr.PartitionName = "notion_tree";
+                wrwr.AddArr(nnn);
+
+                notionTree = wrwr.GetDebugTree().FirstNode;
+                treeView2.Nodes.Add(notionTree);
+
+                wrwr.RunRecursively(x => { if (x.listCou < maxLimitToAutoexpandNT && x.treeElem != null) x.treeElem.Expand(); });
+                // treeView2.ExpandAll();
+                //treeView2.TopNode.Expand();
+            }
+            else
+            {
+                treeView2.Nodes.Clear();
+                if (notionTree != null)
+                    treeView2.Nodes.Add(notionTree);
+
+            }
+        }
+
+        void ShowRecursiveDerivativeOntology()
+        {          
+            if (HighlightedOpis != null)
+            {
+                TreeViewOpis = HighlightedOpis;
+                OntologyTreeBuilder tpb = new OntologyTreeBuilder();
+                tpb.context = Parser.ContextGlobal["words"];
+               
+                opis nnn = tpb.buildFullRelativeOntology(HighlightedOpis);
+                NotionTreeAllDerivantsRec = nnn;
+
+                treeView2.TreeViewNodeSorter = new NodeSorter();
+                treeView2.Nodes.Clear();                
+
+                opis wrwr = new opis();
+                wrwr.PartitionName = "notion_tree";
+                wrwr.AddArr(nnn);
+
+                notionTree = wrwr.GetDebugTree().FirstNode;
+                treeView2.Nodes.Add(notionTree);
+
+                wrwr.RunRecursively(x => { if (x.listCou < maxLimitToAutoexpandNT && x.treeElem != null) x.treeElem.Expand(); });
+
+               
+            }           
+        }
+
+        void ShowNotionTreeNodeInfo(opis spec, opis meta)
+        {
+            if (!string.IsNullOrEmpty(spec.V(ModelNotion.comments)) ||
+                            !string.IsNullOrEmpty(meta.V(ModelNotion.comments)))
+
+
+                popupBanner(
+                           (!string.IsNullOrEmpty(spec.V(ModelNotion.comments))
+                           ?
+                           ($"{spec.PartitionName} - " + spec.V(ModelNotion.comments))
+                           : "")
+                           +
+                           (!string.IsNullOrEmpty(meta.V(ModelNotion.comments))
+                           ?
+                           (OntologyTreeBuilder.isMetaTerm(meta.PartitionName) ? "" :
+                                               $"\n  //  {meta.PartitionName} - " + meta.V(ModelNotion.comments))
+                           : ""));
+        }
+
+        // show all dictionary 
+        private void button6_Click(object sender, EventArgs e)
+        {
+            treeView2.Nodes.Clear();
+            //label1.Text = "W count " + Parser.ContextGlobal["words"].listCou.ToString();
+            TreeNode m = Parser.ContextGlobal["words"].GetDebugTree(3);
+            m.Text += " " + Parser.ContextGlobal["words"].listCou.ToString();
+            treeView2.Nodes.Add(m);
+            treeView2.TreeViewNodeSorter = null;
+            treeView2.Sort();
+        }
+
+
+        #endregion
+
+        // =====================================================
+        // |||||||||||||||||||||||||||||||||||||||||||||||||||||
+        // =====================================================
 
 
         private void button4_Click(object sender, EventArgs e)
@@ -1351,48 +1527,9 @@ namespace basicClasses
             //inputParser.DirectiveBlocks(Parser.ContextGlobal["words"], richTextBox3.Text);
         }
 
-        // show notion tree rooted from ontology
-        private void button10_Click(object sender, EventArgs e)
-        {
-            if (TreeViewOpis != null && HighlightedOpis == null)
-            {
-                HighlightedOpis = TreeViewOpis;
-            }
+       
 
-            if (HighlightedOpis != null && !listBox2.Visible)
-            {
-                TreeViewOpis = HighlightedOpis;
-                OntologyTreeBuilder tpb = new OntologyTreeBuilder();
-                tpb.context = Parser.ContextGlobal["words"];
-                opis o = new opis("context");
-
-                opis nnn = tpb.buildOntologyOnly(HighlightedOpis);
-
-                //treeView2.TreeViewNodeSorter = null;
-                treeView2.TreeViewNodeSorter = new NodeSorter();
-                treeView2.Nodes.Clear();
-                //treeView2.Nodes.Add(nnn.GetDebugTree());
-
-                opis wrwr = new opis();
-                wrwr.PartitionName = "notion_tree";
-                wrwr.AddArr(nnn);
-
-                notionTree = wrwr.GetDebugTree().FirstNode;
-                treeView2.Nodes.Add(notionTree);
-
-                wrwr.RunRecursively(x => { if (x.listCou < 4 && x.treeElem != null) x.treeElem.Expand(); } );
-               // treeView2.ExpandAll();
-                //treeView2.TopNode.Expand();
-            }
-            else
-            {
-                treeView2.Nodes.Clear();
-                if (notionTree != null)
-                    treeView2.Nodes.Add(notionTree);
-
-            }
-        }
-
+        // build context for selected command
         private void button11_Click(object sender, EventArgs e)
         {
             string[] sentenceParts = null;
@@ -1595,7 +1732,7 @@ namespace basicClasses
     
         private void textBox5_MouseMove(object sender, MouseEventArgs e)
         {
-            textBox5.Visible = false;
+            hideBanner();
         }
 
         private void button15_Click(object sender, EventArgs e)
@@ -1692,9 +1829,7 @@ namespace basicClasses
             if (sender is ToolStripItem)
             {
                 ((ToolStripItem)sender).ForeColor = Color.DarkRed;
-                textBox5.Text = ((ToolStripItem)sender).ToolTipText;
-                textBox5.Visible = textBox5.Text.Length > 0;
-                //textBox5.Visible = true;              
+               popupBanner( ((ToolStripItem)sender).ToolTipText);                                   
             }
         }
 
@@ -1801,14 +1936,7 @@ namespace basicClasses
                 splitContainer1.SplitterDistance = prevSplitPos;
         }
 
-        private void treeView3_BeforeLabelEdit(object sender, NodeLabelEditEventArgs e)
-        {
-            toolStrip1.Visible = false;
-            if (EditingOpis != null)
-                richTextBox4.Text = EditingOpis.body;
-            else
-                richTextBox4.Text = "";
-        }
+     
 
         private void button20_Click(object sender, EventArgs e)
         {
@@ -2136,7 +2264,7 @@ namespace basicClasses
             treeView2.TreeViewNodeSorter = new NodeSorter();
             treeView2.Nodes.Add(reflist.GetDebugTree().FirstNode);
             treeView2.TopNode.Expand();
-            expandMainBranch(treeView2);          
+            expandMainBranch(treeView2, refListMaxCouToExp);          
 
             PrepareWordInput();
         }

@@ -122,14 +122,19 @@ namespace basicClasses
 
             opis term = context.Find(b.PartitionName);
 
-            if (string.IsNullOrEmpty(term.PartitionName)
-               || term.isDuplicated_)
+            if (term.isDuplicated_)
+            {
+                b.PartitionKind = "circular";
+                return;
+            }
+
+            if (string.IsNullOrEmpty(term.PartitionName) || !term.isInitlze)
             {
                 return;
             }
-           
+
             opis intellection = context.Find(term[ModelNotion.intellection].body.Trim());
-            if (string.IsNullOrEmpty(intellection.PartitionName) || !intellection.isInitlze)
+            if (!intellection.isInitlze)
             {
                 return;
             }
@@ -138,32 +143,72 @@ namespace basicClasses
 
             b.PartitionKind = intellection.PartitionName;
 
-            string ontology = term.V(ModelNotion.ontology) + " "
-                + intellection.V(ModelNotion.ontology);
+            var inh = FindAllInheritedFromOrHaveInOntology(term).rootForms;
 
-            if (!string.IsNullOrWhiteSpace(ontology))
+
+            foreach (string n in inh)
             {
-
-                string[] ttt = ontology.Split();
-
-                foreach (string n in ttt)
+                if (!string.IsNullOrWhiteSpace(n))
                 {
-                    if (!string.IsNullOrWhiteSpace(n))
-                    {
-                        opis tmp = new opis();
-                        tmp.PartitionName = context.Find(n).PartitionName;
-                        b.AddArr(tmp);
+                    opis tmp = new opis();
+                    tmp.PartitionName = context.Find(n).PartitionName;
+                    b.AddArr(tmp);
 
-                        buildTreeAllRelations(tmp);
-                    }
+                    buildTreeAllRelations(tmp);
                 }
             }
+
 
             term.UnlockThisForDuplication();
 
         }
 
+        public static bool ContainNonPrefixedSuffixed(string word, string text)
+        {
+           return word.ToLower().Split().Contains(text.ToLower());
+        }
 
+        public static bool NotionTreeContainsTerm(opis nt, opis term)
+        {
+            var forms = OntologyTreeBuilder.Forms(term);
+            bool found = false;
+            nt.RunRecursively(x => { found = found || forms.Contains(x.PartitionName); });
+
+            return found;
+        }
+
+        public static List<string> Forms(opis term)
+        {
+            var forms = term[ModelNotion.formz].ListPartitions();
+            forms.Add(term.PartitionName);
+
+            return forms;
+        }
+
+        public (List<string> allForms, List<string> rootForms) FindAllInheritedFromOrHaveInOntology(opis term)
+        {
+            List<string> allForms = new List<string>();
+            List<string> rootForms = new List<string>();
+
+            var forms = Forms(term);           
+
+            for (int i = 0; i < context.listCou; i++)
+            {
+                var w = context[i];
+                var ont = w.V(ModelNotion.ontology);
+                var intl = w.V(ModelNotion.intellection);
+
+                if (forms.Where(x=> ContainNonPrefixedSuffixed(ont, x) 
+                                 || intl == x).Any())
+                {
+                    rootForms.Add(w.PartitionName);
+                    allForms.Add(w.PartitionName);
+                    allForms.AddRange(w[ModelNotion.formz].ListPartitions());
+                }
+            }
+
+            return (allForms, rootForms);
+        }
 
         #endregion
 
