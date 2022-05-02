@@ -150,8 +150,11 @@ namespace basicClasses
             {
                 if (!string.IsNullOrWhiteSpace(n))
                 {
+                    var inhterm = context.Find(n);
                     opis tmp = new opis();
-                    tmp.PartitionName = context.Find(n).PartitionName;
+
+                    tmp.PartitionName = inhterm.PartitionName;
+                    tmp.body = inhterm.V(ModelNotion.ontology);
                     b.AddArr(tmp);
 
                     buildTreeAllRelations(tmp);
@@ -170,11 +173,27 @@ namespace basicClasses
            return word.ToLower().Split().Contains(text.ToLower());
         }
 
+        public static bool ContainNonPrefixedSuffixed(string onto, List<string> termForms)
+        {
+            var ontoterms = onto.ToLower().Split().ToList();
+        
+            return termForms.Intersect(ontoterms).Any(); ;
+        }
+
         public static bool NotionTreeContainsTerm(opis nt, opis term)
         {
             var forms = OntologyTreeBuilder.Forms(term);
             bool found = false;
             nt.RunRecursively(x => { found = found || forms.Contains(x.PartitionName); });
+
+            return found;
+        }
+
+        public static bool NotionTreeLinearOntoContainsTerm(opis nt, opis term)
+        {
+            var forms = OntologyTreeBuilder.Forms(term);
+            bool found = false;
+            nt.RunRecursively(x => { found = found || ContainNonPrefixedSuffixed(x.body, forms); });
 
             return found;
         }

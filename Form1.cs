@@ -511,6 +511,9 @@ namespace basicClasses
                     if (OntologyTreeBuilder.NotionTreeContainsTerm(NotionTreeAllDerivantsRec, n))
                         rez = GetColorIdxForNotion("related 2");
                     else
+                        if (OntologyTreeBuilder.NotionTreeLinearOntoContainsTerm(NotionTreeAllDerivantsRec, n))
+                        rez = GetColorIdxForNotion("rel onto");
+                    else
                         rez = GetColorIdxForNotion("backgr");
                 }
 
@@ -1334,7 +1337,7 @@ namespace basicClasses
                 opis o = new opis("context");
 
                 opis nnn = tpb.buildOntologyOnly(HighlightedOpis);
-                nnn.RunRecursively(x=> { if (OntologyTreeBuilder.isMetaTerm(x.PartitionKind))
+                nnn.RunRecursively(x=> { if (x.PartitionKind != null && OntologyTreeBuilder.isMetaTerm(x.PartitionKind))
                         x.PartitionKind = "_";
                 });
 
