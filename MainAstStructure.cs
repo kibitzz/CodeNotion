@@ -2448,6 +2448,15 @@ namespace basicClasses
             isDuplicated = false;
         }
 
+        public void RunOnItems(Action<opis> act)
+        {          
+            for (int i = 0; i < paramCou; i++)
+            {
+                act(arr[i]);
+            }
+           
+        }
+
         void AddTemplData(opis templ, opis data, opis rez)
         {
             if (templ.body != "???")

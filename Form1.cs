@@ -77,6 +77,7 @@ namespace basicClasses
         bool SplittersResized;
         bool ignoreTreeView3;
         Dictionary<string, opis> scrolltoPos;
+        Dictionary<string, List<string>> wordForms;
 
         public Form1()
         {
@@ -210,17 +211,20 @@ namespace basicClasses
         {
             if (string.IsNullOrWhiteSpace(msg) || string.IsNullOrEmpty(msg))
                 return;
-         
+
             textBox5.Text = msg;
-            var size =  textBox5.GetPreferredSize(new Size(richTextBox3.Width, richTextBox3.Height));
-            
+            var size = textBox5.GetPreferredSize(new Size(richTextBox3.Width, richTextBox3.Height));
+
             var areaAval = (richTextBox3.Width * richTextBox3.Height);
             var areaNeed = (size.Width * size.Height);
-            textBox5.Height =  (areaNeed / richTextBox3.Width) +10 ;
+            textBox5.Height = (areaNeed / richTextBox3.Width) + 10;
             if (textBox5.Height < minimumBannerHeight)
                 textBox5.Height = minimumBannerHeight;
 
-             textBox5.Visible = true;
+            if (textBox5.Height > richTextBox3.Height)
+                textBox5.Height = richTextBox3.Height;
+
+            textBox5.Visible = true;
         }
 
         public void hideBanner()
@@ -487,16 +491,33 @@ namespace basicClasses
             return @"\cf" + GetColorIdxForNotion(n) + " ";
         }
 
+        //string GetColorIdxForNotion(string n)
+        //{            
+        //    string rez = "";
+        //    var found = RTFColorSheme.getPartitionNotInitOrigName(n);
+        //    if (found == null)
+        //    {
+        //        rez = RTFColorSheme.V("default");
+        //    }
+        //    else
+        //        rez = found.body;
+
+        //    return rez;
+        //}
+
         string GetColorIdxForNotion(string n)
-        {            
+        {
             string rez = "";
-            var found = RTFColorSheme.getPartitionNotInitOrigName(n);
+            List<string> forms = wordForms.ContainsKey(n)? wordForms[n]: new List<string>() { n};
+
+            var found = forms.Where(x=> RTFColorSheme.getPartitionNotInitOrigName(x) !=null).FirstOrDefault();
+
             if (found == null)
             {
                 rez = RTFColorSheme.V("default");
             }
             else
-                rez = found.body;
+                rez = RTFColorSheme.getPartitionNotInitOrigName(found).body;
 
             return rez;
         }
@@ -548,9 +569,22 @@ namespace basicClasses
             return @"\cf" + rez + " ";
         }
 
+        void BuildContextGlobalWordForms()
+        {
+            wordForms = new Dictionary<string, List<string>>(Parser.ContextGlobal["words"].listCou);
+
+            Parser.ContextGlobal["words"].RunOnItems(x =>
+            {
+                var frm = OntologyTreeBuilder.Forms(x);
+                frm.ForEach(f => wordForms[f] = frm);
+            });
+        }
+
         void colorInput()
         {
             textcolored = true;
+
+            BuildContextGlobalWordForms();
 
             StringBuilder SB = new StringBuilder();
 
