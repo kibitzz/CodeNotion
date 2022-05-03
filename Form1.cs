@@ -43,6 +43,8 @@ namespace basicClasses
         bool texthighlight;
         string HighlightedWord;
         string HighlightedWordRootOfDerivants;
+        string WordHighlightDirectDerivants;
+        string NotionTreeSelectionContextualTerm;
         opis HighlightedOpis;
         opis TreeViewOpis;
         string EditingProperty;
@@ -276,6 +278,7 @@ namespace basicClasses
                 return;
             }
 
+            TurnOffDirectDerivantsHighlight();
             highlightDerivants = true;
 
             HighlightedWord = PointedWord;
@@ -501,6 +504,7 @@ namespace basicClasses
         string GetColorForNotion(opis n)
         {
             string intellection = n.V(ModelNotion.intellection);
+            string onto = n.V(ModelNotion.ontology);
             string rez = GetColorIdxForNotion(intellection);
 
             if (!string.IsNullOrEmpty(HighlightedWord))
@@ -523,12 +527,23 @@ namespace basicClasses
                 if (highlightDerivants && OntologyTreeBuilder.ContainNonPrefixedSuffixed(intellection, HighlightedWordRootOfDerivants))
                     rez = GetColorIdxForNotion("related");
 
-                var onto = n.V(ModelNotion.ontology);
+               
                 if (highlightDerivants && OntologyTreeBuilder.ContainNonPrefixedSuffixed(onto, HighlightedWordRootOfDerivants))
                     rez = GetColorIdxForNotion("related");
-
             }
           
+            if(!string.IsNullOrEmpty(WordHighlightDirectDerivants))
+            {
+                if (OntologyTreeBuilder.ContainNonPrefixedSuffixed(intellection, WordHighlightDirectDerivants))
+                {
+                    rez = GetColorIdxForNotion("related direct");
+
+                    if(!string.IsNullOrEmpty(NotionTreeSelectionContextualTerm) &&
+                        OntologyTreeBuilder.ContainNonPrefixedSuffixed(onto, NotionTreeSelectionContextualTerm))
+                        rez = GetColorIdxForNotion("related direct fittest");
+
+                }
+            }
 
             return @"\cf" + rez + " ";
         }
@@ -1215,6 +1230,9 @@ namespace basicClasses
                         opis mnmn = new opis();
 
                         opis clicked = ((opis)e.Node.Tag);
+                        opis parnt = ((opis)e.Node.Parent?.Tag);
+                        if (parnt != null)
+                            NotionTreeSelectionContextualTerm = parnt.PartitionName;
 
                         var spec = Parser.ContextGlobal["words"].getForm(clicked.PartitionName);
                         mnmn.AddArr(spec);
@@ -1324,6 +1342,8 @@ namespace basicClasses
         // show notion tree rooted from ontology
         private void button10_Click(object sender, EventArgs e)
         {
+            TurnOffDirectDerivantsHighlight();
+
             if (TreeViewOpis != null && HighlightedOpis == null)
             {
                 HighlightedOpis = TreeViewOpis;
@@ -1371,6 +1391,7 @@ namespace basicClasses
         {          
             if (HighlightedOpis != null)
             {
+                TurnOffDirectDerivantsHighlight();
                 TreeViewOpis = HighlightedOpis;
                 OntologyTreeBuilder tpb = new OntologyTreeBuilder();
                 tpb.context = Parser.ContextGlobal["words"];
@@ -1413,6 +1434,12 @@ namespace basicClasses
                            : ""));
             //else if (spec.V(ModelNotion.ontology).Split().Length >1)
             //    popupBanner($"{spec.PartitionName} - " + spec.V(ModelNotion.ontology));
+
+            TurnOffDirectDerivantsHighlight(false);
+
+          //  if (OntologyTreeBuilder.isMetaTerm(meta.PartitionName))
+                WordHighlightDirectDerivants = spec.PartitionName;
+
         }
 
         void ShowReferencesList(opis reflist)
@@ -1426,6 +1453,14 @@ namespace basicClasses
             expandMainBranch(treeView2, refListMaxCouToExp);
 
             PrepareWordInput();
+        }
+         
+        void TurnOffDirectDerivantsHighlight(bool contextToo = true)
+        {
+            if (contextToo)
+                NotionTreeSelectionContextualTerm = null;
+
+            WordHighlightDirectDerivants = null;
         }
 
         // show all dictionary 

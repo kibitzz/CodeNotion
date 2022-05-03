@@ -112,6 +112,7 @@ namespace basicClasses
         {
             opis o = new opis();
             o.PartitionName = term.PartitionName;
+            o.body = term.V(ModelNotion.ontology);
             buildTreeAllRelations(o);
 
             return o;
