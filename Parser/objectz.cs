@@ -28,6 +28,18 @@ namespace basicClasses
             return rez;
         }
 
+        public static opis baseOpisNotionNotDefined(string HighlightedWord)
+        {
+            opis rez = new opis();
+
+            rez.PartitionName = HighlightedWord;
+            rez.PartitionKind = "NOT defined";
+           
+            rez.body = "";
+
+            return rez;
+        }
+
 
     }
 

@@ -289,6 +289,7 @@ namespace basicClasses
             HighlightedWordRootOfDerivants = PointedWord;
             //treeView2.Focus();
             highlightWord();
+
             ShowRecursiveDerivativeOntology();
             colorInput();
         }
@@ -297,7 +298,7 @@ namespace basicClasses
         {
            // highlightDerivants = false;
             GetPointedWord(e.Location);
-          
+            HighlightedWordRootOfDerivants = PointedWord;
 
             if (e.Button == System.Windows.Forms.MouseButtons.Left)
             {
@@ -326,11 +327,7 @@ namespace basicClasses
                         colorInput();
                     }
                 }
-
-
-            }
-
-           
+            }           
         }
 
         private void richTextBox3_MouseHover(object sender, EventArgs e)
@@ -348,13 +345,22 @@ namespace basicClasses
 
             if (!string.IsNullOrEmpty(HighlightedWord))
             {
-               // create and add new word to dictionary
+               // if not found -- create and add new word to dictionary
                 HighlightedOpis = Parser.ContextGlobal["words"].getForm(HighlightedWord);
                 if (string.IsNullOrEmpty(HighlightedOpis.PartitionName))
                 {
-                    HighlightedOpis = objBases.baseOpisNotion();
-                    Parser.ContextGlobal["words"][HighlightedWord] = HighlightedOpis;
-                    SetStateEdited();
+                    DialogResult result1 = MessageBox.Show("Term not found. Create new term?",
+  "Important Question",
+  MessageBoxButtons.YesNo);
+
+                    if (result1 == DialogResult.Yes)
+                    {
+                        HighlightedOpis = objBases.baseOpisNotion();
+                        Parser.ContextGlobal["words"][HighlightedWord] = HighlightedOpis;
+                        SetStateEdited();
+                    }  else
+                        HighlightedOpis = objBases.baseOpisNotionNotDefined(HighlightedWord);
+
                 }
 
                 colorInput();
@@ -363,6 +369,9 @@ namespace basicClasses
             }
         }
 
+        /// <summary>
+        /// (HighlightedOpis) if clicked a term in command editor -- show its spec in main tree and other gui preparations
+        /// </summary>
         void PrepareWordInput()
         {
             SaveTreeChangesAnywhere();
@@ -402,7 +411,7 @@ namespace basicClasses
             treeView3.TopNode.Expand();
             richTextBox4.Text = "";
 
-            if (scrolltoPos.ContainsKey(HighlightedWordTreeEdited))
+            if (HighlightedWordTreeEdited != null && scrolltoPos.ContainsKey(HighlightedWordTreeEdited))
                 treeView3.TopNode = scrolltoPos[HighlightedWordTreeEdited].treeElem;
 
         }
@@ -490,20 +499,6 @@ namespace basicClasses
 
             return @"\cf" + GetColorIdxForNotion(n) + " ";
         }
-
-        //string GetColorIdxForNotion(string n)
-        //{            
-        //    string rez = "";
-        //    var found = RTFColorSheme.getPartitionNotInitOrigName(n);
-        //    if (found == null)
-        //    {
-        //        rez = RTFColorSheme.V("default");
-        //    }
-        //    else
-        //        rez = found.body;
-
-        //    return rez;
-        //}
 
         string GetColorIdxForNotion(string n)
         {
@@ -702,6 +697,17 @@ namespace basicClasses
                 popupBanner("Reload term, current node have no ref to data");
         }
 
+        void ShowDataInMainTree(opis data)
+        {
+            HighlightedOpis = data;
+            texthighlight = true;
+            colorInput();
+            texthighlight = false;
+
+            PrepareWordInput();
+            
+        }
+
 
         // suggestions selected item to add from suggestions panel
         private void toolStrip2_ItemClicked(object sender, ToolStripItemClickedEventArgs e)
@@ -858,6 +864,9 @@ namespace basicClasses
 
         void SetEditedPosition(string term, opis parent, opis selected)
         {
+            if (string.IsNullOrEmpty(term))
+                return;
+
             if (parent != null && parent.treeElem.IsVisible)
             {
                 scrolltoPos[term] = ScanClosestVisibleParent(parent);
@@ -1325,16 +1334,21 @@ namespace basicClasses
                             }
                         }
 
+                        bool isOntology = false;
 
-                        HighlightedOpis = mnmn;
-                        texthighlight = true;
-                        colorInput();
-                        texthighlight = false;
+                        if (Control.ModifierKeys == Keys.Control)
+                        {
+                            isOntology = true;
+                            mnmn = TopDownOntology(spec);
+                        }
 
-                        PrepareWordInput();
+                        ShowDataInMainTree(mnmn);
 
-                        if (highlightDerivants)
+                        if (highlightDerivants && spec.treeElem != null)
                             spec.treeElem.Expand();
+
+                        if (isOntology && mnmn.treeElem != null)
+                            expandBranchToLvl(mnmn.treeElem, 0, 2);
 
                         if (mnmn["m e s s a g e s"].treeElem != null)
                             mnmn["m e s s a g e s"].treeElem.Expand();
@@ -1358,13 +1372,10 @@ namespace basicClasses
                             )
                             return;
 
+                       
                         HighlightedWord = mnmnm.PartitionName;
-                        HighlightedOpis = mnmnm;
-                        texthighlight = true;
-                        colorInput();
-                        texthighlight = false;
-
-                        PrepareWordInput();
+                        ShowDataInMainTree(mnmnm);
+                       
                         popupBanner("array items count  " + mnmnm.listCou);
                     }
                 }
@@ -1372,6 +1383,19 @@ namespace basicClasses
 
         }
 
+        opis TopDownOntology(opis term)
+        {
+            OntologyTreeBuilder tpb = new OntologyTreeBuilder();
+            tpb.context = Parser.ContextGlobal["words"];
+           
+            opis nnn = tpb.buildOntologyOnly(term);
+            nnn.RunRecursively(x => {
+                if (x.PartitionKind != null && OntologyTreeBuilder.isMetaTerm(x.PartitionKind))
+                    x.PartitionKind = "_";
+            });
+
+            return nnn;
+        }
 
         // show notion tree rooted from ontology
         private void button10_Click(object sender, EventArgs e)
@@ -1386,14 +1410,8 @@ namespace basicClasses
             if (HighlightedOpis != null && !listBox2.Visible)
             {
                 TreeViewOpis = HighlightedOpis;
-                OntologyTreeBuilder tpb = new OntologyTreeBuilder();
-                tpb.context = Parser.ContextGlobal["words"];
-                opis o = new opis("context");
-
-                opis nnn = tpb.buildOntologyOnly(HighlightedOpis);
-                nnn.RunRecursively(x=> { if (x.PartitionKind != null && OntologyTreeBuilder.isMetaTerm(x.PartitionKind))
-                        x.PartitionKind = "_";
-                });
+               
+                opis nnn = TopDownOntology(HighlightedOpis);
 
                 if (highlightDerivants)
                     NotionTreeAllDerivantsRec = nnn;
@@ -1471,8 +1489,9 @@ namespace basicClasses
 
             TurnOffDirectDerivantsHighlight(false);
 
-          //  if (OntologyTreeBuilder.isMetaTerm(meta.PartitionName))
-                WordHighlightDirectDerivants = spec.PartitionName;
+            //  if (OntologyTreeBuilder.isMetaTerm(meta.PartitionName))
+            WordHighlightDirectDerivants = spec.PartitionName;
+           
 
         }
 
@@ -2384,6 +2403,18 @@ namespace basicClasses
             {
                 if (node.Nodes.Count < lim)
                     node.Expand();
+            }
+        }
+
+        void expandBranchToLvl(TreeNode tn, int lvl, int lim)
+        {
+            if (lvl >= lim)
+                return;
+            tn.Expand();
+
+            foreach (TreeNode node in tn.Nodes)
+            {
+                expandBranchToLvl(node, lvl + 1, lim);
             }
         }
 
