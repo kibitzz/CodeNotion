@@ -215,9 +215,8 @@ namespace basicClasses.Factory
             models.Add("HttpListenerModel", new HttpListenerModel());
             models.Add("car_cdr_oper", new car_cdr_oper());
             models.Add("file", new file());
-
-                     
-
+            models.Add("fuzzy_search", new fuzzy_search());
+            
 
 
 
