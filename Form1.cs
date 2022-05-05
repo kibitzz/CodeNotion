@@ -290,14 +290,7 @@ namespace basicClasses
 
         private void richTextBox3_KeyDown(object sender, KeyEventArgs e)
         {
-            keyDown = true;
-
-            //ShowDataInMainTreeNoColor( fuzzy_search.Search(
-            //    wordForms.Keys.Select(x => new TermMatch() { term = x }).ToList(), 
-            //    new fuzzinesSettings(),
-            //    GetWordAtIdx(richTextBox3.SelectionStart - 1) + e.KeyData.ToString().ToLower())
-            //   );
-          
+            keyDown = true;                    
             //popupBanner( GetWordAtIdx(richTextBox3.SelectionStart -1) + e.KeyData.ToString().ToLower());
         }
 
@@ -731,7 +724,22 @@ namespace basicClasses
                 && EditingOpisParent.PartitionKind == "?"
                 && wordForms.ContainsKey(EditingOpis.PartitionName)
                 )
+            {
+                var w = GetWordAtIdx(richTextBox3.SelectionStart - 1);
+                richTextBox3.SelectionStart = richTextBox3.SelectionStart - w.Length;
+                richTextBox3.SelectionLength = w.Length;
+                var sel = richTextBox3.SelectedText;
+                if (sel.Contains(" "))
+                {
+                    var pos = sel.LastIndexOf(' ');
+
+                    richTextBox3.SelectionStart = richTextBox3.SelectionStart + pos +1;
+                    richTextBox3.SelectionLength = w.Length;
+                }
+                richTextBox3.SelectedText = EditingOpis.PartitionName;
+              
                 AutoselectTerm(EditingOpis.PartitionName);
+            }
         }
 
         void AutoselectTerm(string term)
@@ -773,7 +781,7 @@ namespace basicClasses
         // ADD button hover -- open list of suggestions | useful snippets etc
         private void button7_MouseHover(object sender, EventArgs e)
         {
-            if (EditingOpis != null && !string.IsNullOrEmpty(EditingOpis.PartitionKind))
+            if (EditingOpis != null) // && !string.IsNullOrEmpty(EditingOpis.PartitionKind))
             {
                 partInfo = mf.GetModelInfo(EditingOpis.PartitionKind).DuplicateA();
                 label2.Text = EditingOpis.PartitionKind + " (aval)";
@@ -789,7 +797,7 @@ namespace basicClasses
                     partInfo.AddArrRange(ii["info"].DuplicateA());
                 }
 
-                if (!modlist.isInitlze && ModelFactory.hotkeys != null)
+                if (!string.IsNullOrEmpty(EditingOpis.PartitionKind) && !modlist.isInitlze && ModelFactory.hotkeys != null)
                     modlist = ModelFactory.hotkeys.DuplicateA();
 
 
@@ -849,8 +857,10 @@ namespace basicClasses
 
             p = ParamToDynamicContextualItems();
 
-            return runtime.SendMsg("контекстречення",
-                                   runtime.CreateMethodMessage("контекстречення",
+            var cl = "контекстречення"; // "контекстречення"
+
+            return runtime.SendMsg(cl,
+                                   runtime.CreateMethodMessage(cl,
                                            "get contextual subitems and hints", p));
         }
 

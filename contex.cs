@@ -497,6 +497,8 @@ namespace basicClasses
                 {
                     try
                     {
+                        //var gk = ScriptContext[OntologyTreeBuilder.globalcomm];
+                        //gk[receiverClass] = message;
                         ScriptContext[OntologyTreeBuilder.globalcomm][receiverClass] = message;
                     }
                     catch (Exception e)
