@@ -1030,7 +1030,8 @@ namespace basicClasses
             else
             {
                 ignoreTreeView3 = true;
-                UpdateTreeNodes(EditingOpisParent ?? EditingOpis);
+                //  UpdateTreeNodes(EditingOpisParent ?? EditingOpis);
+                UpdateTreeNodes( EditingOpis);
                 treeView3.SelectedNode = EditingOpis.treeElem;
                 ignoreTreeView3 = false;
             }
@@ -1045,11 +1046,17 @@ namespace basicClasses
             o.RemoveFromClearRefs();
             UpdateStateOnNewTree(treeState);
 
-            var pos = treeState.Parent.Nodes.IndexOf(treeState);
-            if (pos >= 0)
-                treeState.Parent.Nodes.Insert(pos, o.treeElem);
+            EditingOpisValue = o.treeElem.Text;
+            richTextBox4.Text = o.body;
 
-            treeState.Parent.Nodes.Remove(treeState);
+            if (treeState.Parent != null)
+            {
+                var pos = treeState.Parent.Nodes.IndexOf(treeState);
+                if (pos >= 0)
+                    treeState.Parent.Nodes.Insert(pos, o.treeElem);
+
+                treeState.Parent.Nodes.Remove(treeState);
+            } 
         }
 
         void UpdateStateOnNewTree(TreeNode n)
