@@ -767,6 +767,11 @@ namespace basicClasses
             paramCou = paramCou - idxLess;
         }
 
+        public void RemoveArrElem(string partition)
+        {
+            RemoveArrElem(getPartitionIdx(partition));
+        }
+
         public void InsertArrElem(opis elem, int pos)
         {
             if (arr.Length <= paramCou)
@@ -2878,6 +2883,15 @@ namespace basicClasses
                 idList.Add(arr[i].PartitionName);
 
             return idList;
+        }
+
+        public void ArrValuesFromList(List<string> l)
+        {
+            ReinitArr(l.Count);
+            for (int i = 0; i < l.Count; i++)
+                arr[i] = new opis(0) { body = l[i], PartitionName = i.ToString(), PartitionKind = "" };
+
+            paramCou = l.Count;
         }
 
     }

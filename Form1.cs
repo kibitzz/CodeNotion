@@ -136,6 +136,10 @@ namespace basicClasses
             treeView2.Nodes.Clear();
        
             string[] arr = DataFileUtils.LoadLines("codeInput.txt");
+
+            if (arr == null || arr.Length == 0)
+                arr = GuiSettings()["command editor lines"].ListValues().ToArray();
+
             richTextBox3.Lines = arr;
            
             currParseText = "";
@@ -187,9 +191,10 @@ namespace basicClasses
 
             SaveSplitterPositions();
 
-            Parser.SaveEnvironment();
-
             SaveText();
+
+            Parser.SaveEnvironment();  
+            
         }
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
         {
@@ -955,6 +960,18 @@ namespace basicClasses
                     }
 
                     treeView3.Nodes.Remove(EditingOpis.treeElem);
+
+                    if (Control.ModifierKeys == Keys.Control 
+                        && EditingOpis.PartitionKind == ModelNotion.patritionKinda)
+                    {
+                        DialogResult result1 = MessageBox.Show($"Remove {EditingOpis.PartitionName} term from context?", 
+                                                              "Important Question", MessageBoxButtons.YesNo);
+
+                        if (result1 == DialogResult.Yes)
+                        {
+                            Parser.ContextGlobal["words"].RemoveArrElem(EditingOpis.PartitionName);
+                        }
+                    }
                 }
             }
 
@@ -1248,6 +1265,7 @@ namespace basicClasses
             opis sc = GuiSettings();
             sc.Vset("vsplit", splitContainer1.SplitterDistance.ToString());
             sc.Vset("hsplit", splitContainer2.SplitterDistance.ToString());
+           
         }
 
         void SetupSplitterPositions()
@@ -1278,6 +1296,10 @@ namespace basicClasses
         {
             string[] arr = richTextBox3.Lines;
             DataFileUtils.savefile(arr, "codeInput.txt");
+
+             GuiSettings()["command editor lines"]
+                  .ArrValuesFromList(richTextBox3.Lines.ToList());
+           
         }
 
         #endregion GUI settings

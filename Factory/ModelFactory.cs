@@ -249,7 +249,7 @@ namespace basicClasses.Factory
         public opis GetModel(string name)
         {
             ModelInfo m;
-            if (models.TryGetValue(name.Trim(), out m))
+            if (!string.IsNullOrEmpty(name) && models.TryGetValue(name.Trim(), out m))
             {
                 opis dm = m.DataModel;
 
@@ -273,7 +273,7 @@ namespace basicClasses.Factory
         public object GetModelObject(string name)
         {
             ModelInfo m;
-            if (models.TryGetValue(name.Trim(), out m))
+            if (!string.IsNullOrEmpty(name) && models.TryGetValue(name.Trim(), out m))
             {
                 return m;
             }
@@ -284,7 +284,7 @@ namespace basicClasses.Factory
         public opis GetModelInfo(string name)
         {
             ModelInfo m;
-            if (models.TryGetValue(name.Trim(), out m))
+            if (!string.IsNullOrEmpty(name) && models.TryGetValue(name.Trim(), out m))
             {
                 return m.Info;
             }
