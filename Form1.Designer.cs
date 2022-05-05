@@ -40,12 +40,10 @@
             this.splitContainer2 = new System.Windows.Forms.SplitContainer();
             this.textBox5 = new System.Windows.Forms.TextBox();
             this.richTextBox3 = new System.Windows.Forms.RichTextBox();
-            this.listBox2 = new System.Windows.Forms.ListBox();
             this.button5 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.toolStrip2 = new System.Windows.Forms.ToolStrip();
             this.label2 = new System.Windows.Forms.Label();
-            this.button24 = new System.Windows.Forms.Button();
             this.toolStrip1 = new System.Windows.Forms.ToolStrip();
             this.toolStripButton1 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton2 = new System.Windows.Forms.ToolStripButton();
@@ -53,14 +51,12 @@
             this.toolStripButton4 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton5 = new System.Windows.Forms.ToolStripButton();
             this.toolStripButton6 = new System.Windows.Forms.ToolStripButton();
-            this.button22 = new System.Windows.Forms.Button();
             this.button21 = new System.Windows.Forms.Button();
             this.button20 = new System.Windows.Forms.Button();
             this.button8 = new System.Windows.Forms.Button();
             this.button18 = new System.Windows.Forms.Button();
             this.copy = new System.Windows.Forms.Button();
             this.paste = new System.Windows.Forms.Button();
-            this.button15 = new System.Windows.Forms.Button();
             this.treeView3 = new System.Windows.Forms.TreeView();
             this.contextMenuStrip1 = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.searchNameToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -72,10 +68,10 @@
             this.showModelToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.importToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.button11 = new System.Windows.Forms.Button();
-            this.button10 = new System.Windows.Forms.Button();
             this.button7 = new System.Windows.Forms.Button();
             this.richTextBox4 = new System.Windows.Forms.RichTextBox();
             this.button14 = new System.Windows.Forms.Button();
+            this.listBox2 = new System.Windows.Forms.ListBox();
             this.SavedStateLabel = new System.Windows.Forms.Label();
             this.button25 = new System.Windows.Forms.Button();
             this.button23 = new System.Windows.Forms.Button();
@@ -128,7 +124,6 @@
             this.button1.TabIndex = 0;
             this.button1.Text = "button1";
             this.button1.UseVisualStyleBackColor = true;
-           // this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
             // textBox1
             // 
@@ -236,19 +231,15 @@
             this.splitContainer2.Panel2.Controls.Add(this.listBox2);
             this.splitContainer2.Panel2.Controls.Add(this.button5);
             this.splitContainer2.Panel2.Controls.Add(this.panel1);
-            this.splitContainer2.Panel2.Controls.Add(this.button24);
             this.splitContainer2.Panel2.Controls.Add(this.toolStrip1);
-            this.splitContainer2.Panel2.Controls.Add(this.button22);
             this.splitContainer2.Panel2.Controls.Add(this.button21);
             this.splitContainer2.Panel2.Controls.Add(this.button20);
             this.splitContainer2.Panel2.Controls.Add(this.button8);
             this.splitContainer2.Panel2.Controls.Add(this.button18);
             this.splitContainer2.Panel2.Controls.Add(this.copy);
             this.splitContainer2.Panel2.Controls.Add(this.paste);
-            this.splitContainer2.Panel2.Controls.Add(this.button15);
             this.splitContainer2.Panel2.Controls.Add(this.treeView3);
             this.splitContainer2.Panel2.Controls.Add(this.button11);
-            this.splitContainer2.Panel2.Controls.Add(this.button10);
             this.splitContainer2.Panel2.Controls.Add(this.button7);
             this.splitContainer2.Panel2.Controls.Add(this.richTextBox4);
             this.splitContainer2.Panel2.Controls.Add(this.button14);
@@ -294,26 +285,9 @@
             this.richTextBox3.MouseHover += new System.EventHandler(this.richTextBox3_MouseHover);
             this.richTextBox3.MouseMove += new System.Windows.Forms.MouseEventHandler(this.richTextBox3_MouseMove);
             // 
-            // listBox2
-            // 
-            this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.listBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
-            this.listBox2.Font = new System.Drawing.Font("Courier New", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.listBox2.ForeColor = System.Drawing.Color.Aquamarine;
-            this.listBox2.FormattingEnabled = true;
-            this.listBox2.ItemHeight = 24;
-            this.listBox2.Location = new System.Drawing.Point(0, 6);
-            this.listBox2.Name = "listBox2";
-            this.listBox2.Size = new System.Drawing.Size(726, 436);
-            this.listBox2.TabIndex = 8;
-            this.listBox2.Visible = false;
-            this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
-            // 
             // button5
             // 
-            this.button5.Location = new System.Drawing.Point(-1, 411);
+            this.button5.Location = new System.Drawing.Point(0, 378);
             this.button5.Name = "button5";
             this.button5.Size = new System.Drawing.Size(57, 27);
             this.button5.TabIndex = 23;
@@ -329,7 +303,7 @@
             this.panel1.Controls.Add(this.label2);
             this.panel1.Location = new System.Drawing.Point(61, 7);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(333, 138);
+            this.panel1.Size = new System.Drawing.Size(333, 130);
             this.panel1.TabIndex = 16;
             this.panel1.Visible = false;
             // 
@@ -344,7 +318,7 @@
             this.toolStrip2.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.VerticalStackWithOverflow;
             this.toolStrip2.Location = new System.Drawing.Point(0, 34);
             this.toolStrip2.Name = "toolStrip2";
-            this.toolStrip2.Size = new System.Drawing.Size(333, 91);
+            this.toolStrip2.Size = new System.Drawing.Size(333, 83);
             this.toolStrip2.TabIndex = 1;
             this.toolStrip2.Text = "toolStrip2";
             this.toolStrip2.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip2_ItemClicked);
@@ -361,16 +335,6 @@
             this.label2.Size = new System.Drawing.Size(82, 23);
             this.label2.TabIndex = 0;
             this.label2.Text = "label2";
-            // 
-            // button24
-            // 
-            this.button24.Location = new System.Drawing.Point(0, 104);
-            this.button24.Name = "button24";
-            this.button24.Size = new System.Drawing.Size(56, 29);
-            this.button24.TabIndex = 22;
-            this.button24.Text = "build";
-            this.button24.UseVisualStyleBackColor = true;
-            this.button24.Click += new System.EventHandler(this.button24_Click);
             // 
             // toolStrip1
             // 
@@ -390,10 +354,10 @@
             this.toolStripButton5,
             this.toolStripButton6});
             this.toolStrip1.LayoutStyle = System.Windows.Forms.ToolStripLayoutStyle.Flow;
-            this.toolStrip1.Location = new System.Drawing.Point(66, 225);
+            this.toolStrip1.Location = new System.Drawing.Point(66, 217);
             this.toolStrip1.Name = "toolStrip1";
             this.toolStrip1.ShowItemToolTips = false;
-            this.toolStrip1.Size = new System.Drawing.Size(660, 211);
+            this.toolStrip1.Size = new System.Drawing.Size(660, 231);
             this.toolStrip1.TabIndex = 11;
             this.toolStrip1.Text = "toolStrip1";
             this.toolStrip1.ItemClicked += new System.Windows.Forms.ToolStripItemClickedEventHandler(this.toolStrip1_ItemClicked);
@@ -453,19 +417,9 @@
             this.toolStripButton6.Size = new System.Drawing.Size(29, 26);
             this.toolStripButton6.Text = "toolStripButton6";
             // 
-            // button22
-            // 
-            this.button22.Location = new System.Drawing.Point(-1, 207);
-            this.button22.Name = "button22";
-            this.button22.Size = new System.Drawing.Size(56, 29);
-            this.button22.TabIndex = 21;
-            this.button22.Text = "references";
-            this.button22.UseVisualStyleBackColor = true;
-            this.button22.Click += new System.EventHandler(this.button22_Click);
-            // 
             // button21
             // 
-            this.button21.Location = new System.Drawing.Point(-1, 375);
+            this.button21.Location = new System.Drawing.Point(0, 336);
             this.button21.Name = "button21";
             this.button21.Size = new System.Drawing.Size(57, 27);
             this.button21.TabIndex = 20;
@@ -475,7 +429,7 @@
             // 
             // button20
             // 
-            this.button20.Location = new System.Drawing.Point(0, 342);
+            this.button20.Location = new System.Drawing.Point(0, 306);
             this.button20.Name = "button20";
             this.button20.Size = new System.Drawing.Size(56, 27);
             this.button20.TabIndex = 19;
@@ -485,7 +439,7 @@
             // 
             // button8
             // 
-            this.button8.Location = new System.Drawing.Point(0, 139);
+            this.button8.Location = new System.Drawing.Point(0, 92);
             this.button8.Name = "button8";
             this.button8.Size = new System.Drawing.Size(56, 29);
             this.button8.TabIndex = 18;
@@ -495,8 +449,7 @@
             // 
             // button18
             // 
-            this.button18.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button18.Location = new System.Drawing.Point(-1, 237);
+            this.button18.Location = new System.Drawing.Point(1, 415);
             this.button18.Name = "button18";
             this.button18.Size = new System.Drawing.Size(56, 27);
             this.button18.TabIndex = 17;
@@ -506,7 +459,7 @@
             // 
             // copy
             // 
-            this.copy.Location = new System.Drawing.Point(0, 265);
+            this.copy.Location = new System.Drawing.Point(0, 230);
             this.copy.Name = "copy";
             this.copy.Size = new System.Drawing.Size(56, 27);
             this.copy.TabIndex = 15;
@@ -516,24 +469,13 @@
             // 
             // paste
             // 
-            this.paste.Location = new System.Drawing.Point(0, 298);
+            this.paste.Location = new System.Drawing.Point(0, 263);
             this.paste.Name = "paste";
             this.paste.Size = new System.Drawing.Size(56, 27);
             this.paste.TabIndex = 14;
             this.paste.Text = "paste";
             this.paste.UseVisualStyleBackColor = true;
             this.paste.Click += new System.EventHandler(this.paste_Click);
-            // 
-            // button15
-            // 
-            this.button15.Location = new System.Drawing.Point(0, 174);
-            this.button15.Name = "button15";
-            this.button15.Size = new System.Drawing.Size(56, 27);
-            this.button15.TabIndex = 12;
-            this.button15.Text = "com";
-            this.button15.UseVisualStyleBackColor = true;
-            this.button15.Visible = false;
-            this.button15.Click += new System.EventHandler(this.button15_Click);
             // 
             // treeView3
             // 
@@ -550,7 +492,7 @@
             this.treeView3.LineColor = System.Drawing.Color.LightGray;
             this.treeView3.Location = new System.Drawing.Point(64, 3);
             this.treeView3.Name = "treeView3";
-            this.treeView3.Size = new System.Drawing.Size(659, 220);
+            this.treeView3.Size = new System.Drawing.Size(659, 212);
             this.treeView3.TabIndex = 10;
             this.treeView3.BeforeLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_BeforeLabelEdit);
             this.treeView3.AfterLabelEdit += new System.Windows.Forms.NodeLabelEditEventHandler(this.treeView3_AfterLabelEdit);
@@ -643,7 +585,7 @@
             // 
             // button11
             // 
-            this.button11.Location = new System.Drawing.Point(0, 73);
+            this.button11.Location = new System.Drawing.Point(0, 57);
             this.button11.Name = "button11";
             this.button11.Size = new System.Drawing.Size(56, 29);
             this.button11.TabIndex = 7;
@@ -651,22 +593,12 @@
             this.button11.UseVisualStyleBackColor = true;
             this.button11.Click += new System.EventHandler(this.button11_Click);
             // 
-            // button10
-            // 
-            this.button10.Location = new System.Drawing.Point(0, 38);
-            this.button10.Name = "button10";
-            this.button10.Size = new System.Drawing.Size(56, 29);
-            this.button10.TabIndex = 6;
-            this.button10.Text = "tree";
-            this.button10.UseVisualStyleBackColor = true;
-            this.button10.Click += new System.EventHandler(this.button10_Click);
-            // 
             // button7
             // 
-            this.button7.Location = new System.Drawing.Point(0, 7);
+            this.button7.Location = new System.Drawing.Point(0, 4);
             this.button7.Margin = new System.Windows.Forms.Padding(4);
             this.button7.Name = "button7";
-            this.button7.Size = new System.Drawing.Size(56, 29);
+            this.button7.Size = new System.Drawing.Size(56, 30);
             this.button7.TabIndex = 1;
             this.button7.Text = "add";
             this.button7.UseVisualStyleBackColor = true;
@@ -682,10 +614,10 @@
             this.richTextBox4.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.richTextBox4.Font = new System.Drawing.Font("Courier New", 13.8F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
             this.richTextBox4.ForeColor = System.Drawing.Color.MistyRose;
-            this.richTextBox4.Location = new System.Drawing.Point(66, 225);
+            this.richTextBox4.Location = new System.Drawing.Point(66, 217);
             this.richTextBox4.Margin = new System.Windows.Forms.Padding(4);
             this.richTextBox4.Name = "richTextBox4";
-            this.richTextBox4.Size = new System.Drawing.Size(663, 211);
+            this.richTextBox4.Size = new System.Drawing.Size(663, 227);
             this.richTextBox4.TabIndex = 0;
             this.richTextBox4.Text = "";
             this.richTextBox4.TextChanged += new System.EventHandler(this.richTextBox4_TextChanged);
@@ -693,7 +625,7 @@
             // button14
             // 
             this.button14.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.button14.Location = new System.Drawing.Point(-1, 310);
+            this.button14.Location = new System.Drawing.Point(-1, 410);
             this.button14.Name = "button14";
             this.button14.Size = new System.Drawing.Size(56, 29);
             this.button14.TabIndex = 24;
@@ -701,11 +633,28 @@
             this.button14.UseVisualStyleBackColor = true;
             this.button14.Click += new System.EventHandler(this.button14_Click_2);
             // 
+            // listBox2
+            // 
+            this.listBox2.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.listBox2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(20)))), ((int)(((byte)(20)))), ((int)(((byte)(20)))));
+            this.listBox2.Font = new System.Drawing.Font("Courier New", 13F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.listBox2.ForeColor = System.Drawing.Color.Aquamarine;
+            this.listBox2.FormattingEnabled = true;
+            this.listBox2.ItemHeight = 24;
+            this.listBox2.Location = new System.Drawing.Point(0, 6);
+            this.listBox2.Name = "listBox2";
+            this.listBox2.Size = new System.Drawing.Size(726, 436);
+            this.listBox2.TabIndex = 8;
+            this.listBox2.Visible = false;
+            this.listBox2.SelectedIndexChanged += new System.EventHandler(this.listBox2_SelectedIndexChanged);
+            // 
             // SavedStateLabel
             // 
             this.SavedStateLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.SavedStateLabel.AutoSize = true;
-            this.SavedStateLabel.Location = new System.Drawing.Point(250, 579);
+            this.SavedStateLabel.Location = new System.Drawing.Point(242, 579);
             this.SavedStateLabel.Name = "SavedStateLabel";
             this.SavedStateLabel.Size = new System.Drawing.Size(22, 22);
             this.SavedStateLabel.TabIndex = 17;
@@ -726,7 +675,7 @@
             this.button23.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button23.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button23.ForeColor = System.Drawing.Color.DarkBlue;
-            this.button23.Location = new System.Drawing.Point(210, 574);
+            this.button23.Location = new System.Drawing.Point(202, 574);
             this.button23.Name = "button23";
             this.button23.Size = new System.Drawing.Size(34, 33);
             this.button23.TabIndex = 15;
@@ -739,7 +688,7 @@
             this.button9.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.button9.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.button9.ForeColor = System.Drawing.Color.DarkRed;
-            this.button9.Location = new System.Drawing.Point(366, 573);
+            this.button9.Location = new System.Drawing.Point(358, 573);
             this.button9.Name = "button9";
             this.button9.Size = new System.Drawing.Size(34, 30);
             this.button9.TabIndex = 13;
@@ -750,7 +699,7 @@
             // button19
             // 
             this.button19.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.button19.Location = new System.Drawing.Point(-7, 575);
+            this.button19.Location = new System.Drawing.Point(-15, 575);
             this.button19.Name = "button19";
             this.button19.Size = new System.Drawing.Size(138, 29);
             this.button19.TabIndex = 11;
@@ -824,7 +773,7 @@
             this.treeView2.Location = new System.Drawing.Point(4, 28);
             this.treeView2.Margin = new System.Windows.Forms.Padding(4);
             this.treeView2.Name = "treeView2";
-            this.treeView2.Size = new System.Drawing.Size(452, 541);
+            this.treeView2.Size = new System.Drawing.Size(444, 541);
             this.treeView2.TabIndex = 0;
             this.treeView2.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treeView2_AfterSelect);
             this.treeView2.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treeView2_KeyDown);
@@ -896,13 +845,11 @@
             this.button3.TabIndex = 8;
             this.button3.Text = "save env";
             this.button3.UseVisualStyleBackColor = true;
-          //  this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // treeView1
             // 
             this.treeView1.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.treeView1.LineColor = System.Drawing.Color.Empty;
             this.treeView1.Location = new System.Drawing.Point(781, 45);
             this.treeView1.Margin = new System.Windows.Forms.Padding(4);
             this.treeView1.Name = "treeView1";
@@ -945,7 +892,6 @@
             this.button2.TabIndex = 0;
             this.button2.Text = "button2";
             this.button2.UseVisualStyleBackColor = true;
-          //  this.button2.Click += new System.EventHandler(this.button2_Click);
             // 
             // tabPage2
             // 
@@ -1069,7 +1015,6 @@
         private System.Windows.Forms.Button button7;
         private System.Windows.Forms.ToolTip toolTip1;
         private System.Windows.Forms.TabPage tabPage2;
-        private System.Windows.Forms.Button button10;
         private System.Windows.Forms.Button button11;
         private System.Windows.Forms.Button button12;
         private System.Windows.Forms.ListBox listBox2;
@@ -1082,7 +1027,6 @@
         private System.Windows.Forms.ToolStripButton toolStripButton4;
         private System.Windows.Forms.ToolStripButton toolStripButton5;
         private System.Windows.Forms.TextBox textBox5;
-        private System.Windows.Forms.Button button15;
         private System.Windows.Forms.Button button16;
         private System.Windows.Forms.Button copy;
         private System.Windows.Forms.Button paste;
@@ -1096,9 +1040,7 @@
         private System.Windows.Forms.Button button9;
         private System.Windows.Forms.Button button21;
         private System.Windows.Forms.Button button20;
-        private System.Windows.Forms.Button button22;
         private System.Windows.Forms.Button button23;
-        private System.Windows.Forms.Button button24;
         private System.Windows.Forms.ToolStripButton toolStripButton6;
         private System.Windows.Forms.Button button25;
         private System.Windows.Forms.ContextMenuStrip contextMenuStrip1;

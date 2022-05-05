@@ -2192,6 +2192,8 @@ namespace basicClasses
             treeView2.TopNode.Expand();
         }
 
+
+        // BUTTOM deleted -- if needed functionality migrate to context menu of main treeview
         private void button22_Click(object sender, EventArgs e)
         {
             if (EditingOpis == null)
