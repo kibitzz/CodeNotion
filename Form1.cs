@@ -304,6 +304,7 @@ namespace basicClasses
             if(highlightDerivants && Control.ModifierKeys == Keys.Shift)
             {
                 highlightDerivants = false;
+                
                 colorInput();
                 return;
             }
@@ -313,11 +314,15 @@ namespace basicClasses
 
             HighlightedWord = PointedWord;
             HighlightedWordRootOfDerivants = PointedWord;
-            //treeView2.Focus();
+           
+            richTextBox4.Focus();
             highlightWord();
+           
 
             ShowRecursiveDerivativeOntology();
             colorInput();
+
+            richTextBox3.Focus();
         }
 
         private void richTextBox3_MouseClick(object sender, MouseEventArgs e)
@@ -337,7 +342,7 @@ namespace basicClasses
                 }
                 if (HighlightedWord != PointedWord)
                 {
-                    // treeView3.Focus();
+                    
                     richTextBox4.Focus();
                     HighlightedWord = PointedWord;
                     highlightWord();
@@ -349,8 +354,10 @@ namespace basicClasses
                     button10_Click(null, null);
                     if (highlightDerivants)
                     {
+                        richTextBox4.Focus();
                         HighlightedWordRootOfDerivants = "";
                         colorInput();
+                        richTextBox3.Focus();
                     }
                 }
             }           
