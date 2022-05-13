@@ -13,13 +13,13 @@ namespace basicClasses
     {
         public string[] dataOut;
         public int datcou;
-        public static opis ContextGlobal;        
+        public static opis ContextGlobal;
 
         void tell(string s)
         {
             if (dataOut == null)
             {
-                dataOut= new string[10000];
+                dataOut = new string[10000];
             }
             dataOut[datcou] = s;
             datcou++;
@@ -27,39 +27,76 @@ namespace basicClasses
 
         public static void LoadEnvironment()
         {
-            LoadEnvironment("context.zip");          
+            LoadEnvironment("context.zip");
         }
 
-            public static void LoadEnvironment(string path)
+        public static void LoadEnvironment(string path)
         {
             string data = "";
 
             string zipdata = DataFileUtils.LoadSingleLineZipped(path);
-          //  string zipdata = DataFileUtils.LoadSingleLine(path);
             if (!string.IsNullOrEmpty(zipdata))
             {
                 data = zipdata;
             }
-           
 
-            //dataOut = new string[100000];
-            //datcou = 0;
-          
             ContextGlobal = new opis();
             ContextGlobal.load(data);
-          
+
+            DeCompressWords();
+
         }
 
         public static void SaveEnvironment()
         {
-            string fd = ContextGlobal.serialize();
-            //DataFileUtils.savefile(fd, "context.txt");
-            DataFileUtils.savefileZipped(fd, "context.zip");
-          //  DataFileUtils.savefileZipped(fd, "context "+DateTime.Now.Ticks.ToString() + ".zip");
+            SaveEnvironment(false);
+        }
 
-            File.Copy("context.zip", "context " + DateTime.Now.Ticks.ToString() + ".zip");
-            //DataFileUtils.savefile(fd, "context" + DateTime.Now.Ticks.ToString() + ".txt");
-            System.Media.SystemSounds.Asterisk.Play();            
+        public static void SaveEnvironment(bool guiExit)
+        {
+            if (guiExit)
+                CompressWords();
+
+            string fd = ContextGlobal.serialize();          
+            DataFileUtils.savefileZipped(fd, "context.zip");
+         
+            File.Copy("context.zip", "context " + DateTime.Now.Ticks.ToString() + ".zip");          
+            System.Media.SystemSounds.Asterisk.Play();
+        }
+
+        public static void CompressWords()
+        {
+          
+            var words = ContextGlobal["words"];
+            var sentence = words.Find("sentence_context");
+           
+            if (!sentence.isInitlze)
+                return;
+
+            if (sentence.isHere("compress words"))
+            {
+                for (int i = 0; i < words.listCou; i++)
+                {
+                    OntologyTreeBuilder.CompressTerm(words[i]);
+                }
+            }
+        }
+
+        public static void DeCompressWords()
+        {
+            var words = ContextGlobal["words"];
+            var sentence = words.Find("sentence_context");
+
+            if (!sentence.isInitlze)
+                return;
+
+            if (sentence.isHere("compress words"))
+            {
+                for (int i = 0; i < words.listCou; i++)
+                {
+                    OntologyTreeBuilder.DecompressTerm(words[i]);
+                }
+            }
         }
 
 

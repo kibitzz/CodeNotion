@@ -3,6 +3,7 @@
 using basicClasses.Factory;
 using basicClasses.models;
 using basicClasses.models.sys_ext;
+using basicClasses.models.WEB_api;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -360,7 +361,62 @@ namespace basicClasses
 
             contextToIgnite[globalcomm]["контекстречення"] = new opis("message", "body NotifyFinished");
         }
-        
+
+
+        #region term compression
+
+        public static void DecompressTerm(opis t)
+        {
+            var build = t[ModelNotion.Build];
+            var resp = t[ModelNotion.Responces];
+
+            if (build.listCou == 0)
+                DecompressOpis(build);
+
+            if (resp.listCou == 0)
+                DecompressOpis(resp);
+
+        }
+
+        public static void DecompressOpis(opis t)
+        {
+            opis parsed = new opis();
+            try
+            {
+                parsed.load(Compress.DeComprez(t.body));
+            }
+            catch (IndexOutOfRangeException e)
+            {
+                parsed.body = Compress.DeComprez(t.body);
+            }
+
+            t.CopyArr(parsed);
+            t.body = parsed.body;
+
+        }
+
+        public static void CompressTerm(opis t)
+        {
+
+            var build = t[ModelNotion.Build];
+            var resp = t[ModelNotion.Responces];
+
+            if (build.listCou > 0)
+            {
+                build.body = Compress.Comprez(build.serialize());
+                build.CopyArr(new opis());
+            }
+
+            if (resp.listCou > 0)
+            {
+                resp.body = Compress.Comprez(resp.serialize());
+                resp.CopyArr(new opis());
+            }
+          
+        }
+
+
+        #endregion
     }
 
     public class ScriptRuntime

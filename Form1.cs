@@ -193,7 +193,7 @@ namespace basicClasses
 
             SaveText();
 
-            Parser.SaveEnvironment();  
+            Parser.SaveEnvironment(true);  
             
         }
         private void Form1_FormClosed(object sender, FormClosedEventArgs e)
@@ -382,8 +382,8 @@ namespace basicClasses
                 HighlightedOpis = Parser.ContextGlobal["words"].getForm(HighlightedWord);
                 if (string.IsNullOrEmpty(HighlightedOpis.PartitionName))
                 {
-                    DialogResult result1 = MessageBox.Show("Term not found. Create new term?",
-                                                            "Important Question",
+                    DialogResult result1 = MessageBox.Show($"Term '{HighlightedWord.ToUpper()}' not found. Create new term?",
+                                                            "?",
                                                             MessageBoxButtons.YesNo);
 
                     if (result1 == DialogResult.Yes)
@@ -972,7 +972,7 @@ namespace basicClasses
                         && EditingOpis.PartitionKind == ModelNotion.patritionKinda)
                     {
                         DialogResult result1 = MessageBox.Show($"Remove {EditingOpis.PartitionName} term from context?", 
-                                                              "Important Question", MessageBoxButtons.YesNo);
+                                                              "?", MessageBoxButtons.YesNo);
 
                         if (result1 == DialogResult.Yes)
                         {
@@ -1336,7 +1336,7 @@ namespace basicClasses
                         && ((opis)top.Tag).PartitionName == "templates_of_models")
                     {
                         DialogResult result1 = MessageBox.Show("Add selected Template?",
-    "Important Question",
+    "?",
     MessageBoxButtons.YesNo);
 
                         if (result1 == DialogResult.Yes)
