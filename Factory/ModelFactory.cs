@@ -20,7 +20,8 @@ using basicClasses.models.WEB_api;
 using basicClasses.models.String_proc;
 using basicClasses.models.SQL;
 using basicClasses.models.Markers;
-
+using basicClasses.models.Roslyn;
+using basicClasses.models.svcutil;
 
 namespace basicClasses.Factory
 {
@@ -185,8 +186,11 @@ namespace basicClasses.Factory
             
 
             models.Add("universal_line_pareser", new universal_line_pareser());
+            models.Add("table_parser", new table_parser());            
             models.Add("SingleLineText_ParserModel", new SingleLineText_ParserModel());            
             models.Add("MySqlQuery", new MySqlQuery());
+            models.Add("sql_server_query", new sql_server_query());
+            
             models.Add("CompDataExport", new CompDataExport());
             models.Add("FindCommonDatastructure", new FindCommonDatastructure());
             models.Add("send_mail", new send_mail());
@@ -204,7 +208,9 @@ namespace basicClasses.Factory
             models.Add("arr_chuncks", new arr_chuncks());
             models.Add("text_case_transform", new text_case_transform());
             models.Add("b_length", new b_length());
-            models.Add("arr_length", new arr_length());          
+            models.Add("arr_length", new arr_length());
+            models.Add("reverse_order", new reverse_order());
+            
             models.Add("normalize_spaces", new normalize_spaces());            
             models.Add("linear_chart", new linear_chart());
             models.Add("garbage_collection", new garbage_collection());
@@ -216,6 +222,9 @@ namespace basicClasses.Factory
             models.Add("car_cdr_oper", new car_cdr_oper());
             models.Add("file", new file());
             models.Add("fuzzy_search", new fuzzy_search());
+            models.Add("syntax_tree", new syntax_tree());
+            models.Add("clear_stack_itms", new clear_stack_itms());
+            models.Add("mary_player_service", new mary_player_service());
             
 
 

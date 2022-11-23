@@ -129,7 +129,7 @@ namespace basicClasses.models.StructureProcessing
             bool donotrecurce = !modelSpec.isHere(recurce_all) && bp.PartitionKind == "buildTreeVal_sdc_i";
 
             string bp_body = bp.body;
-            //  if (bp.body.StartsWith("$"))
+         
             if (bp_body.Length > 0 && bp_body[0] == '$')
                 bp.body = valContainer[bp.body.Replace("$", "")].body;
             else
@@ -167,7 +167,7 @@ namespace basicClasses.models.StructureProcessing
                     else if (bp.PartitionKind == "&b")
                         bp.PartitionKind = valContainer.body;
                     else if (bp.PartitionKind == "&p")
-                        bp.PartitionKind = valContainer.PartitionName;                 
+                        bp.PartitionKind = valContainer.PartitionName;
                 }
 
                 if (!funcSymbIgnore && bp_body.Length > 0)
@@ -190,6 +190,10 @@ namespace basicClasses.models.StructureProcessing
                         case '+':
                             donotrecurce = true;
 
+                            // build exsisting subitems before add items from container (added items should not recurse)
+                            for (int i = 0; i < bp.listCou; i++)
+                                build(bp[i], bp, valContainer, funcSymbIgnore, onlyBody);
+
                             if (bp_body.Length > 1)
                                 bp.AddArrRange(valContainer[bp_body.Replace("+", "")].W());
                             else
@@ -207,7 +211,8 @@ namespace basicClasses.models.StructureProcessing
                                 bp.Wrap(valContainer.W());
                             break;
 
-                        case '%':  bp.body = "random body " + rnd.Next().ToString() + rnd.Next().ToString();
+                        case '%':
+                            bp.body = "random body " + rnd.Next().ToString() + rnd.Next().ToString();
                             break;
                     }
 
@@ -251,14 +256,18 @@ namespace basicClasses.models.StructureProcessing
 
                                 if (!string.IsNullOrEmpty(bp.PartitionKind))
                                     branchVal.PartitionKind = bp.PartitionKind;
-                               
+
                             }
-                        }                      
+                        }
                     }
                 }
 
 
-                bp.body = bp.body?.Replace("{star}", "*");
+                if (bp.PartitionName.Length > 0 && bp.PartitionName[0] == '/')
+                    bp.PartitionName = bp.PartitionName.Remove(0, 1);
+
+                if (bp_body.Length > 1 && bp_body[0] == '/')
+                    bp.body = bp_body.Remove(0, 1);
 
             }
 

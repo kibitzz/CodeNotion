@@ -1357,6 +1357,20 @@ namespace basicClasses
                     if ((flags & 32) == 32)// duplicate all input data       (modbody.Contains("$"))
                         modelSpec = modelSpec.Duplicate();
 
+                    opis mspos;
+                    if ((mspos = req.getPartitionNotInitOrigName("ms")) != null)                       
+                    {
+                        if (string.IsNullOrEmpty(mspos.PartitionKind))
+                        {
+                            modelSpec.AddArrMissing(ms);
+                            setV(ms.V("v"));
+                            setA(ms.V("a"));
+                        }
+                        
+                        if(mspos.body.Length > 0 && mspos.body[0] == '*')
+                            modelSpec.AddArrMissing(getSYSContainetP(SVC, mspos.body.Length > 1 ? mspos.body.Remove(0, 1) : ""));
+                    }
+
                     SVC[modelSpecIdx] = modelSpec;
                 }
                 else
@@ -1453,14 +1467,16 @@ namespace basicClasses
 
                 bool pipeline = b.Length > 0 && b[0] == '>';
 
-                #region subject change
+                #region overrides lp rp
               
                 if (pipeline)
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
+                    // if we want not to just push new data in pipeline but change the object currently in pipeline
                     if (!modelIsProducer) // why!?!  because if function create new data it rewrite previous subject - this can lead to implicit side effect modification
                         SVC[nameOfSubj].Wrap(SVC[exec.SUBJ].W()); // if function is modifying rp or as readonly datasource
                     else if (b == ">>") // explicit subject modification
+                                        // (structure that is in pipeline now is refilled with product @)
                     {
                         SVC[nameOfSubj].Wrap(SVC[exec.SUBJ].W());
                     }
@@ -1493,8 +1509,11 @@ namespace basicClasses
 
                 #endregion
 
+
                 #region context variables []*name
                 bool subscribeProduce = false;
+                int subidxMs = -1;
+                int subidxLdc = -1;
 
                 // working sequence *~itm not ~*itm
                 if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")                           
@@ -1503,27 +1522,19 @@ namespace basicClasses
                     string pn = b.Length > 1 ? b.Remove(0, 1) : ""; 
                     if (pn.Length > 0)
                     {
-
-                        //  pn = pn[0] == '~' ? pn.Remove(0, 1) : pn;
-
-                        // когда подписка будет префиксом односимвольным - оптимизированный поиск по первому символу
-                        //if (modelIsProducer)
-                        //{
-                        //int subidxMs = ms.getPartitionIdxCharPref("^" + pn, '^');
-                        //int subidxLdc = subidxMs == -1 ? SVC[ldcIdx].W().getPartitionIdxCharPref("^" + pn, '^') : -1;
-                        //subscribeProduce = subidxMs != -1 ||  subidxLdc != -1;
-                        //}
-
-                        //TODO: use short prefix ^ instead suffix _sys_subscript
-
-                        subscribeProduce = modelIsProducer
-                                    && (SVC[ldcIdx].W().isHere(pn.TrimStart('~') + "_sys_subscript", false)
-                                       || ms.isHere(pn.TrimStart('~') + "_sys_subscript", false));                      
-
                         nameOfSubj = GetTempValName(SVC, tempNames);
-                    
+
                         SVC[nameOfSubj].Wrap(getSYSContainetP(SVC, pn, modelIsProducer));
                         setV(nameOfSubj);
+                        
+
+                        pn = pn[0] == '~' ? pn.Remove(0, 1) : pn;  //after getSYSContainetP because pn should contain '~' to get without unwrapping from LDC                   
+                        if (modelIsProducer)
+                        {
+                            subidxMs = ms.getPartitionIdxCharPref("^" + pn, '^');
+                            subidxLdc = subidxMs == -1 ? SVC[ldcIdx].W().getPartitionIdxCharPref("^" + pn, '^') : -1;
+                            subscribeProduce = subidxMs != -1 || subidxLdc != -1;
+                        }                                           
                     }
                     else
                     {
@@ -1549,36 +1560,34 @@ namespace basicClasses
                     SVC[ldcIdx].ArrResize(0);
                     SVC[ldcIdx].Wrap(SVC[nameOfSubj].W());
                 }
-             
 
-                if (subscribeProduce)
-                {
-                   
-                    //string pn = "^" + b.Trim('>', '<', ' ', '*', '~');
-                    string pn = b.Trim('>', '<', ' ', '*', '~') + "_sys_subscript";
+                SVC[modelSpecIdx] = ms; // before subscribeProduce to be able access
+                                        // the model spec of caller func from subscription
+                                        // (not params of irrelevant producer func) 
 
-                    //if(subidxMs != -1)
-                    if (ms.isHere(pn)) // priority on explicit method extention in model spec
+                if (subscribeProduce) 
+                {                   
+                    string pn = "^" + b.Trim('>', '<', ' ', '*', '~');                  
+
+                    if (subidxMs != -1)  // priority on explicit method extention in model spec
                     {
-                        var subscription = ms[pn].Duplicate();
+                        var subscription = ms[subidxMs].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
                     }
                     else
-                    if (SVC[ldcIdx].W().isHere(pn)) // (subidxLdc != -1 )
+                    if (subidxLdc != -1) 
                     {
-                        var subscription = SVC[ldcIdx].W()[pn].Duplicate();
+                        var subscription = SVC[ldcIdx].W()[subidxLdc].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
                     }         
                 }
-
 
                 foreach (string tn in tempNames)
                 {
                     //SVC[tn] = new opis(1);
                     tempSDCstack.Push(tn);                    
                 }
-
-                SVC[modelSpecIdx] = ms;
+                
             }
 
             return rezb;
@@ -2105,6 +2114,11 @@ namespace basicClasses
 
 
     #endregion  messaging 
+
+        public string[] GetTempSDCstackNames()
+        {
+           return tempSDCstack.ToArray();
+        }
 
     }
 

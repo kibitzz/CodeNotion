@@ -97,10 +97,12 @@ namespace basicClasses
 
             prevSplitPos = splitContainer1.SplitterDistance - 30;
 
-            this.Width = Screen.PrimaryScreen.Bounds.Width + 7;
-            this.Height = Screen.PrimaryScreen.Bounds.Height - 32;
-            this.Left = -7;
-            this.Top = -6;
+            //this.Width = Screen.PrimaryScreen.Bounds.Width + 7;
+            //this.Height = Screen.PrimaryScreen.Bounds.Height - 32;
+            this.Width = Screen.PrimaryScreen.WorkingArea.Width + 11;
+            this.Height = Screen.PrimaryScreen.WorkingArea.Height + 11;
+            this.Left = -8;
+            this.Top = -7;
 
             LoadRTFConfig(GuiSettings());
 
@@ -495,7 +497,7 @@ namespace basicClasses
                 int st = -1;
                 int fin = -1;
 
-                for (int i = 0; i < 20; i++)
+                for (int i = 0; i < 50; i++)
                 {
                     if (fin < 0 && idx + i < currParseText.Length && currParseText[idx + i] == ' ')
                     {
@@ -1845,7 +1847,7 @@ namespace basicClasses
             tpb.contextToIgnite = currContext;
           
 
-            Thread thth = new Thread(new ThreadStart(tpb.igniteTree),200000);
+            Thread thth = new Thread(new ThreadStart(tpb.igniteTree),500000);
             thth.IsBackground = true;
             thth.Start();
             

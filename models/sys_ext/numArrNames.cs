@@ -15,8 +15,8 @@ namespace basicClasses.models.sys_ext
 
             for (int i = 0; i < message.listCou; i++)
             {
-                a[i] = message[i].PartitionName;
-                message[i].PartitionName += "_" + a.Where(x => x == message[i].PartitionName).Count();
+                a[i] = message[i].PartitionName ?? "";
+                message[i].PartitionName += "_" + a.Where(x => x == (message[i].PartitionName ?? "")).Count();
             }
 
         }

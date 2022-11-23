@@ -41,18 +41,4 @@
       </dependentAssembly>
     </assemblyBinding>
   </runtime>
-  <system.serviceModel>
-        <bindings>
-            <wsHttpBinding>
-                <binding name="WSHttpBinding_ICustomizationsWilliamHillPlayerService">
-                    <security mode="None" />
-                </binding>
-            </wsHttpBinding>
-        </bindings>
-        <client>
-            <endpoint address="http://localhost/WilliamHillMaryland.PlayerService/WilliamHillMarylandPlayerService.svc"
-                binding="wsHttpBinding" bindingConfiguration="WSHttpBinding_ICustomizationsWilliamHillPlayerService"
-                contract="ICustomizationsWilliamHillPlayerService" name="WSHttpBinding_ICustomizationsWilliamHillPlayerService" />
-        </client>
-    </system.serviceModel>
 </configuration>

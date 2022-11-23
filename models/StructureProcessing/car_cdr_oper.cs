@@ -24,6 +24,10 @@ namespace basicClasses.models.StructureProcessing
         [model("spec_tag")]
         public static readonly string cdr = "cdr";
 
+        [info("")]
+        [model("spec_tag")]
+        public static readonly string first_n = "first_n";
+
 
 
         public override void Process(opis message)
@@ -45,7 +49,13 @@ namespace basicClasses.models.StructureProcessing
                 message.CopyArr(srs);
                 message.RemoveArrElem(0);
             }
-           
+
+            if (ms.isHere(first_n, false))
+            {
+                message.CopyArr(srs);
+                message.ArrResize(ms[first_n].intVal);                
+            }
+
         }
 
        
