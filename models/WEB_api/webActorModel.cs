@@ -65,6 +65,14 @@ namespace basicClasses.models.WEB_api
         public static readonly string GET = "GET";
 
         [info("body contain url ")]
+        [model("")]
+        public static readonly string PUT = "PUT";
+
+        [info("body contain url ")]
+        [model("")]
+        public static readonly string PATCH = "PATCH";
+
+        [info("body contain url ")]
         [model("upLoadFileSpecs")]
         public static readonly string DownloadResource = "DownloadResource";
 
@@ -151,6 +159,12 @@ namespace basicClasses.models.WEB_api
 
                 if (ex.isHere(GET))
                     rez = hc.Get(ex.V(GET));
+
+                if (ex.isHere(PATCH))
+                    rez = hc.Patch(ex.V(PATCH), data);
+
+                if (ex.isHere(PUT))
+                    rez = hc.Patch(ex.V(PUT), data);
 
 
                 if (ex.isHere(DownloadResource))

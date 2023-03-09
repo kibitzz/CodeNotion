@@ -30,7 +30,7 @@ namespace basicClasses.models.Roslyn
         opis onErr = null;
 
         static bool isInitialized = false;
-        static string[] parr = new string[] { "Expression", "Identifier", "Text", "Name", "Keyword" };
+        static string[] parr = new string[] { "Expression", "Identifier", "Text", "Name", "Keyword", "Token" };
         static Dictionary<string, string> TypeNames = new Dictionary<string, string>();
 
         public override void Process(opis message)
