@@ -140,7 +140,7 @@ namespace basicClasses
     {
         public List<CellsGroup> content;
 
-        public List<Quardant> neighbours;  // Quardants that do not contain tribes of generation 1
+        public List<Quardant> neighbours;  // Quardants that do not contain tribes of generation 1 (sources of life of some tribe)
 
         public double AmountOf(Func<CellsGroup, bool> predicate)
         {

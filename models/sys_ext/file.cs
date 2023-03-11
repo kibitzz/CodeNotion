@@ -35,11 +35,18 @@ namespace basicClasses.models.sys_ext
 
             if (ms.isHere(open_write))
             {
-                var path = ms.V(open_write);               
-                fs = File.OpenWrite(path);             
+                var path = ms.V(open_write); 
+                try
+                {
+                    fs = File.OpenWrite(path);
+                } catch (Exception e)
+                {
+                    global_log.log.AddArr(new opis() { PartitionName = " ERROR file open_write" , body = e.Message});
+                }
+                
             }
 
-            if (ms.isHere(write))
+            if (ms.isHere(write) && fs != null)
             {
                 var data = (byte[]) ms[write]["data"].bodyObject;
                 ms[write]["data"].bodyObject = null;

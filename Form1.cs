@@ -162,9 +162,8 @@ namespace basicClasses
             GuiFomsFactory.deleg = new guiFactoryGelegate(CreateForm);
 
             opis.do_not_build_debug = false;
-           
 
-
+          
         }
 
         // =====================================================

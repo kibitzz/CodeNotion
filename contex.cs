@@ -243,6 +243,7 @@ namespace basicClasses
             {
                 return;
             }
+            DecompressTerm(term);
 
             CTX.Handle(con);
 
@@ -331,7 +332,9 @@ namespace basicClasses
                 {
                     continue;
                 }
-               
+
+                DecompressTerm(p);
+
                 p.InitFuncObj2();
                 o["sys_instances"].AddArr(p);                
                 p.Process("bind", o);            
