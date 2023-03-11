@@ -332,6 +332,18 @@ namespace basicClasses.models.WEB_api
             return SendHttpRequest(_URL, dataToPost, "POST", true);
         }
 
+        public bool Patch(string _URL, string dataToPost)
+        {
+            ClearSpecParams();
+            return SendHttpRequest(_URL, dataToPost, "PATCH", true);
+        }
+
+        public bool Put(string _URL, string dataToPost)
+        {
+            ClearSpecParams();
+            return SendHttpRequest(_URL, dataToPost, "PUT", true);
+        }
+
         public bool Post(string _URL, string referHesder, bool redirectAuto, string dataToPost)
         {
             ClearSpecParams();

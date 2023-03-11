@@ -292,4 +292,58 @@ namespace basicClasses.models.WEB_api
     }
 
 
+    [appliable("file_formats")]
+    public class table_parser : ModelBase
+    {
+       
+        public override void Process(opis message)
+        {
+            if (message.PartitionKind != "stringArray")
+                logopis["err:"].body = "message is not a stringArray ";
+
+
+            string[] proc = (string[])message.bodyObject;
+
+            opis d = new opis();
+
+
+            string[] columnNames = null;
+
+            for (int i = 0; i < proc.Length; i++)
+            {
+                if (string.IsNullOrEmpty(proc[i]))
+                    continue;
+
+                opis el = new opis();
+                el.PartitionName = i.ToString();
+                string s = proc[i];
+                int pos = 0;
+
+                var arr = s.Split('\t');
+
+                if (columnNames == null)
+                    columnNames = arr;
+
+                else if (columnNames.Length == arr.Length)
+                {
+
+                    for (int j = 0; j < columnNames.Length; j++)
+                    {
+                        el.Vset(columnNames[j], arr[j]);
+                    }
+
+                    d.AddArr(el);
+                }
+
+               
+
+            }
+
+            message["data"] = d;
+
+        }
+
+    }
+
+
 }

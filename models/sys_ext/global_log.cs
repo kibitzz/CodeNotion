@@ -30,13 +30,25 @@ namespace basicClasses.models.sys_ext
         [model("FlagModelSpec")]
         public static readonly string do_not_duplicate = "do_not_duplicate";
 
+        [info("")]
+        [model("")]
+        public static readonly string log_itm_text = "log_itm_text";
+
         public override void Process(opis message)
         {
             opis logitem = modelSpec.Duplicate();
             logitem.PartitionKind = "";
             instanse.ExecActionModelsList(logitem);
 
-            if(modelSpec.OptionActive(do_not_duplicate) )
+            var compText = logitem.getPartitionNotInitOrigName(log_itm_text);
+
+            if (compText != null)
+            {              
+                logitem.PartitionName = compText.body;
+                logitem.RemoveArrElem(compText);
+            }
+
+            if(modelSpec.OptionActive(do_not_duplicate))
                 log.AddArr(logitem);
             else
             log.AddArr(logitem.Duplicate());

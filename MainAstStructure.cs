@@ -1175,7 +1175,7 @@ namespace basicClasses
             isDuplicated = true;
 
             string rez = "";
-            StringBuilder sb = new StringBuilder(paramCou);
+            StringBuilder sb = new StringBuilder(paramCou*2);
 
             sb.Append("{");
             sb.Append("\"N\": \"" + (PartitionName != null ? PartitionName.Replace("\"", "[&amp]") : "") + "\",");
@@ -2453,6 +2453,33 @@ namespace basicClasses
             isDuplicated = false;
         }
 
+        public bool RunRecursivelyBreak(Func<opis, bool> act)
+        {
+            if (isDuplicated)
+            {
+                return false;
+            }
+           
+            var stop = act(this);
+
+            isDuplicated = true; //for cases when action itself requires lock for duplication
+
+            if (!stop)
+                for (int i = 0; i < paramCou; i++)
+                {
+                    var subStop = arr[i].RunRecursivelyBreak(act);
+                    if (subStop)
+                    {
+                        stop = true;
+                        break;
+                    }
+                }
+
+            isDuplicated = false;
+
+            return stop;
+        }
+
         public void RunOnItems(Action<opis> act)
         {          
             for (int i = 0; i < paramCou; i++)
@@ -2493,11 +2520,17 @@ namespace basicClasses
 
                 for (int i = 0; i < paramCou; i++)
                 {
+                    bool tryAnyDeep = false;
 
                     if ((string.IsNullOrEmpty(templ.PartitionKind) ||
-                        arr[i].PartitionKind == templ.PartitionKind) &&
+                        arr[i].PartitionKind == templ.PartitionKind
+                        || (tryAnyDeep = templ.PartitionKind[0] == '~'))
+                        &&
                         (string.IsNullOrEmpty(templ.PartitionName) ||
-                        arr[i].PartitionName == templ.PartitionName) &&
+                        arr[i].PartitionName == templ.PartitionName                        
+                        || (templ.PartitionName[0] == '#' && templ.PartitionName.StartsWith("###") && arr[i].PartitionName.Contains(templ.PartitionName.Substring(3)))
+                        )
+                        &&
                         (string.IsNullOrEmpty(templ.body)
                         || (templ.body[0] == '?' && templ.body.StartsWith("???"))
                         || arr[i].body == templ.body
@@ -2508,6 +2541,21 @@ namespace basicClasses
 
                         var r = arr[i].FindByTemplateValue(templ, rez, exactOnly, retdata, false, getdata);
                         match[k] += r;
+
+                        if(tryAnyDeep && r == 0)
+                        {
+                            int matchedDeep = 0; 
+                            arr[i].RunRecursivelyBreak(o => { 
+                                matchedDeep += o.FindByTemplateValue(templ, rez, exactOnly, retdata, false, getdata);
+                               
+                                return matchedDeep > 0;
+                            });
+
+                            match[k] += matchedDeep;
+                            if (matchedDeep > 0)
+                                match[k]++;
+
+                        }
 
                         if (getdata && (r > 0 || templ.listCou == 0) && templ.body.StartsWith("???"))
                         {
