@@ -78,7 +78,7 @@ namespace basicClasses.models.WEB_api
             try
             {
                 var cr = new NetworkCredential(sett.V(ftp_settings.username), sett.V(ftp_settings.password));
-                FtpClient client = new FtpClient(sett.V(ftp_settings.FtpServer), port, cr);
+                FtpClient client = new FtpClient(sett.V(ftp_settings.FtpServer), cr, port);
 
 
                 if (spec.isHere(encoding))
@@ -162,7 +162,7 @@ namespace basicClasses.models.WEB_api
                 var dd = client.GetModifiedTime(item.FullName);
                 //  itm.body = dd.ToString();
 
-                if (item.Type == FtpFileSystemObjectType.File)
+                if (item.Type == FtpObjectType.File)
                 {
                     itm.PartitionKind = "file";
 
@@ -171,7 +171,7 @@ namespace basicClasses.models.WEB_api
                     itm["size"].body = client.GetFileSize(item.FullName).ToString();
                 }
 
-                if (rec && item.Type == FtpFileSystemObjectType.Directory)
+                if (rec && item.Type == FtpObjectType.Directory)
                 {
                     itm.CopyArr(dir(client, item.FullName));
                 }

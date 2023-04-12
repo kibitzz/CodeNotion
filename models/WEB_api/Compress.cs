@@ -10,7 +10,7 @@ using System.Text;
 namespace basicClasses.models.WEB_api
 {
     [info(" message.body = Comprez_Zlib(message.body);")]
-   public class Compress:ModelBase
+    public class Compress : ModelBase
     {
 
         [model("spec_tag")]
@@ -48,7 +48,7 @@ namespace basicClasses.models.WEB_api
         [model("spec_tag")]
         [info("you canspecify correction to past, if set body some number of seconds ")]
         public static readonly string epochTime_ms = "epochTime_ms";
-        
+
 
         public override void Process(opis message)
         {
@@ -61,29 +61,29 @@ namespace basicClasses.models.WEB_api
             //message.body = DecompressString(CompressString(message.body));
             //rez = Convert.ToBase64String(DeflateStream.CompressString(message.body));
 
-            if(modelSpec.isHere(generateSessionId))
+            if (modelSpec.isHere(generateSessionId))
             {
                 string rez = "";
                 var r = new Random();
 
-                for (int i = 1; i < 9;i++)
+                for (int i = 1; i < 9; i++)
                 {
                     int A = r.Next(16000, 65000);
                     string hexValue1 = A.ToString("X");
 
                     rez += hexValue1;
 
-                    if( i >1 && i< 6)
+                    if (i > 1 && i < 6)
                     {
                         rez += "-";
                     }
                 }
 
-               // 4A7E 3C04 - F684 - 4D60 - AC9E - E66B F1E4 870F
+                // 4A7E 3C04 - F684 - 4D60 - AC9E - E66B F1E4 870F
 
                 //byte[] bbb = Encoding.UTF8.GetBytes(message.body);
                 //string rez = BitConverter.ToString(bbb).Replace("-", string.Empty);
-              
+
                 message.body = rez;
                 return;
             }
@@ -122,7 +122,7 @@ namespace basicClasses.models.WEB_api
                 double correction = StrUtils.LongFromString(modelSpec.V(epochTime));
                 string ssdf = (ts - correction).ToString().Replace(",", "");
 
-                message.body = ssdf.Length<14 ? ssdf.PadRight(13, '0') : ssdf.Substring(0, 13);
+                message.body = ssdf.Length < 14 ? ssdf.PadRight(13, '0') : ssdf.Substring(0, 13);
                 //message.body =  (ts - correction).ToString().Replace(",", "").Substring(0, 13);
                 return;
             }
@@ -134,7 +134,7 @@ namespace basicClasses.models.WEB_api
                 message.body = Encoding.UTF8.GetString(data);
                 return;
             }
-       
+
             if (modelSpec.isHere(ENcodeBase64))
             {
                 //logopis["message_body"].body = message.body;
@@ -187,8 +187,8 @@ namespace basicClasses.models.WEB_api
             }
 
 
-            message.body = Comprez_Zlib(message.body);     
-            
+            message.body = Comprez_Zlib(message.body);
+
         }
 
 
@@ -206,7 +206,7 @@ namespace basicClasses.models.WEB_api
         public string Comprez_Zlib(string s)
         {
             var bytes = Encoding.UTF8.GetBytes(s);
-      
+
             string rez = "";
 
             //MemoryStream outFileStream = new MemoryStream();
@@ -220,10 +220,26 @@ namespace basicClasses.models.WEB_api
             //{
             //    outZStream.Close();
             //    rez= Convert.ToBase64String(outFileStream.ToArray());
-               
+
             //    outFileStream.Close();
             //    inFileStream.Close();
             //}
+
+            return rez;
+        }
+        public byte[] CompressBufferDeflate(byte[] buffer)
+        {
+            byte[] rez;
+
+            using (var ByteStream = new MemoryStream())
+            {
+                //   GZipStream    DeflateStream
+                using (var zip = new DeflateStream(ByteStream, CompressionMode.Compress, true))
+                    zip.Write(buffer, 0, buffer.Length);
+
+                rez = ByteStream.ToArray();
+
+            }
 
             return rez;
         }
@@ -251,7 +267,7 @@ namespace basicClasses.models.WEB_api
             try
             {
 
-                 bytes = Convert.FromBase64String(s);
+                bytes = Convert.FromBase64String(s);
             }
             catch
             {
@@ -275,27 +291,20 @@ namespace basicClasses.models.WEB_api
             {
                 return "";
             }
-           
+
+        }
+   
+        public static string DecodeBase64(string s)
+        {            
+                byte[] data = Convert.FromBase64String(s);
+                return Encoding.UTF8.GetString(data);                
         }
 
-        public  byte[] CompressBufferDeflate(byte[] buffer)
+        public static string EncodeBase64(string s)
         {
-            byte[] rez;
-
-            using (var ByteStream = new MemoryStream())
-            {
-                //   GZipStream    DeflateStream
-                using (var zip = new DeflateStream(ByteStream, CompressionMode.Compress, true))
-                    zip.Write(buffer, 0, buffer.Length);
-
-                rez = ByteStream.ToArray();
-
-            }
-
-            return rez;
+            byte[] buffer = Encoding.UTF8.GetBytes(s);
+            return Convert.ToBase64String(buffer);
         }
-
-
 
     }
 }

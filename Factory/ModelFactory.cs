@@ -22,6 +22,7 @@ using basicClasses.models.SQL;
 using basicClasses.models.Markers;
 using basicClasses.models.Roslyn;
 using basicClasses.models.svcutil;
+using basicClasses.models.file_system;
 
 namespace basicClasses.Factory
 {
@@ -225,10 +226,9 @@ namespace basicClasses.Factory
             models.Add("syntax_tree", new syntax_tree());
             models.Add("clear_stack_itms", new clear_stack_itms());
             models.Add("mary_player_service", new mary_player_service());
+
+            models.Add("file_tree_scanner", new file_tree_scanner());
             
-
-
-
 
 
             if (ExternalModels != null)

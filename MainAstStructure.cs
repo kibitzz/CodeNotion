@@ -12,6 +12,7 @@ using System.Drawing;
 using basicClasses.models.sys_ext;
 using basicClasses.models.WEB_api;
 using basicClasses.Optimizations;
+using basicClasses.Interfaces;
 
 namespace basicClasses
 {
@@ -1183,6 +1184,11 @@ namespace basicClasses
             if (body != null)
                 sb.Append("\"B\": \"" + body.Replace("\"", "[&amp]").Replace("\\", "[&bsl]") + "\"");
 
+            if(bodyObject != null && bodyObject is IObjectSerializable)
+            {
+                sb.Append(",\"O\": \"" + ((IObjectSerializable)bodyObject).Serialize() + "\"");
+            }
+
             if (paramCou > 0)
             {
                 sb.Append(",\"a\": [");
@@ -1270,9 +1276,7 @@ namespace basicClasses
 
             string currtext = "";
             string currprop = "";
-            string rawtext = "";
-
-            //opis root = new opis();
+            string rawtext = "";            
 
             while (idx < data.Length)
             {
@@ -1303,7 +1307,7 @@ namespace basicClasses
 
                     if (currprop.Length > 0)
                     {
-                        if (currprop == "array" || currprop == "a")
+                        if (currprop == "a")
                         {
                             idx = this.load(data, idx + 1);
                         }
@@ -1336,21 +1340,26 @@ namespace basicClasses
                     // it is a string or logical-numeric value 
                     if (currprop.Length > 0)
                     {
-                        currtext = currtext.Replace("[&amp]", "\"").Replace("[&bsl]","\\");
+                        currtext = currtext.Replace("[&amp]", "\"").Replace("[&bsl]", "\\");
                         rawtext = rawtext.Replace("[&amp]", "\"").Replace("[&bsl]", "\\");
-                        if (currprop == "PN" || currprop == "N")
+                        if (currprop == "N")
                         {
                             PartitionName = currtext;
                         }
                         else
-                            if (currprop == "PK" || currprop == "K")
+                            if (currprop == "K")
                         {
                             PartitionKind = currtext;
                         }
                         else
-                                if (currprop == "B" || currprop == "body")
+                            if (currprop == "B")
                         {
                             body = currtext;
+                        }
+                        else
+                            if (currprop == "O")
+                        {
+                            bodyObject = currtext;
                         }
                         else
                         {
