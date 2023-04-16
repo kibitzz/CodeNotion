@@ -1194,7 +1194,7 @@ namespace basicClasses
                 if (activeCont != o)
                     Handle(activeCont);
 
-                if (req[i].PartitionKind == "Breaker" && req[i].isHere(Breaker.flag))
+                if (!string.IsNullOrEmpty(req[i].PartitionKind) && req[i].PartitionKind[0] == 'B' && req[i].PartitionKind == "Breaker" && req[i].isHere(Breaker.flag))
                     break;
             }                 
 

@@ -18,6 +18,10 @@ namespace basicClasses.models.sys_ext
         [info("body contain filename")]
         public static readonly string open_write = "open_write";
 
+        [model("spec_tag")]
+        [info("body contain filename")]
+        public static readonly string open_read = "open_read";
+
         [model("")]
         [info("should contain 'data' partition which contain bodyObject of byte[] type")]
         public static readonly string write = "write";
@@ -44,6 +48,19 @@ namespace basicClasses.models.sys_ext
                     global_log.log.AddArr(new opis() { PartitionName = " ERROR file open_write" , body = e.Message});
                 }
                 
+            }
+
+            if (ms.isHere(open_read))
+            {
+                var path = ms.V(open_read);
+                try
+                {
+                    fs = File.OpenRead(path);
+                }
+                catch (Exception e)
+                {
+                    global_log.log.AddArr(new opis() { PartitionName = " ERROR file open_write", body = e.Message });
+                }
             }
 
             if (ms.isHere(write) && fs != null)

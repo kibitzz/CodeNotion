@@ -369,6 +369,7 @@
     <Compile Include="Atributes\infoAttribute.cs" />
     <Compile Include="models\Checkers\Check_contain_string.cs" />
     <Compile Include="models\Checkers\Check_is_odd.cs" />
+    <Compile Include="models\deserializer\dir_file_info.cs" />
     <Compile Include="models\file system\file_tree_scanner.cs" />
     <Compile Include="models\Markers\environment_function.cs" />
     <Compile Include="models\Markers\value_function.cs" />
@@ -405,6 +406,8 @@
     <Compile Include="models\StructureProcessing\arr_length.cs" />
     <Compile Include="models\StructureProcessing\car_cdr_oper.cs" />
     <Compile Include="models\StructureProcessing\EmbedTree.cs" />
+    <Compile Include="models\StructureProcessing\order_by.cs" />
+    <Compile Include="models\StructureProcessing\proc_recursive.cs" />
     <Compile Include="models\StructureProcessing\reverse_order.cs" />
     <Compile Include="models\svcutil\mary_player_service.cs" />
     <Compile Include="models\svcutil\WilliamHillMarylandPlayerService.cs" />

@@ -29,26 +29,32 @@ namespace basicClasses.models.file_system
 
         bool add_full_info;
 
+        long dirCou;
+
         public override void Process(opis message)
         {
             opis ms = SpecLocalRunAll();
 
             add_full_info = ms.isHere(add_file_info);
+            dirCou = 0;
 
-            opis rez = GetDirContent(ms.V(root_path));
+            opis rez = GetDirContent(ms.V(root_path), dirCou);
 
+            rez.PartitionName = ms.V(root_path).TrimEnd(path_separator.ToCharArray()[0]);
 
-
-            message.CopyArr(rez);
+            message.CopyArr(new opis());
+            message.AddArr(rez);
         }
 
-        opis GetDirContent(string path)
+        opis GetDirContent(string path, long parentDirId)
         {
             opis rez = new opis();
             rez.PartitionKind = "dir";
 
             var dirInf = new DirInfo();
             rez.bodyObject = dirInf;
+            dirInf.I = ++dirCou;
+            dirInf.D = parentDirId;
 
             path = path.TrimEnd(path_separator.ToCharArray()[0]);
 
@@ -67,11 +73,10 @@ namespace basicClasses.models.file_system
             }
 
             rez.Vset("..", path);
-
-
+            
             foreach (var dir in dirinfo)
             {
-                var d = GetDirContent(path + path_separator + dir.Name);
+                var d = GetDirContent(path + path_separator + dir.Name, dirInf.I);
                 rez[dir.Name] = d;
 
                 var dinf = (d.bodyObject as DirInfo);
@@ -95,6 +100,7 @@ namespace basicClasses.models.file_system
                 var finf = new mFileInfo();
                 f.bodyObject = finf;
 
+                finf.D = dirInf.I;
                 finf.S = file.Length;
                 finf.E = file.Extension;
                 finf.C = file.CreationTime.Ticks;
@@ -157,8 +163,16 @@ namespace basicClasses.models.file_system
 
     }
 
-   class DirInfo: SerializableObj
+   public class DirInfo: SerializableObj
     {
+        /// <summary>
+        /// parent directory
+        /// </summary>
+        public long D;
+        /// <summary>
+        /// directory ID
+        /// </summary>
+        public long I;
         public ulong tSize;
         public ulong flsSize;
 
@@ -169,8 +183,12 @@ namespace basicClasses.models.file_system
         public ulong dcTtl;       
     }
 
-    class mFileInfo : SerializableObj
-    {        
+    public class mFileInfo : SerializableObj
+    {
+        /// <summary>
+        /// parent directory
+        /// </summary>
+        public long D;
         /// <summary>
         /// size in bytes
         /// </summary>

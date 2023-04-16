@@ -13,6 +13,7 @@ using basicClasses.models.sys_ext;
 using basicClasses.models.WEB_api;
 using basicClasses.Optimizations;
 using basicClasses.Interfaces;
+//using DocumentFormat.OpenXml.Wordprocessing;
 
 namespace basicClasses
 {
@@ -2347,14 +2348,19 @@ namespace basicClasses
         public void FindTreePartitionsStrictOrFuzzy(opis templ, string path, opis referers, bool fuzzy = false)
         {
             if (fuzzy)
-                FindTreePartitionsFuzzy(templ, path, referers);
+            {
+                opis lTempl = new opis();
+                lTempl.PartitionKind = templ.PartitionKind?.ToLower();
+                lTempl.PartitionName = templ.PartitionName?.ToLower();
+                lTempl.body = templ.body?.ToLower();
+                FindTreePartitionsFuzzyLower(lTempl, path, referers);
+            }
             else
                 FindTreePartitions(templ, path, referers);
         }
 
         public void FindTreePartitionsFuzzy(opis templ, string path, opis referers)
-        {
-
+        {           
             for (int i = 0; i < paramCou; i++)
             {
                 if ((string.IsNullOrEmpty(templ.PartitionKind) ||
@@ -2375,6 +2381,33 @@ namespace basicClasses
                 }
                
                 arr[i].FindTreePartitionsFuzzy(templ, path + "->" + arr[i].PartitionName, referers);
+            }
+
+            isDuplicated = false;
+        }
+
+        public void FindTreePartitionsFuzzyLower(opis lTempl, string path, opis referers)
+        {           
+            for (int i = 0; i < paramCou; i++)
+            {
+                if ((string.IsNullOrEmpty(lTempl.PartitionKind) ||
+                    ((bool)arr[i].PartitionKind?.ToLower().Contains(lTempl.PartitionKind))) &&
+
+                    (string.IsNullOrEmpty(lTempl.PartitionName) ||
+                    arr[i].PartitionName.ToLower().Contains(lTempl.PartitionName)) &&
+
+                    (string.IsNullOrEmpty(lTempl.body) ||
+                    arr[i].body.ToLower().Contains(lTempl.body))
+                    )
+                {
+                    opis refitem = new opis();
+                    refitem.PartitionName = path + "->" + arr[i].PartitionName;
+
+                    refitem.AddArr(arr[i]);
+                    referers.AddArr(refitem);
+                }
+
+                arr[i].FindTreePartitionsFuzzyLower(lTempl, path + "->" + arr[i].PartitionName, referers);
             }
 
             isDuplicated = false;
@@ -2825,6 +2858,23 @@ namespace basicClasses
 
             if (type == 2)
                 arr = SortArray(x => x.PartitionName.Length, asc).ToArray();
+
+            if (type == 4 || type == 3)
+                arr = SortArray(x => { long.TryParse(x.PartitionName, out long rez); return rez; }, asc).ToArray();
+
+            paramCou = paramCou >= arr.Length ? arr.Length : paramCou;
+        }
+
+        public void SortThisArrayBy_items_model(int type, bool asc = true)
+        {
+            if (type == 1)
+                arr = SortArray(x => x.PartitionKind, asc).ToArray();
+
+            if (type == 2)
+                arr = SortArray(x => x.PartitionKind.Length, asc).ToArray();
+
+            if (type == 4 || type == 3)
+                arr = SortArray(x => { long.TryParse(x.PartitionKind, out long rez); return rez; }, asc).ToArray();
 
             paramCou = paramCou >= arr.Length ? arr.Length : paramCou;
         }

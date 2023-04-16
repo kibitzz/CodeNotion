@@ -23,6 +23,7 @@ using basicClasses.models.Markers;
 using basicClasses.models.Roslyn;
 using basicClasses.models.svcutil;
 using basicClasses.models.file_system;
+using basicClasses.models.deserializer;
 
 namespace basicClasses.Factory
 {
@@ -42,193 +43,198 @@ namespace basicClasses.Factory
 
         public void Init()
         {
-            models = new Dictionary<string, ModelInfo>();
-           
-            models.Add("valf", new valf());
-            models.Add("envf", new envf());
-            models.Add("Messenger", new Messenger());
-            models.Add("AnswerToMessage", new AnswerToMessage());
-            models.Add("initValues", new initValues());
-            models.Add("ConditionChecker", new ConditionChecker());
+            models = new Dictionary<string, ModelInfo>
+            {
+                { "valf", new valf() },
+                { "envf", new envf() },
+                { "Messenger", new Messenger() },
+                { "AnswerToMessage", new AnswerToMessage() },
+                { "initValues", new initValues() },
+                { "ConditionChecker", new ConditionChecker() },
 
-            models.Add("fill_Role", new fill_Role());// chorter name is better
-            models.Add("fill_shared_context_Role", new fill_shared_context_Role());//obsolete
-            models.Add("GetAnyPartOfOpis", new GetAnyPartOfOpis());
-            models.Add("BodyValueModificator", new BodyValueModificator());
-
-
-            models.Add("Breaker", new Breaker());
-            models.Add("RangeAndAssign", new RangeAndAssign());
-            models.Add("ForEach", new ForEach());
-            models.Add("exec", new exec());
-            models.Add("exec_inline", new exec_inline());            
-
-            models.Add("TreeDataExtractor", new TreeDataExtractor());//obsolete
-            models.Add("Destructure", new Destructure());            
-
-            models.Add("EditingPart", new EditingPart());
-
-            models.Add("MsgTemplate", new MsgTemplate());
-            models.Add("Pause_To_debug", new Pause_To_debug());
-            models.Add("global_log", new global_log());
-            models.Add("local_log", new local_log());
-            models.Add("sys_log_info", new sys_log_info());            
-            models.Add("UserNotifier", new UserNotifier());
+                { "fill_Role", new fill_Role() },// chorter name is better
+                { "fill_shared_context_Role", new fill_shared_context_Role() },//obsolete
+                { "GetAnyPartOfOpis", new GetAnyPartOfOpis() },
+                { "BodyValueModificator", new BodyValueModificator() },
 
 
-            models.Add("Fill_org", new Fill_org());
-            models.Add("Fill_org_upper", new Fill_org_upper());
-            models.Add("Fill_upper_context", new Fill_upper_context());
-            models.Add("Fill_current_context", new Fill_current_context());
-                     
-        
-            models.Add("context", new context());
-            models.Add("Fill_Spec_Info", new Fill_Spec_Info());                           
-          
-            
-            models.Add("MoveToSharedVarInstCont", new MoveToSharedVarInstCont());                  
-            models.Add("fill_Context_info", new fill_Context_info());                                
-            models.Add("ConditionResponceModel", new ConditionResponceModel());           
-            models.Add("ClearSharedContext", new ClearSharedContext());        
-            models.Add("SharedContextRoles", new SharedContextRoles());
-            models.Add("SubContextHandler", new SubContextHandler());
-            
-           
-            models.Add("TagsTypes", new TagsTypes());          
-            models.Add("SysInst_contextsArray", new SysInst_contextsArray());         
-            models.Add("ContextHierarchyTypes", new ContextHierarchyTypes());
-        
-            models.Add("ModelBase", new ModelBase());
-            models.Add("ModelNotion", new ModelNotion());
-            models.Add("modelReq", new modelReq());
-            models.Add("ModelListOfMessages", new ModelListOfMessages());
-            models.Add("Messaging", new Messaging());
+                { "Breaker", new Breaker() },
+                { "RangeAndAssign", new RangeAndAssign() },
+                { "ForEach", new ForEach() },
+                { "exec", new exec() },
+                { "exec_inline", new exec_inline() },
 
-            models.Add("targetWholeBranch", new targetWholeBranch());
-            models.Add("targetUpper", new targetUpper());
-            models.Add("targetUpperOnly", new targetUpperOnly());            
-            models.Add("targetSubTree", new targetSubTree());
-            models.Add("targetSameCont", new targetSameCont());
-            models.Add("TargetingChecks", new TargetingChecks());
-            models.Add("getInstContexts", new getInstContexts());
-            models.Add("check_Conformity", new check_Conformity());
-            models.Add("targetSubcontextsOfItems", new targetSubcontextsOfItems());
-            models.Add("targetAnyCont", new targetAnyCont());
-            models.Add("targetSubTreeOnly", new targetSubTreeOnly());
-            models.Add("targetParentCont", new targetParentCont());
-            
+                { "TreeDataExtractor", new TreeDataExtractor() },//obsolete
+                { "Destructure", new Destructure() },
 
-            models.Add("fill_contex_Stub", new fill_contex_Stub());
-            models.Add("buildTreeVal_sdc_i", new buildTreeVal_sdc_i());
+                { "EditingPart", new EditingPart() },
 
-            models.Add("spec_tag", new spec_tag());
-            models.Add("RangeMax", new RangeMax());
-            models.Add("RangeMin", new RangeMin());
-            models.Add("RangingList", new RangingList());
-            models.Add("GetWordForm", new GetWordForm());
-            models.Add("GenerateID", new GenerateID());         
-                              
-            models.Add("load_data_file", new load_data_file());
-            models.Add("Check_list_more_1", new Check_list_more_1());
-            models.Add("Check_list_more_0", new Check_list_more_0());            
-            models.Add("Check_Key_value_prsnce", new Check_Key_value_prsnce());
-            models.Add("file_formats", new file_formats());
-            models.Add("jsonParserModel", new jsonParserModel());
-            models.Add("headersParserModel", new headersParserModel());          
-            models.Add("webActorModel", new webActorModel());
-            models.Add("ConcPostDataFormat", new ConcPostDataFormat());
-            models.Add("save_toFile", new save_toFile());
-            models.Add("AccountsParserModel", new AccountsParserModel());
-            models.Add("Opis_ParserModel", new Opis_ParserModel());
-            models.Add("SimpleLines_ParserModel", new SimpleLines_ParserModel());            
-            models.Add("Fill_templare_from_dataSouce", new Fill_templare_from_dataSouce());              
-            models.Add("upLoadFileSpecs", new upLoadFileSpecs());
-            models.Add("Check_body_isFilled", new Check_body_isFilled());
-            models.Add("numArrNames", new numArrNames());
-
-            models.Add("PutTimestamp", new PutTimestamp());
-            models.Add("Check_TimestampDiff", new Check_TimestampDiff());
-            models.Add("TagArrayItems", new TagArrayItems());
-            models.Add("NextArrItm", new NextArrItm());
-            models.Add("TemplateSearch", new TemplateSearch());
-            models.Add("EmbedTree", new EmbedTree());
-            
-            models.Add("Make_pause", new Make_pause());
-            models.Add("Check_isInArray", new Check_isInArray());
-            models.Add("Check_is_odd", new Check_is_odd());
-            models.Add("Check_contain_string", new Check_contain_string());         
-
-            models.Add("boardsset_ParserModel", new boardsset_ParserModel());
-            models.Add("Compress", new Compress());
-            models.Add("cleaner", new cleaner());
-            models.Add("BuildTermBasicValuesContainer", new BuildTermBasicValuesContainer());
-            models.Add("SyntaxTreeMatchIdPatterns", new SyntaxTreeMatchIdPatterns());
-            models.Add("ClearStruct", new ClearStruct());
-            models.Add("DateTimeComp", new DateTimeComp());
-            models.Add("CompareFill", new CompareFill());
-            models.Add("Parce_Body_as_Json", new Parce_Body_as_Json());
-            models.Add("opis_to_json", new opis_to_json());
-            
-            models.Add("CheckOverrides", new CheckOverrides());
+                { "MsgTemplate", new MsgTemplate() },
+                { "Pause_To_debug", new Pause_To_debug() },
+                { "global_log", new global_log() },
+                { "local_log", new local_log() },
+                { "sys_log_info", new sys_log_info() },
+                { "UserNotifier", new UserNotifier() },
 
 
-
-            models.Add("jint", new jint());
-            models.Add("HtmlParser_HAP", new HtmlParser_HAP());
-            models.Add("UseSecurityProtocol", new UseSecurityProtocol());
-            models.Add("code_point", new code_point());
-            
-
-            models.Add("targetID", new targetID());
-            models.Add("seqreader", new seqreader());
-            models.Add("GetEnclosedText", new GetEnclosedText());
-            models.Add("WordsArrOp", new WordsArrOp());
-            models.Add("StrReplace", new StrReplace());
-            
-
-            models.Add("universal_line_pareser", new universal_line_pareser());
-            models.Add("table_parser", new table_parser());            
-            models.Add("SingleLineText_ParserModel", new SingleLineText_ParserModel());            
-            models.Add("MySqlQuery", new MySqlQuery());
-            models.Add("sql_server_query", new sql_server_query());
-            
-            models.Add("CompDataExport", new CompDataExport());
-            models.Add("FindCommonDatastructure", new FindCommonDatastructure());
-            models.Add("send_mail", new send_mail());
-            models.Add("smtp_settings", new smtp_settings());
-            models.Add("Ftp_client", new Ftp_client());
-            models.Add("ftp_settings", new ftp_settings());
+                { "Fill_org", new Fill_org() },
+                { "Fill_org_upper", new Fill_org_upper() },
+                { "Fill_upper_context", new Fill_upper_context() },
+                { "Fill_current_context", new Fill_current_context() },
 
 
-            models.Add("Data_In_Buffer", new Data_In_Buffer());
-            models.Add("PeriodIterator", new PeriodIterator());
-            models.Add("GlobalParamsProvider", new GlobalParamsProvider());
+                { "context", new context() },
+                { "Fill_Spec_Info", new Fill_Spec_Info() },
 
-            models.Add("IntactCopyChecker", new IntactCopyChecker());
-            models.Add("thread_lock", new thread_lock());
-            models.Add("arr_chuncks", new arr_chuncks());
-            models.Add("text_case_transform", new text_case_transform());
-            models.Add("b_length", new b_length());
-            models.Add("arr_length", new arr_length());
-            models.Add("reverse_order", new reverse_order());
-            
-            models.Add("normalize_spaces", new normalize_spaces());            
-            models.Add("linear_chart", new linear_chart());
-            models.Add("garbage_collection", new garbage_collection());
 
-            models.Add("NodesPathInfo", new NodesPathInfo());
-            models.Add("TextCodec", new TextCodec());
-            models.Add("RegexParcer", new RegexParcer());
-            models.Add("HttpListenerModel", new HttpListenerModel());
-            models.Add("car_cdr_oper", new car_cdr_oper());
-            models.Add("file", new file());
-            models.Add("fuzzy_search", new fuzzy_search());
-            models.Add("syntax_tree", new syntax_tree());
-            models.Add("clear_stack_itms", new clear_stack_itms());
-            models.Add("mary_player_service", new mary_player_service());
+                { "MoveToSharedVarInstCont", new MoveToSharedVarInstCont() },
+                { "fill_Context_info", new fill_Context_info() },
+                { "ConditionResponceModel", new ConditionResponceModel() },
+                { "ClearSharedContext", new ClearSharedContext() },
+                { "SharedContextRoles", new SharedContextRoles() },
+                { "SubContextHandler", new SubContextHandler() },
 
-            models.Add("file_tree_scanner", new file_tree_scanner());
-            
+
+                { "TagsTypes", new TagsTypes() },
+                { "SysInst_contextsArray", new SysInst_contextsArray() },
+                { "ContextHierarchyTypes", new ContextHierarchyTypes() },
+
+                { "ModelBase", new ModelBase() },
+                { "ModelNotion", new ModelNotion() },
+                { "modelReq", new modelReq() },
+                { "ModelListOfMessages", new ModelListOfMessages() },
+                { "Messaging", new Messaging() },
+
+                { "targetWholeBranch", new targetWholeBranch() },
+                { "targetUpper", new targetUpper() },
+                { "targetUpperOnly", new targetUpperOnly() },
+                { "targetSubTree", new targetSubTree() },
+                { "targetSameCont", new targetSameCont() },
+                { "TargetingChecks", new TargetingChecks() },
+                { "getInstContexts", new getInstContexts() },
+                { "check_Conformity", new check_Conformity() },
+                { "targetSubcontextsOfItems", new targetSubcontextsOfItems() },
+                { "targetAnyCont", new targetAnyCont() },
+                { "targetSubTreeOnly", new targetSubTreeOnly() },
+                { "targetParentCont", new targetParentCont() },
+
+
+                { "fill_contex_Stub", new fill_contex_Stub() },
+                { "buildTreeVal_sdc_i", new buildTreeVal_sdc_i() },
+
+                { "spec_tag", new spec_tag() },
+                { "RangeMax", new RangeMax() },
+                { "RangeMin", new RangeMin() },
+                { "RangingList", new RangingList() },
+                { "GetWordForm", new GetWordForm() },
+                { "GenerateID", new GenerateID() },
+
+                { "load_data_file", new load_data_file() },
+                { "Check_list_more_1", new Check_list_more_1() },
+                { "Check_list_more_0", new Check_list_more_0() },
+                { "Check_Key_value_prsnce", new Check_Key_value_prsnce() },
+                { "file_formats", new file_formats() },
+                { "jsonParserModel", new jsonParserModel() },
+                { "headersParserModel", new headersParserModel() },
+                { "webActorModel", new webActorModel() },
+                { "ConcPostDataFormat", new ConcPostDataFormat() },
+                { "save_toFile", new save_toFile() },
+                { "AccountsParserModel", new AccountsParserModel() },
+                { "Opis_ParserModel", new Opis_ParserModel() },
+                { "SimpleLines_ParserModel", new SimpleLines_ParserModel() },
+                { "Fill_templare_from_dataSouce", new Fill_templare_from_dataSouce() },
+                { "upLoadFileSpecs", new upLoadFileSpecs() },
+                { "Check_body_isFilled", new Check_body_isFilled() },
+                { "numArrNames", new numArrNames() },
+
+                { "PutTimestamp", new PutTimestamp() },
+                { "Check_TimestampDiff", new Check_TimestampDiff() },
+                { "TagArrayItems", new TagArrayItems() },
+                { "NextArrItm", new NextArrItm() },
+                { "TemplateSearch", new TemplateSearch() },
+                { "EmbedTree", new EmbedTree() },
+
+                { "Make_pause", new Make_pause() },
+                { "Check_isInArray", new Check_isInArray() },
+                { "Check_is_odd", new Check_is_odd() },
+                { "Check_contain_string", new Check_contain_string() },
+
+                { "boardsset_ParserModel", new boardsset_ParserModel() },
+                { "Compress", new Compress() },
+                { "cleaner", new cleaner() },
+                { "BuildTermBasicValuesContainer", new BuildTermBasicValuesContainer() },
+                { "SyntaxTreeMatchIdPatterns", new SyntaxTreeMatchIdPatterns() },
+                { "ClearStruct", new ClearStruct() },
+                { "DateTimeComp", new DateTimeComp() },
+                { "CompareFill", new CompareFill() },
+                { "Parce_Body_as_Json", new Parce_Body_as_Json() },
+                { "opis_to_json", new opis_to_json() },
+
+                { "CheckOverrides", new CheckOverrides() },
+
+
+
+                { "jint", new jint() },
+                { "HtmlParser_HAP", new HtmlParser_HAP() },
+                { "UseSecurityProtocol", new UseSecurityProtocol() },
+                { "code_point", new code_point() },
+
+
+                { "targetID", new targetID() },
+                { "seqreader", new seqreader() },
+                { "GetEnclosedText", new GetEnclosedText() },
+                { "WordsArrOp", new WordsArrOp() },
+                { "StrReplace", new StrReplace() },
+
+
+                { "universal_line_pareser", new universal_line_pareser() },
+                { "table_parser", new table_parser() },
+                { "SingleLineText_ParserModel", new SingleLineText_ParserModel() },
+                { "MySqlQuery", new MySqlQuery() },
+                { "sql_server_query", new sql_server_query() },
+
+                { "CompDataExport", new CompDataExport() },
+                { "FindCommonDatastructure", new FindCommonDatastructure() },
+                { "send_mail", new send_mail() },
+                { "smtp_settings", new smtp_settings() },
+                { "Ftp_client", new Ftp_client() },
+                { "ftp_settings", new ftp_settings() },
+
+
+                { "Data_In_Buffer", new Data_In_Buffer() },
+                { "PeriodIterator", new PeriodIterator() },
+                { "GlobalParamsProvider", new GlobalParamsProvider() },
+
+                { "IntactCopyChecker", new IntactCopyChecker() },
+                { "thread_lock", new thread_lock() },
+                { "arr_chuncks", new arr_chuncks() },
+                { "text_case_transform", new text_case_transform() },
+                { "b_length", new b_length() },
+                { "arr_length", new arr_length() },
+                { "reverse_order", new reverse_order() },
+                { "order_by", new order_by() },
+                { "proc_recursive", new proc_recursive() },
+
+                { "normalize_spaces", new normalize_spaces() },
+                { "linear_chart", new linear_chart() },
+                { "garbage_collection", new garbage_collection() },
+
+                { "NodesPathInfo", new NodesPathInfo() },
+                { "TextCodec", new TextCodec() },
+                { "RegexParcer", new RegexParcer() },
+                { "HttpListenerModel", new HttpListenerModel() },
+                { "car_cdr_oper", new car_cdr_oper() },
+                { "file", new file() },
+                { "fuzzy_search", new fuzzy_search() },
+                { "syntax_tree", new syntax_tree() },
+                { "clear_stack_itms", new clear_stack_itms() },
+                { "mary_player_service", new mary_player_service() },
+
+                { "file_tree_scanner", new file_tree_scanner() },
+                { "dir_file_info", new dir_file_info() }
+                
+            };
+
 
 
             if (ExternalModels != null)
