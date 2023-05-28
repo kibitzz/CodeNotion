@@ -2391,7 +2391,7 @@ namespace basicClasses
             for (int i = 0; i < paramCou; i++)
             {
                 if ((string.IsNullOrEmpty(lTempl.PartitionKind) ||
-                    ((bool)arr[i].PartitionKind?.ToLower().Contains(lTempl.PartitionKind))) &&
+                    (arr[i].PartitionKind != null && arr[i].PartitionKind.ToLower().Contains(lTempl.PartitionKind))) &&
 
                     (string.IsNullOrEmpty(lTempl.PartitionName) ||
                     arr[i].PartitionName.ToLower().Contains(lTempl.PartitionName)) &&

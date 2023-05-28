@@ -10,7 +10,13 @@ namespace basicClasses.models.sys_ext
     [info("filler. get data parced after command <import>. use: to avoid passing data as constant arrays to methods")]
     class Data_In_Buffer : ModelBase
     {
-        public static string rawData;       
+        [model("spec_tag")]
+        [info(" ")]
+        public static readonly string clipboard = "clipboard";
+
+        public static string rawData;
+
+        public static string clipboard_data;
 
         public override void Process(opis message)
         {
@@ -27,7 +33,15 @@ namespace basicClasses.models.sys_ext
                 }
             }
 
+            if(modelSpec.isHere(clipboard))
+            {
+                message.ReinitArr(0);
+                message.body = clipboard_data.Trim(); 
+                return;
+            }
+           
             message.CopyArr(data);
         }
+       
     }
 }

@@ -1817,9 +1817,11 @@ namespace basicClasses
 
         // EXEC command
         private void button12_Click(object sender, EventArgs e)
-        {           
+        {
             //if (moneyThread != null)
             //    moneyThread.Abort();
+
+            Data_In_Buffer.clipboard_data = Clipboard.GetText(TextDataFormat.UnicodeText);
 
             if (modelLocherThread == null)
             {

@@ -17,6 +17,7 @@ namespace basicClasses.models.sys_ext
         [model("")]
         public static readonly string val = "val";
 
+        [ignore]
         static opis storage = new opis();
 
         public override void Process(opis message)
