@@ -1224,24 +1224,24 @@ namespace basicClasses
 
         //  -----------------------------------------------
 
-        bool IsLocalDataModel(opis req, opis processParameter)
+        bool IsLocalDataModel(opis functionCall, opis processParameter)
         {
             bool rezb = false;         
             opis SVC = thisins[svcIdx];
             int inSvc =-1;// local func override          
             int poz = -1; // package func
 
-            inSvc = SVC.getPartitionIdx(req.PartitionKind);
+            inSvc = SVC.getPartitionIdx(functionCall.PartitionKind);
             inSvc = inSvc >=0 && SVC[inSvc].PartitionKind == "Action" ? inSvc : -1;
            
 #if NETFRAMEWORK
 
             if (showOverrideWarnings && inSvc != -1 &&
-              thisins[pkgIdx].isHere(req.PartitionKind))
+              thisins[pkgIdx].isHere(functionCall.PartitionKind))
                 {
                     opis err = new opis();
-                    err.PartitionName = "WARN: local model override package func: " + req.PartitionKind;
-                    err.AddArr(req.Duplicate());
+                    err.PartitionName = "WARN: local model override package func: " + functionCall.PartitionKind;
+                    err.AddArr(functionCall.Duplicate());
                     global_log.log.AddArr(err);
                 }            
 #endif 
@@ -1249,12 +1249,12 @@ namespace basicClasses
             opis packages = thisins[pkgIdx];
 
             if (inSvc >= 0 || // local models should override package funcs
-               (poz = packages.getPartitionIdx(req.PartitionKind)) >=0)  // if inSvc -- poz never evaluated, and stay -1
+               (poz = packages.getPartitionIdx(functionCall.PartitionKind)) >=0)  // if inSvc -- poz never evaluated, and stay -1
             {
                 rezb = true;
                 List<string> tempNames = new List<string>();// remove this list use -- very costly             
 
-                opis ms = SVC[modelSpecIdx]; // caller function spec -- _sys_subscript can be specified there
+                opis callerFuncParams = SVC[modelSpecIdx]; // caller function spec -- _sys_subscript can be specified there
                 
                 opis mod = inSvc >= 0 ? SVC[inSvc] : packages[poz]; // function body (code that process modelspec and params)             
              
@@ -1293,18 +1293,18 @@ namespace basicClasses
                 int lppos = -1;
                 int rppos = -1;
 
-                if (req.bodyObject != null && req.bodyObject is ModelSpecIdxPresence reqm)
+                if (functionCall.bodyObject != null && functionCall.bodyObject is ModelSpecIdxPresence reqm)
                 {
                     a_v_lp_rp_fil_iv_vcon_acon = reqm.a_v_lp_rp_fil_iv_vcon_acon;
                 }
                 else
                 {
                     // if (req.isHere("lp", false))    // we can cache founded index to use next time                
-                    if ((lppos = req.getPartitionIdx("lp", false)) != -1)
+                    if ((lppos = functionCall.getPartitionIdx("lp", false)) != -1)
                         a_v_lp_rp_fil_iv_vcon_acon = a_v_lp_rp_fil_iv_vcon_acon | 2;
 
                     //   if (req.isHere("rp", false))     
-                    if ((rppos = req.getPartitionIdx("rp", false)) != -1)
+                    if ((rppos = functionCall.getPartitionIdx("rp", false)) != -1)
                         a_v_lp_rp_fil_iv_vcon_acon = a_v_lp_rp_fil_iv_vcon_acon | 4;
                                        
                 }
@@ -1334,17 +1334,17 @@ namespace basicClasses
                    
                     // if modelspec not exec (modbody.Contains("#")), so no changes are made to its items 
                     //(example: func # its modelSpec is just data-code to be exec later, and when actually exec it will be copied)
-                    modelSpec.CopyArr((flags & 8) == 8 ? req : req.Duplicate());
+                    modelSpec.CopyArr((flags & 8) == 8 ? functionCall : functionCall.Duplicate());
 
                         //modelSpec.bodyObject = req.bodyObject; // to check if explicit ^ subscription is present in parent modelspec                   
 
                     if ((a_v_lp_rp_fil_iv_vcon_acon & 1) == 0)
                     {
-                        if (!req.isHere("v", false))//TODO: optimize exec                                                   
-                            setV(req.body);
+                        if (!functionCall.isHere("v", false))//TODO: optimize exec                                                   
+                            setV(functionCall.body);
                          
-                        if (!req.isHere("a", false))
-                            setA(req.PartitionName);                                                 
+                        if (!functionCall.isHere("a", false))
+                            setA(functionCall.PartitionName);                                                 
                     }
 
 
@@ -1358,13 +1358,13 @@ namespace basicClasses
                         modelSpec = modelSpec.Duplicate();
 
                     opis mspos;
-                    if ((mspos = req.getPartitionNotInitOrigName("ms")) != null)                       
+                    if ((mspos = functionCall.getPartitionNotInitOrigName("ms")) != null)                       
                     {
                         if (string.IsNullOrEmpty(mspos.PartitionKind))
                         {
-                            modelSpec.AddArrMissing(ms);
-                            setV(ms.V("v"));
-                            setA(ms.V("a"));
+                            modelSpec.AddArrMissing(callerFuncParams);
+                            setV(callerFuncParams.V("v"));
+                            setA(callerFuncParams.V("a"));
                         }
                         
                         if(mspos.body.Length > 0 && mspos.body[0] == '*')
@@ -1379,17 +1379,17 @@ namespace basicClasses
 
                     if ((flags & 64) == 64)
                     {
-                        ms["vvv"].body = req.body;
-                        ms["aaa"].body = req.PartitionName;
+                        callerFuncParams["vvv"].body = functionCall.body;
+                        callerFuncParams["aaa"].body = functionCall.PartitionName;
 
-                        if (req.isHere("lp", false))
+                        if (functionCall.isHere("lp", false))
                         {
-                            var pex = req["lp"].Duplicate();
+                            var pex = functionCall["lp"].Duplicate();
                             ExecActionModel(pex, pex);
 
                             var elpName = GetTempValName(SVC, tempNames);
                             SVC[elpName].Wrap(pex.W());
-                            ms.Vset("aaa", elpName);
+                            callerFuncParams.Vset("aaa", elpName);
                         }                                 
                     }
                 }
@@ -1397,19 +1397,19 @@ namespace basicClasses
                 #endregion
 
                             
-                string b = req.body ?? "";
+                string b = functionCall.body ?? "";
                 opis processObj = processParameter;
                 string nameOfSubj = "";
             
                 if (b == "<")
                 {
-                    req.body = "";
-                    processObj = req;//filler
+                    functionCall.body = "";
+                    processObj = functionCall;//filler
                    
                     if (modelIsProducer)
                     {
                         nameOfSubj = GetTempValName(SVC, tempNames);                        
-                        SVC[nameOfSubj].Wrap(req);
+                        SVC[nameOfSubj].Wrap(functionCall);
                         setV(nameOfSubj);    
                     }                             
                 }
@@ -1417,11 +1417,11 @@ namespace basicClasses
                                        
                 #region hook input object
 
-                if (req.PartitionName.Length > 0 && req.PartitionName[req.PartitionName.Length -1] == '>')
+                if (functionCall.PartitionName.Length > 0 && functionCall.PartitionName[functionCall.PartitionName.Length -1] == '>')
                 {
                     processObj = SVC[exec.SUBJ].W();
 
-                    string pn = req.PartitionName;
+                    string pn = functionCall.PartitionName;
 
                     #region  input in form of <filler model>
                     // when input in form of <filler model> this exec filler and put result in tmp arg
@@ -1433,7 +1433,7 @@ namespace basicClasses
                         pn = pn.Trim('>', '<');
                         if (pn.Length > 0)
                         {                          
-                            SVC[modelSpecIdx] = ms;
+                            SVC[modelSpecIdx] = callerFuncParams;
                           
                             paramRez.PartitionKind = pn;
                             ExecActionModel(paramRez, paramRez);
@@ -1452,14 +1452,14 @@ namespace basicClasses
 
                 }
             
-                if (req.PartitionName.Length > 0 && req.PartitionName[0] == '*')
+                if (functionCall.PartitionName.Length > 0 && functionCall.PartitionName[0] == '*')
                 {
                     nameOfSubj = GetTempValName(SVC, tempNames);
 
                     //  processObj = getSYSContainetP(SVC, req.PartitionName.TrimStart('*')); // is it useful to use implicitly ldc values as processObj ? is it used at prod?
                     // for this reason function "return" can not fill proper object when its parameter is ldc value *data[return]
                     //  SVC[nameOfSubj].Wrap(processObj);
-                    SVC[nameOfSubj].Wrap(getSYSContainetP(SVC, req.PartitionName.TrimStart('*')));
+                    SVC[nameOfSubj].Wrap(getSYSContainetP(SVC, functionCall.PartitionName.TrimStart('*')));
                     setA(nameOfSubj); 
                 }
 
@@ -1516,7 +1516,7 @@ namespace basicClasses
                 int subidxLdc = -1;
 
                 // working sequence *~itm not ~*itm
-                if (b.Length > 0 && b[0]=='*' && req.PartitionKind !="func")                           
+                if (b.Length > 0 && b[0]=='*' && functionCall.PartitionKind !="func")                           
                 {
                     //  symbols '>', '<' not accepted in combination with *
                     string pn = b.Length > 1 ? b.Remove(0, 1) : ""; 
@@ -1531,7 +1531,7 @@ namespace basicClasses
                         pn = pn[0] == '~' ? pn.Remove(0, 1) : pn;  //after getSYSContainetP because pn should contain '~' to get without unwrapping from LDC                   
                         if (modelIsProducer)
                         {
-                            subidxMs = ms.getPartitionIdxCharPref("^" + pn, '^');
+                            subidxMs = callerFuncParams.getPartitionIdxCharPref("^" + pn, '^');
                             subidxLdc = subidxMs == -1 ? SVC[ldcIdx].W().getPartitionIdxCharPref("^" + pn, '^') : -1;
                             subscribeProduce = subidxMs != -1 || subidxLdc != -1;
                         }                                           
@@ -1555,13 +1555,13 @@ namespace basicClasses
                 }
 
                 //context switch []*
-                if (b == "*" && req.PartitionKind != "func")
+                if (b == "*" && functionCall.PartitionKind != "func")
                 {
                     SVC[ldcIdx].ArrResize(0);
                     SVC[ldcIdx].Wrap(SVC[nameOfSubj].W());
                 }
 
-                SVC[modelSpecIdx] = ms; // before subscribeProduce to be able access
+                SVC[modelSpecIdx] = callerFuncParams; // before subscribeProduce to be able access
                                         // the model spec of caller func from subscription
                                         // (not params of irrelevant producer func) 
 
@@ -1571,7 +1571,7 @@ namespace basicClasses
 
                     if (subidxMs != -1)  // priority on explicit method extention in model spec
                     {
-                        var subscription = ms[subidxMs].Duplicate();
+                        var subscription = callerFuncParams[subidxMs].Duplicate();
                         ExecActionModel(GenExecInstr(subscription), SVC[nameOfSubj].W());
                     }
                     else
