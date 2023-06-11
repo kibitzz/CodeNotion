@@ -7,6 +7,8 @@ using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis;
 using Microsoft.Build.Locator;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
+using Org.BouncyCastle.Ocsp;
+using System.Collections.Concurrent;
 
 namespace basicClasses.models.Roslyn
 {
@@ -31,7 +33,11 @@ namespace basicClasses.models.Roslyn
 
         static bool isInitialized = false;
         static string[] parr = new string[] { "Expression", "Identifier", "Text", "Name", "Keyword", "Token" };
-        static Dictionary<string, string> TypeNames = new Dictionary<string, string>();
+        ConcurrentDictionary<string, string> TypeNames;
+
+        int threadMax = 120;
+
+        static Dictionary<string, string> CachedNames = new Dictionary<string, string>();
 
         public override void Process(opis message)
         {
@@ -41,8 +47,9 @@ namespace basicClasses.models.Roslyn
             var rez = new opis();
             int rezcou = 0;
 
+            TypeNames = new ConcurrentDictionary<string, string>(threadMax, 2000);
 
-            if(!isInitialized)
+            if (!isInitialized)
             MSBuildLocator.RegisterDefaults();
 
             isInitialized = true;
@@ -76,14 +83,24 @@ namespace basicClasses.models.Roslyn
 
         public async Task dosmth(Solution s, opis r)
         {
+            int threadMax = 120;
+           
+            var tasks = new List<Task>();
+
             foreach (var p in s.Projects)
             {
                 opis po = new opis(3) {PartitionName = p.Name, PartitionKind = "project" };
                 po["arrt"].Vset("DefaultNamespace", p.DefaultNamespace);
-
-                await dosmth(p, po);
-
                 r.AddArr(po);
+
+                tasks.Add(dosmth(p, po));
+                //await dosmth(p, po);
+
+                if (tasks.Count == threadMax)
+                {
+                    await Task.WhenAll(tasks);
+                    tasks.Clear();
+                }
             }
         }
 
@@ -93,6 +110,8 @@ namespace basicClasses.models.Roslyn
 
             var compil = await p.GetCompilationAsync();
             if (compil is null) return;
+            
+            var tasks = new List<Task>();
 
             foreach (var doc in p.Documents)
             {              
@@ -100,8 +119,18 @@ namespace basicClasses.models.Roslyn
                 d["attr"].Vset("Folders", String.Join("/", doc.Folders));
                 d["attr"].Vset("FilePath", doc.FilePath);
                 
-
                 docs.AddArr(d);
+
+                #region paralel
+                //tasks.Add(ProcProjectDocument(compil, doc, d));
+
+                //if (tasks.Count == threadMax)
+                //{
+                //    await Task.WhenAll(tasks);
+                //    tasks.Clear();
+                //}
+
+                #endregion paralel
 
                 var tree = await doc.GetSyntaxTreeAsync();
                 if (tree is null) continue;
@@ -109,47 +138,23 @@ namespace basicClasses.models.Roslyn
                 var semant = compil.GetSemanticModel(tree, true);
                 var root = tree.GetRoot();
 
-
                 ProcSyntaxTreeNode(root, semant, d["tree"]);
-             
+
+
                 //  tree.ChildNodes().OfType<MethodDeclarationSyntax>();
                 //tree.ChildNodes();
             }
         }
 
-        string GetTypeName(Type t)
+        public async Task ProcProjectDocument(Compilation compil, Document doc, opis d)
         {
-            var tn = t.Name;            
-            if (TypeNames.TryGetValue(tn, out var name))
-            {
-                return name;
-            }
-            else
-            {
-                var rez = tn.Substring(0, tn.Length > 6 ? tn.Length - 6 : tn.Length);
-                TypeNames.Add(tn, rez);
-                return rez;
-            }
-        }
+            var tree = await doc.GetSyntaxTreeAsync();
+            if (tree is null) return;
 
-        //void Locations(locations)
-        //{
-        //    var loc = new opis();
-        //    o["locations"] = loc;
-        //    foreach (var l in locations)
-        //    {
-        //        var linespan = l.GetLineSpan();
-        //        loc.AddArr(new opis(0)
-        //        {
-        //            PartitionKind = l.Kind.ToString(),
-        //            PartitionName = linespan.Path + " " + linespan.StartLinePosition
-        //        });
-        //    }
-        //}
+            var semant = compil.GetSemanticModel(tree, true);
+            var root = tree.GetRoot();
 
-        string GetIdentifierType(ISymbol nodesymbol)
-        {
-            return nodesymbol.ContainingNamespace +"."+ nodesymbol.ContainingSymbol;
+            ProcSyntaxTreeNode(root, semant, d["tree"]);
         }
 
         void ProcSyntaxTreeNode(SyntaxNode sn, SemanticModel semant, opis o)
@@ -185,9 +190,9 @@ namespace basicClasses.models.Roslyn
                 if (propInfo is null) return;
                 var prop = propInfo.GetValue(sn, null);
                 if (prop is null) return;
-               // o.Vset(propName, prop.ToString());
+                
                 propcou++;
-                o.PartitionName += prop.ToString() ;
+                o.PartitionName += GetName(prop.ToString());
             }
 
             foreach (var p in parr)
@@ -222,7 +227,63 @@ namespace basicClasses.models.Roslyn
             // sn.
         }
 
-       
+
+
+        string GetTypeName(Type t)
+        {
+            var tn = t.Name;
+            if (TypeNames.TryGetValue(tn, out var name))
+            {
+                return name;
+            }
+            else
+            {
+                var rez = tn.Substring(0, tn.Length > 6 ? tn.Length - 6 : tn.Length);               
+                TypeNames.TryAdd(tn, rez);      
+                
+                return rez;
+            }
+        }
+
+        string GetName(string tn)
+        {
+            return tn;
+
+            if (CachedNames.TryGetValue(tn, out var name))
+            {
+                return name;
+            }
+            else
+            {
+                var rez = tn;
+                try
+                {
+                    CachedNames.Add(tn, rez);
+                } 
+                catch { }
+                return rez;
+            }
+        }
+
+        //void Locations(locations)
+        //{
+        //    var loc = new opis();
+        //    o["locations"] = loc;
+        //    foreach (var l in locations)
+        //    {
+        //        var linespan = l.GetLineSpan();
+        //        loc.AddArr(new opis(0)
+        //        {
+        //            PartitionKind = l.Kind.ToString(),
+        //            PartitionName = linespan.Path + " " + linespan.StartLinePosition
+        //        });
+        //    }
+        //}
+
+        string GetIdentifierType(ISymbol nodesymbol)
+        {
+            return nodesymbol.ContainingNamespace + "." + nodesymbol.ContainingSymbol;
+        }
 
         public void handleError(object sender, WorkspaceDiagnosticEventArgs e)
         {

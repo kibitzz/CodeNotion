@@ -80,7 +80,11 @@ namespace basicClasses
                     else
                     {
                         PartitionName_Lower_ = PartitionName.ToLower();
-                        LowerMap.Add(PartitionName, PartitionName_Lower_);
+                        try
+                        {
+                            LowerMap.Add(PartitionName, PartitionName_Lower_); // not thread safe
+                        }
+                        catch { }
                     }
 
                     //PartitionName_Lower_ = PartitionName == null ? null : PartitionName.ToLower();
