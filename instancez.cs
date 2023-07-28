@@ -1366,8 +1366,12 @@ namespace basicClasses
                             setV(callerFuncParams.V("v"));
                             setA(callerFuncParams.V("a"));
                         }
-                        
-                        if(mspos.body.Length > 0 && mspos.body[0] == '*')
+                        else if (mspos.PartitionKind.Length > 0 && mspos.PartitionKind[0] == '~')
+                        {
+                            modelSpec.AddArrMissing(callerFuncParams);
+                        }
+
+                        if (mspos.body.Length > 0 && mspos.body[0] == '*')
                             modelSpec.AddArrMissing(getSYSContainetP(SVC, mspos.body.Length > 1 ? mspos.body.Remove(0, 1) : ""));
                     }
 
