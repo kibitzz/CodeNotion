@@ -1734,6 +1734,11 @@ namespace basicClasses
         {
             Color rez = Color.AntiqueWhite;
 
+            if (!string.IsNullOrWhiteSpace(partKind) && partKind[0] == '_')
+            {
+                rez = Color.DimGray;
+            }
+
             switch (partKind)
             {
 
@@ -2536,12 +2541,27 @@ namespace basicClasses
         }
 
         void AddTemplData(opis templ, opis data, opis rez)
-        {
+        {       
             if (templ.body != "???")
             {
                 var name = templ.body.Remove(0, 3).Trim();
-                rez[name].body = data.body;
-                rez[name].CopyArr(data, true);
+
+                if (name[0] == '&')
+                {
+                    if (name.StartsWith("&p"))
+                        rez[name.Remove(0, 2).Trim()].body = data.PartitionName;
+
+                    if (name.StartsWith("&m"))
+                        rez[name.Remove(0, 2).Trim()].body = data.PartitionKind;
+
+                    if (name.StartsWith("&w"))
+                        rez[name.Remove(0, 2).Trim()].Wrap(data);
+                }
+                else
+                {
+                    rez[name].body = data.body;
+                    rez[name].CopyArr(data, true);
+                }
             }
             else
                 rez.AddArr(data);

@@ -120,7 +120,7 @@ namespace basicClasses
             treeView3.ShowNodeToolTips = false;           
             //  treeView3.ShowLines = false;
 
-            treeView3.ItemHeight = 32;
+            treeView3.ItemHeight = 45;
             treeView3.Indent = 34;
             treeView3.LineColor = Color.FromArgb(59,59,59);
 
@@ -164,8 +164,9 @@ namespace basicClasses
             GuiFomsFactory.deleg = new guiFactoryGelegate(CreateForm);
 
             opis.do_not_build_debug = false;
+           
 
-          
+
         }
 
         // =====================================================
@@ -1817,11 +1818,9 @@ namespace basicClasses
 
         // EXEC command
         private void button12_Click(object sender, EventArgs e)
-        {
+        {           
             //if (moneyThread != null)
             //    moneyThread.Abort();
-
-            Data_In_Buffer.clipboard_data = Clipboard.GetText(TextDataFormat.UnicodeText);
 
             if (modelLocherThread == null)
             {

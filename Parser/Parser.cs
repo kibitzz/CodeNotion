@@ -333,13 +333,19 @@ namespace basicClasses
         {
             if (data != null && data.Length > 0)
             {
-                
-                using (StreamWriter sw = new StreamWriter(path,false, Encoding.UTF8))
+                try
                 {
-                    for (int i = 0; i < data.Length; i++)
+                    using (StreamWriter sw = new StreamWriter(path, false, Encoding.UTF8))
                     {
-                        sw.WriteLine(data[i]);
+                        for (int i = 0; i < data.Length; i++)
+                        {
+                            sw.WriteLine(data[i]);
+                        }
+
                     }
+                }
+                catch (Exception e)
+                {
 
                 }
             }

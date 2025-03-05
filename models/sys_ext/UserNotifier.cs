@@ -16,10 +16,12 @@ namespace basicClasses.models.sys_ext
         public static readonly string message = "message";
 
         public override void Process(opis message)
-        {          
-            if (modelSpec["message"].isInitlze)
+        {
+            opis ms = SpecLocalRunAll();
+
+            if (ms["message"].isInitlze)
             {
-                SysInstance.messageBannertext = modelSpec["message"].body;
+                SysInstance.messageBannertext = ms["message"].body;
                 instanse.updateGui();
             }          
         }

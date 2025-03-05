@@ -168,6 +168,8 @@ namespace basicClasses.models.StructureProcessing
                         bp.PartitionKind = valContainer.body;
                     else if (bp.PartitionKind == "&p")
                         bp.PartitionKind = valContainer.PartitionName;
+                    else if (bp.PartitionKind == "&k")
+                        bp.PartitionKind = valContainer.PartitionKind;
                 }
 
                 if (!funcSymbIgnore && bp_body.Length > 0)
