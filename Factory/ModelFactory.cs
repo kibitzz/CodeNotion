@@ -29,6 +29,7 @@ namespace basicClasses.Factory
 {
    public class ModelFactory
     {
+        public bool use_transient;
         Dictionary<string, ModelInfo> models;
 
         public static opis hotkeys = new opis();
@@ -63,6 +64,8 @@ namespace basicClasses.Factory
                 { "ForEach", new ForEach() },
                 { "exec", new exec() },
                 { "exec_inline", new exec_inline() },
+                { "process_items_in_parallel", new process_items_in_parallel() },
+                
 
                 { "TreeDataExtractor", new TreeDataExtractor() },//obsolete
                 { "Destructure", new Destructure() },
@@ -153,6 +156,8 @@ namespace basicClasses.Factory
                 { "NextArrItm", new NextArrItm() },
                 { "TemplateSearch", new TemplateSearch() },
                 { "EmbedTree", new EmbedTree() },
+                { "text_mapper", new text_mapper() },
+                
 
                 { "Make_pause", new Make_pause() },
                 { "Check_isInArray", new Check_isInArray() },
@@ -185,6 +190,7 @@ namespace basicClasses.Factory
                 { "GetEnclosedText", new GetEnclosedText() },
                 { "WordsArrOp", new WordsArrOp() },
                 { "StrReplace", new StrReplace() },
+                { "gen_spaces", new gen_spaces() },                
 
 
                 { "universal_line_pareser", new universal_line_pareser() },
@@ -290,6 +296,12 @@ namespace basicClasses.Factory
             ModelInfo m;
             if (!string.IsNullOrEmpty(name) && models.TryGetValue(name.Trim(), out m))
             {
+                if (use_transient)
+                {
+                    Type type = m.GetType();
+                    return Activator.CreateInstance(type);
+                }
+
                 return m;
             }
             else

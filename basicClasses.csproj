@@ -399,11 +399,13 @@
     <Compile Include="models\Extractors\Fill_p_notify_specs.cs" />
     <Compile Include="models\Extractors\fill_shared_context_val.cs" />
     <Compile Include="models\Extractors\Fill_Spec_Info.cs" />
+    <Compile Include="models\Roslyn\cs_file_parcer.cs" />
     <Compile Include="models\Roslyn\syntax_tree.cs" />
     <Compile Include="models\SQL\sql_server_query.cs" />
     <Compile Include="models\SQL\ReplaceKeyByPresentation.cs" />
     <Compile Include="models\String proc\b_length.cs" />
     <Compile Include="models\String proc\fuzzy_search.cs" />
+    <Compile Include="models\String proc\gen_spaces.cs" />
     <Compile Include="models\String proc\normalize_spaces.cs" />
     <Compile Include="models\String proc\PeriodIterator.cs" />
     <Compile Include="models\String proc\RegexParcer.cs" />
@@ -416,6 +418,7 @@
     <Compile Include="models\StructureProcessing\order_by.cs" />
     <Compile Include="models\StructureProcessing\proc_recursive.cs" />
     <Compile Include="models\StructureProcessing\reverse_order.cs" />
+    <Compile Include="models\StructureProcessing\text_mapper.cs" />
     <Compile Include="models\svcutil\mary_player_service.cs" />
     <Compile Include="models\svcutil\WilliamHillMarylandPlayerService.cs" />
     <Compile Include="models\sys_ext\clear_stack_itms.cs" />
@@ -477,6 +480,7 @@
     <Compile Include="models\file system\load_data_file.cs" />
     <Compile Include="models\sys_ext\numArrNames.cs" />
     <Compile Include="models\file system\save_toFile.cs" />
+    <Compile Include="models\sys_ext\process_items_in_parallel.cs" />
     <Compile Include="models\sys_ext\SyntaxTreeMatchIdPattrns.cs" />
     <Compile Include="models\sys_ext\TagArrayItems.cs" />
     <Compile Include="models\sys_ext\targetWholeBranch.cs" />
