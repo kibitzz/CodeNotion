@@ -2226,7 +2226,7 @@ namespace basicClasses
 
             for (int i = 0; i < this.paramCou; i++)
             {
-                rez.arr[i] = this.arr[i].Duplicate();             
+                rez.arr[i] = this.arr[i]?.Duplicate();             
             }
 
             isDuplicated = false;
