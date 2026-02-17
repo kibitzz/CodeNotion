@@ -73,10 +73,13 @@ namespace basicClasses.models.WEB_api
 
             if (mcConcat)
             {
+                opis concat = modelSpec[Concatenate].Duplicate();
+                instanse.ExecActionModel(concat, concat);
                 bool trim = modelSpec.isHere(Trim_Element_Quotes);
+                string separator = concat.body;
                 for (int i = 0; i < surc.listCou; i++)
                 {                  
-                    data += trim? surc[i].body.Trim('"'): surc[i].body;
+                    data += (i == 0 ? "": separator) + (trim? surc[i].body.Trim('"'): surc[i].body);
                 }
             }
 

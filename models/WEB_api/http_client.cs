@@ -373,9 +373,13 @@ namespace basicClasses.models.WEB_api
             if (string.IsNullOrEmpty(StringWebResource))
                 return null;
            
-            WebClient myWebClient = new WebClient();
-          
-           
+            WebClient myWebClient = new WebClient();          
+
+            foreach (string header in headers)
+            {
+                myWebClient.Headers.Add(header);               
+            }
+
             try
             {
                 myWebClient.DownloadFile(StringWebResource.Trim('"'), fileName);
