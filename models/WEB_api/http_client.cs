@@ -400,8 +400,14 @@ namespace basicClasses.models.WEB_api
             if (string.IsNullOrEmpty(StringWebResource))
                 return null;
 
-           // WebClient myWebClient = new WebClient();
-           
+            // WebClient myWebClient = new WebClient();
+            myWebClient.Headers.Clear();
+
+            foreach (string header in headers)
+            {
+                myWebClient.Headers.Add(header);
+            }
+
 
             try
             {

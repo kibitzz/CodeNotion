@@ -378,6 +378,7 @@
     <Compile Include="models\Checkers\Check_is_odd.cs" />
     <Compile Include="models\deserializer\dir_file_info.cs" />
     <Compile Include="models\file system\file_tree_scanner.cs" />
+    <Compile Include="models\file system\run_proc_cmd.cs" />
     <Compile Include="models\Markers\environment_function.cs" />
     <Compile Include="models\Markers\value_function.cs" />
     <Compile Include="models\Messaging\Messenger.cs" />
@@ -419,8 +420,6 @@
     <Compile Include="models\StructureProcessing\proc_recursive.cs" />
     <Compile Include="models\StructureProcessing\reverse_order.cs" />
     <Compile Include="models\StructureProcessing\text_mapper.cs" />
-    <Compile Include="models\svcutil\mary_player_service.cs" />
-    <Compile Include="models\svcutil\WilliamHillMarylandPlayerService.cs" />
     <Compile Include="models\sys_ext\clear_stack_itms.cs" />
     <Compile Include="models\sys_ext\Data_In_Buffer.cs" />
     <Compile Include="models\file system\file.cs" />
@@ -582,6 +581,7 @@
     <Folder Include="models\etc\" />
     <Folder Include="models\FunctionalInstances\" />
     <Folder Include="models\SelectFilter\" />
+    <Folder Include="models\svcutil\" />
     <Folder Include="SubjectArea\" />
   </ItemGroup>
   <ItemGroup>

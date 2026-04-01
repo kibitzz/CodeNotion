@@ -14,8 +14,10 @@ namespace basicClasses.models.sys_ext
         [info(" ")]
         public static readonly string clipboard = "clipboard";
 
+        [ignore]
         public static string rawData;
 
+        [ignore]
         public static string clipboard_data;
 
         public override void Process(opis message)
@@ -36,7 +38,8 @@ namespace basicClasses.models.sys_ext
             if(modelSpec.isHere(clipboard))
             {
                 message.ReinitArr(0);
-                message.body = clipboard_data.Trim(); 
+                char[] charsToTrim = { '\n', '\r', ' '  };
+                message.body = clipboard_data.Trim(charsToTrim); 
                 return;
             }
            

@@ -21,7 +21,6 @@ using basicClasses.models.String_proc;
 using basicClasses.models.SQL;
 using basicClasses.models.Markers;
 using basicClasses.models.Roslyn;
-using basicClasses.models.svcutil;
 using basicClasses.models.file_system;
 using basicClasses.models.deserializer;
 
@@ -234,7 +233,7 @@ namespace basicClasses.Factory
                 { "fuzzy_search", new fuzzy_search() },
                 { "syntax_tree", new syntax_tree() },
                 { "clear_stack_itms", new clear_stack_itms() },
-                { "mary_player_service", new mary_player_service() },
+                { "run_proc_cmd", new run_proc_cmd() },
 
                 { "file_tree_scanner", new file_tree_scanner() },
                 { "dir_file_info", new dir_file_info() }
